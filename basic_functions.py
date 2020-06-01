@@ -18,7 +18,6 @@ def pickup(assign_slot):
 
 # Skyler's setting functions
 
-
 def drink_mana():
     send_keys("{PGUP}")
 
@@ -49,6 +48,10 @@ def pickup():
     send_keys('{z up}')
 
 def buff_0():
+    send_keys('{VK_HOME down}')
+    send_keys('{VK_HOME up}')
+    send_keys('{VK_HOME down}')
+    send_keys('{VK_HOME up}')
     send_keys('{VK_HOME down}')
     send_keys('{VK_HOME up}')
 
@@ -101,6 +104,12 @@ def auto_hp(window_name, percent):
     y1 = 745
     y2 = 765
 
+    # 800 x 600 change to 1024 x 768
+    x1 = 285 # gap = 127
+    x2 = 412
+    y1 = 744
+    y2 = 762
+
     bbox = (x1, y1, x2, y2)
     im = PIL.ImageGrab.grab(bbox=bbox)
 
@@ -129,6 +138,12 @@ def auto_mp(window_name, percent):
     y1 = 750
     y2 = 765
 
+    # 800 x 600 change to 1024 x 768
+    x1 = 424 # gap = 127
+    x2 = 551
+    y1 = 744
+    y2 = 762
+
     bbox = (x1, y1, x2, y2)
     im = PIL.ImageGrab.grab(bbox=bbox)
 
@@ -138,10 +153,16 @@ def auto_mp(window_name, percent):
 
     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
+    # print(im_np[10])
+
+    # cv2.imshow("MP", im_np)
+    # cv2.waitKey()
+
     item = 0
 
+    # 178 is empty
     for x in range(len(im_np[10])):
-        if im_np[10][x] > 100:
+        if im_np[10][x] > 175:
             item = x
             break
 
@@ -149,9 +170,9 @@ def auto_mp(window_name, percent):
         print("Percent MP: ", item / (x2 - x1) * 100)
         drink_mana()
         # drink mana and delay for 1s
+
         time.sleep(0.5)
         return
 
-    # cv2.imshow("image", im_np)
-    # cv2.waitKey()
+
     return

@@ -7,10 +7,9 @@ from dateutil import tz
 import PIL.ImageGrab
 import win32gui
 import numpy as np
-from PIL import Image
-import tkinter as tk
 from tkinter import *
 import threading
+from random import *
 
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
@@ -36,6 +35,16 @@ time_buff_3_input = StringVar
 time_buff_4_input = StringVar
 
 # UI Vars
+
+# Random Vars (to make things more random and trick lie detector)
+
+hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
+mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
+buff_delay = [600, 0, 0, 0, 0]
+random_buff_delay = [0, 0, 0, 0]
+random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
+
+# Random Vars
 
 # bbox (left_x, top_y, right_x, bottom_y)
 
@@ -80,19 +89,24 @@ def get_right_mob():
     return
 
 def main(windowName):
+    global hp_pecent_random, \
+        mp_percent_random, \
+        hp_percent_to_drink_potion, \
+        mp_percent_to_drink_potion
+    global buff_delay, \
+        random_buff_delay
     count = 0
-    buff_delay = [309, 0, 0, 0, 0]
-
     # Buff all when start
     buff_0()
 
     time_at_buff = datetime.utcnow()
     while True:
-        if (datetime.utcnow() - time_at_buff).total_seconds() > buff_delay[0]:
+        if (datetime.utcnow() - time_at_buff).total_seconds() > random_buff_delay[0]:
             buff_0()
             buff_0()
             print("Buff at: ", get_time())
             time_at_buff = datetime.utcnow()
+            random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
 
         # if (datetime.utcnow() - time_at_buff).total_seconds() > buff_delay[0]:
         #     buff_0()
@@ -113,10 +127,12 @@ def main(windowName):
         #     time_at_buff = datetime.utcnow()
 
         if is_auto_hp == 1:
-            auto_hp(windowName, hp_percent_to_drink_potion)
+            auto_hp(windowName, hp_pecent_random)
+            hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
 
         if is_auto_mp == 1:
-            auto_mp(windowName, mp_percent_to_drink_potion)
+            auto_mp(windowName, mp_percent_random)
+            mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
 
         if is_auto_attack == 1:
             auto_attack()
@@ -233,11 +249,10 @@ if __name__ == '__main__':
     get_window_image(windowName)
 
     print("Connected!")
+    time.sleep(2)
 
     threading.Thread(target=ui).start()
     threading.Thread(target=main(windowName)).start()
-
-    time.sleep(2)
 
 
     # write_walls()    # <-to uncomment replace first #
