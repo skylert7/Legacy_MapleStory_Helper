@@ -1,0 +1,84 @@
+atomicwrites @ file:///home/conda/feedstock_root/build_artifacts/atomicwrites_1588182545583/work
+attrs==19.3.0
+backcall==0.1.0
+beautifulsoup4==4.8.2
+brotlipy==0.7.0
+certifi==2020.4.5.1
+cffi==1.14.0
+chardet==3.0.4
+cloudpickle==1.3.0
+colorama==0.4.3
+comtypes==1.1.7
+cryptography==2.9.2
+cycler==0.10.0
+Cython==0.29.19
+decorator==4.4.2
+entrypoints==0.3
+flake8 @ file:///home/conda/feedstock_root/build_artifacts/flake8_1590452865665/work
+flake8-polyfill==1.0.2
+flake8-quotes @ file:///home/conda/feedstock_root/build_artifacts/flake8-quotes_1589330264223/work
+future==0.18.2
+gym==0.17.1
+idna==2.9
+importlib-metadata==1.6.0
+ipykernel @ file:///D:/bld/ipykernel_1590020339745/work/dist/ipykernel-5.3.0-py3-none-any.whl
+ipython @ file:///D:/bld/ipython_1588363077031/work
+ipython-genutils==0.2.0
+jedi==0.17.0
+jupyter-client==6.1.3
+jupyter-core==4.6.3
+keyboard==0.13.5
+kiwisolver==1.1.0
+matplotlib==3.2.1
+mccabe==0.6.1
+more-itertools @ file:///home/conda/feedstock_root/build_artifacts/more-itertools_1589614090069/work
+MouseInfo==0.1.3
+nltk==3.4.5
+numpy==1.18.2
+olefile==0.46
+opencv-python==4.2.0.34
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1589925210001/work
+parso==0.7.0
+pep8-naming==0.10.0
+pickleshare==0.7.5
+Pillow==7.1.1
+pluggy @ file:///D:/bld/pluggy_1588623711289/work
+prompt-toolkit==3.0.5
+py==1.8.1
+PyAutoGUI==0.9.50
+PyAutoIt==0.6.0
+pycodestyle @ file:///home/conda/feedstock_root/build_artifacts/pycodestyle_1589305246696/work
+pycparser==2.20
+pyflakes==2.2.0
+pygame==1.9.6
+PyGetWindow==0.0.8
+pyglet==1.5.0
+Pygments==2.6.1
+PyMsgBox==1.0.7
+pyOpenSSL==19.1.0
+pyparsing==2.4.6
+pyperclip==1.8.0
+PyRect==0.1.4
+PyScreeze==0.1.26
+PySocks==1.7.1
+pytesseract==0.3.4
+pytest==5.4.2
+python-dateutil==2.8.1
+PyTweening==1.0.3
+pywin32==227
+pywinauto==0.6.8
+pyzmq==19.0.1
+ReadWriteMemory==0.1.5
+requests==2.23.0
+scipy==1.4.1
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1590081179328/work
+soupsieve==2.0
+tesseract==0.1.3
+tornado==6.0.4
+traitlets==4.3.3
+urllib3==1.25.9
+wcwidth==0.1.9
+win-inet-pton==1.1.0
+wincertstore==0.2
+wordcloud==1.6.0
+zipp==3.1.0
