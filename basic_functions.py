@@ -58,6 +58,10 @@ def buff_0():
 def buff_1():
     send_keys('{VK_DELETE down}')
     send_keys('{VK_DELETE up}')
+    send_keys('{VK_DELETE down}')
+    send_keys('{VK_DELETE up}')
+    send_keys('{VK_DELETE down}')
+    send_keys('{VK_DELETE up}')
 
 def buff_2():
     send_keys('{VK_INSERT down}')

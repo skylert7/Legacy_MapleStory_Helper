@@ -40,9 +40,10 @@ time_buff_4_input = StringVar
 
 hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
 mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
-buff_delay = [600, 0, 0, 0, 0]
+buff_delay = [600, 90, 0, 0, 0]
 random_buff_delay = [0, 0, 0, 0]
 random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
+random_buff_delay[1] = randint(buff_delay[1] // 2, buff_delay[1])
 
 # Random Vars
 
@@ -98,22 +99,24 @@ def main(windowName):
     count = 0
     # Buff all when start
     buff_0()
+    buff_1()
 
-    time_at_buff = datetime.utcnow()
+    time_at_buff = [datetime.utcnow()] * 4
     while True:
-        if (datetime.utcnow() - time_at_buff).total_seconds() > random_buff_delay[0]:
+        if (datetime.utcnow() - time_at_buff[0]).total_seconds() > random_buff_delay[0]:
             buff_0()
             buff_0()
-            print("Buff at: ", get_time())
-            time_at_buff = datetime.utcnow()
+            print("Buff 0 at: ", get_time())
+            time_at_buff[0] = datetime.utcnow()
             random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
 
-        # if (datetime.utcnow() - time_at_buff).total_seconds() > buff_delay[0]:
-        #     buff_0()
-        #     buff_0()
-        #     print("Buff at: ", get_time())
-        #     time_at_buff = datetime.utcnow()
-        #
+        if (datetime.utcnow() - time_at_buff[1]).total_seconds() > random_buff_delay[1]:
+            buff_1()
+            buff_1()
+            print("Buff 1 at: ", get_time())
+            time_at_buff[1] = datetime.utcnow()
+            random_buff_delay[1] = randint(buff_delay[1] // 2, buff_delay[1])
+
         # if (datetime.utcnow() - time_at_buff).total_seconds() > buff_delay[0]:
         #     buff_0()
         #     buff_0()

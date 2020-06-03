@@ -1,4 +1,3 @@
-atomicwrites @ file:///home/conda/feedstock_root/build_artifacts/atomicwrites_1588182545583/work
 attrs==19.3.0
 backcall==0.1.0
 beautifulsoup4==4.8.2
@@ -14,15 +13,11 @@ cycler==0.10.0
 Cython==0.29.19
 decorator==4.4.2
 entrypoints==0.3
-flake8 @ file:///home/conda/feedstock_root/build_artifacts/flake8_1590452865665/work
 flake8-polyfill==1.0.2
-flake8-quotes @ file:///home/conda/feedstock_root/build_artifacts/flake8-quotes_1589330264223/work
 future==0.18.2
 gym==0.17.1
 idna==2.9
 importlib-metadata==1.6.0
-ipykernel @ file:///D:/bld/ipykernel_1590020339745/work/dist/ipykernel-5.3.0-py3-none-any.whl
-ipython @ file:///D:/bld/ipython_1588363077031/work
 ipython-genutils==0.2.0
 jedi==0.17.0
 jupyter-client==6.1.3
@@ -31,23 +26,19 @@ keyboard==0.13.5
 kiwisolver==1.1.0
 matplotlib==3.2.1
 mccabe==0.6.1
-more-itertools @ file:///home/conda/feedstock_root/build_artifacts/more-itertools_1589614090069/work
 MouseInfo==0.1.3
 nltk==3.4.5
 numpy==1.18.2
 olefile==0.46
 opencv-python==4.2.0.34
-packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1589925210001/work
 parso==0.7.0
 pep8-naming==0.10.0
 pickleshare==0.7.5
 Pillow==7.1.1
-pluggy @ file:///D:/bld/pluggy_1588623711289/work
 prompt-toolkit==3.0.5
 py==1.8.1
 PyAutoGUI==0.9.50
 PyAutoIt==0.6.0
-pycodestyle @ file:///home/conda/feedstock_root/build_artifacts/pycodestyle_1589305246696/work
 pycparser==2.20
 pyflakes==2.2.0
 pygame==1.9.6
@@ -71,7 +62,6 @@ pyzmq==19.0.1
 ReadWriteMemory==0.1.5
 requests==2.23.0
 scipy==1.4.1
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1590081179328/work
 soupsieve==2.0
 tesseract==0.1.3
 tornado==6.0.4
