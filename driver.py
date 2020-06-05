@@ -9,38 +9,29 @@ import win32con
 import win32api
 import numpy as np
 from tkinter import *
+import tkinter.ttk
 import threading
 from random import *
 
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
+
 window_length_x = [1024, 1280] # This will be modified at real-time
 window_height_y = [768, 960] # This should be modified at real-time
-resOption = 0 # 0 for 1024x768 | 1 for 1280x980
-hp_percent_to_drink_potion = 70 # percent
-mp_percent_to_drink_potion = 80 # percent
+
+resOption = 0 # 0 for 1024x768 | 1 for 1280x960
+
+from_mp_global = 0 # percent
+to_mp_global = 0 # percent
+from_hp_global = 0 # percent
+to_hp_global = 0 # percent
 # GLOBAL SETTINGS
-
-# UI Vars
-
-is_auto_hp = IntVar
-is_auto_mp = IntVar
-is_auto_attack = IntVar
-is_auto_pickup = IntVar
-
-time_buff_0_input = StringVar
-time_buff_1_input = StringVar
-time_buff_2_input = StringVar
-time_buff_3_input = StringVar
-time_buff_4_input = StringVar
-
-# UI Vars
 
 # Random Vars (to make things more random and trick lie detector)
 
-hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
-mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
+# hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
+# mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
 buff_delay = [600, 90, 0, 0, 0]
 random_buff_delay = [0, 0, 0, 0]
 random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
@@ -73,7 +64,7 @@ def get_window_image(window_name):
     hwndMain = win32gui.FindWindow(None, window_name)
     hwndChild = win32gui.GetWindow(hwndMain, win32con.GW_CHILD)
 
-    win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[1], window_height_y[1], True)
+    win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[resOption], window_height_y[resOption], True)
     bbox = win32gui.GetWindowRect(hwndMain)
 
     im = PIL.ImageGrab.grab(bbox=bbox)
@@ -91,12 +82,6 @@ def botting():
 def lie_detector():
     return False
 
-def get_left_mob():
-    return
-
-def get_right_mob():
-    return
-
 def main(windowName):
     global hp_pecent_random, \
         mp_percent_random, \
@@ -104,9 +89,10 @@ def main(windowName):
         mp_percent_to_drink_potion
     global buff_delay, \
         random_buff_delay
-    count = 0
+
     # Buff all when start
     buff_0()
+    time.sleep(0.2)
     buff_1()
 
     time_at_buff = [datetime.utcnow()] * 4
@@ -138,12 +124,12 @@ def main(windowName):
         #     time_at_buff = datetime.utcnow()
 
         if is_auto_hp == 1:
-            auto_hp(windowName, hp_pecent_random)
-            hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
+            if auto_hp(hp_pecent_random, resOption):
+                hp_pecent_random = randint(from_hp_global, to_hp_global)
 
         if is_auto_mp == 1:
-            auto_mp(windowName, mp_percent_random)
-            mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
+            if auto_mp(mp_percent_random, resOption):
+                mp_percent_random = randint(from_mp_global, to_mp_global)
 
         if is_auto_attack == 1:
             auto_attack()
@@ -153,8 +139,50 @@ def main(windowName):
 
 def ui():
     global maple_story
-    global is_auto_attack, is_auto_mp, is_auto_hp, is_auto_pickup
+    global is_auto_attack, \
+        is_auto_mp, \
+        is_auto_hp, \
+        is_auto_pickup,\
+        resOption
+    global to_mp_global, \
+        to_hp_global, \
+        from_mp_global, \
+        from_hp_global
+
     root = Tk()
+
+    # UI Vars
+
+    is_auto_hp = IntVar()
+    is_auto_hp.set(0)
+    is_auto_mp = IntVar()
+    is_auto_mp.set(0)
+    is_auto_attack = IntVar()
+    is_auto_attack.set(0)
+    is_auto_pickup = IntVar()
+    is_auto_pickup.set(0)
+
+    fromHpEntry = StringVar()
+    fromHpEntry.set("0")
+    toHpEntry = StringVar()
+    toHpEntry.set("0")
+
+    fromMpEntry = StringVar()
+    fromMpEntry.set("0")
+    toMpEntry = StringVar()
+    toMpEntry.set("0")
+
+    time_buff_0_input = StringVar()
+    time_buff_1_input = StringVar()
+    time_buff_2_input = StringVar()
+    time_buff_3_input = StringVar()
+    time_buff_4_input = StringVar()
+
+    tkResOption = IntVar()
+    tkResOption.set(0)  # 0 for 1024x768 | 1 for 1280x960
+
+    # UI Vars
+
     root.title("MapleStory Bot")
 
     is_auto_hp = IntVar(value=0)
@@ -166,30 +194,61 @@ def ui():
     def change_auto_mp_state():
         global is_auto_mp
         is_auto_mp = not is_auto_mp
-        print("Auto MP state", is_auto_mp)
+        # print("Auto MP state", is_auto_mp)
         maple_story.activate()
 
     def change_auto_hp_state():
         global is_auto_hp
         is_auto_hp = not is_auto_hp
-        print("Auto HP state", is_auto_hp)
+        # print("Auto HP state", is_auto_hp)
         maple_story.activate()
 
 
     def change_auto_attack_state():
         global is_auto_attack
         is_auto_attack = not is_auto_attack
-        print("Auto attack state", is_auto_attack)
+        # print("Auto attack state", is_auto_attack)
         maple_story.activate()
 
     def change_auto_pickup_state():
         global is_auto_pickup
         is_auto_pickup = not is_auto_pickup
-        print("Auto pick up state", is_auto_pickup)
+        # print("Auto pick up state", is_auto_pickup)
         maple_story.activate()
 
-    root.geometry('350x200')
+    def toggle_resolution():
+        global resOption, windowName
+        resOption = tkResOption.get()
+        hwndMain = win32gui.FindWindow(None, windowName)
+        win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[resOption], window_height_y[resOption], True)
+        maple_story.activate()
 
+    def setHpRange():
+        global from_hp_global, to_hp_global
+        try:
+            from_hp_global = int(fromHpEntry.get())
+            to_hp_global = int(toHpEntry.get())
+        except:
+            from_hp_global = 0
+            to_hp_global = 0
+            print("Invalid input HP")
+
+    def setMpRange():
+        global from_mp_global, to_mp_global
+        try:
+            from_mp_global = int(fromMpEntry.get())
+            to_mp_global = int(toMpEntry.get())
+        except:
+            from_mp_global = 0
+            to_mp_global = 0
+            print("Invalid input MP")
+
+    canvas_width = 100
+    canvas_height = 10
+
+    root.geometry('{}x{}'.format(450, 250))
+
+    # Auto HP Row
     row = 0
     Checkbutton(root,
                 text='Auto HP',
@@ -197,13 +256,70 @@ def ui():
                 variable=is_auto_hp,
                 ).grid(row=row)
 
+    fromHpLabel = Label(root,
+                        text="From:").grid(column=4,
+                                           row=row)
+    Entry(root,
+          textvariable=fromHpEntry).grid(column=5,
+                                         row=row)
+
+    toHpLabel = Label(root,
+                      text="To:").grid(column=8,
+                                       row=row)
+    Entry(root,
+          textvariable=toHpEntry).grid(column=9,
+                                       row=row)
+
+    Button(root, text='Set',
+           command=setHpRange).grid(column=10,
+                                    row=row)
+    # line
+    row += 1
+    w = Canvas(root,
+               width=canvas_width,
+               height=canvas_height)
+    w.grid(row=row)
+
+    y = int(canvas_height / 2)
+    w.create_line(0, y, canvas_width, y, fill="#476042")
+    #Auto HP Row ---
+
+    #Auto MP Row
     row += 1
     Checkbutton(root,
                 text='Auto MP',
                 command=change_auto_mp_state,
                 variable=is_auto_mp,
-                ).grid(row=row)
+                ).grid(column=0, row=row)
 
+    fromMpLabel = Label(root,
+                        text="From:").grid(column=4,
+                                           row=row)
+    Entry(root,
+          textvariable=fromMpEntry).grid(column=5,
+                                         row=row)
+
+    toMpLabel = Label(root,
+                      text="To:").grid(column=8,
+                                       row=row)
+    Entry(root,
+          textvariable=toMpEntry).grid(column=9,
+                                       row=row)
+
+    Button(root, text='Set',
+           command=setMpRange).grid(column=10,
+                                    row=row)
+
+    # line
+    row += 1
+    w = Canvas(root,
+               width=canvas_width,
+               height=canvas_height)
+    w.grid(row=row)
+
+    y = int(canvas_height / 2)
+    w.create_line(0, y, canvas_width, y, fill="#476042")
+    #Auto MP Row ---
 
     row += 1
     Checkbutton(root,
@@ -218,6 +334,19 @@ def ui():
                 command=change_auto_pickup_state,
                 variable=is_auto_pickup,
                 ).grid(row=row, sticky=W)
+
+    Radiobutton(root,
+                text="1024x768",
+                command=toggle_resolution,
+                variable=tkResOption,
+                value=0).grid(sticky=W)
+
+    Radiobutton(root,
+                text="1280x920",
+                command=toggle_resolution,
+                variable=tkResOption,
+                value=1).grid(sticky=W)
+
 
     root.mainloop()
 
@@ -248,14 +377,13 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    get_window_image(windowName)
+    # get_window_image(windowName)
 
     print("Connected!")
     time.sleep(2)
 
-    testHP_MP()
-    # threading.Thread(target=ui).start()
-    # threading.Thread(target=main(windowName)).start()
+    threading.Thread(target=ui).start()
+    threading.Thread(target=main(windowName)).start()
 
 
 

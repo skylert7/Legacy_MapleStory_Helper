@@ -71,36 +71,6 @@ def buff_3():
     send_keys('{VK_END down}')
     send_keys('{VK_END up}')
 
-def move_and_pickup():
-    # pick up from the right
-    for i in range(4):
-        send_keys('{RIGHT down}')
-        pickup()
-        pickup()
-        pickup()
-        send_keys('{RIGHT up}')
-
-
-    # pick up from the left
-    for i in range(6):
-        send_keys('{LEFT down}')
-        pickup()
-        pickup()
-        pickup()
-        pickup()
-        pickup()
-        send_keys('{LEFT up}')
-
-    # go back to center
-    for i in range(4):
-        send_keys('{RIGHT down}')
-        pickup()
-        pickup()
-        pickup()
-        pickup()
-        pickup()
-        send_keys('{RIGHT up}')
-
 def auto_hp(percent, resOption):
     '''
     choices: 1024 x 768 (0) OR 1280 x 960 (1)
@@ -128,14 +98,14 @@ def auto_hp(percent, resOption):
     # return unique values and count of each unique value
     unique, counts = np.unique(im_np[10], return_counts=True)
 
-    if (counts[0] / (x2 - x1)) * 100 < percent:
-        print("Percent HP: ", counts[0] / (x2 - x1) * 100)
+    if (counts[0] / (x_end[resOption] - x_start[resOption])) * 100 < percent:
+        print("Percent HP: ", counts[0] / (x_end[resOption] - x_start[resOption]) * 100)
         drink_hp()
-        # drink hp and delay for 1s
+        # drink hp and delay for .2s
         time.sleep(0.2)
-        return
+        return True
 
-    return
+    return False
 
 def auto_mp(percent, resOption):
     '''
@@ -157,7 +127,7 @@ def auto_mp(percent, resOption):
 
     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
-    print("MP: ", im_np[10])
+    # print("MP: ", im_np[10])
 
     # cv2.imshow("MP", im_np)
     # cv2.waitKey()
@@ -166,19 +136,18 @@ def auto_mp(percent, resOption):
 
     # 178 is empty - 1024x768
     # 134 is empty - 1280x960
+    empty = [175, 130]
     for x in range(len(im_np[10])):
-        if im_np[10][x] > 130:
+        if im_np[10][x] > empty[resOption]:
             item = x
             break
-    print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
 
-    # if item / (x2 - x1) * 100 < percent and item / (x2 - x1) * 100 != 0:
-    #     print("Percent MP: ", item / (x2 - x1) * 100)
-    #     drink_mana()
-    #     # drink mana and delay for 1s
-    #
-    #     time.sleep(0.2)
-    #     return
+    if item / (x_end[resOption] - x_start[resOption]) * 100 < percent and \
+            item / (x_end[resOption] - x_start[resOption]) * 100 != 0:
+        print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
+        drink_mana()
+        # drink mana and delay for .2s
+        time.sleep(0.2)
+        return True
 
-
-    return
+    return False
