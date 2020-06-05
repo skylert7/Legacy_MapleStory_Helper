@@ -1,11 +1,12 @@
 import time
 from datetime import datetime
-from telecast import *
 from basic_functions import *
 import pygetwindow as gw
 from dateutil import tz
 import PIL.ImageGrab
 import win32gui
+import win32con
+import win32api
 import numpy as np
 from tkinter import *
 import threading
@@ -14,11 +15,11 @@ from random import *
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
-window_length_x = 1024 # This will be modified at real-time
-window_height_y = 768 # This should be modified at real-time
-
-hp_percent_to_drink_potion = 50 # percent
-mp_percent_to_drink_potion = 70 # percent
+window_length_x = [1024, 1280] # This will be modified at real-time
+window_height_y = [768, 960] # This should be modified at real-time
+resOption = 0 # 0 for 1024x768 | 1 for 1280x980
+hp_percent_to_drink_potion = 70 # percent
+mp_percent_to_drink_potion = 80 # percent
 # GLOBAL SETTINGS
 
 # UI Vars
@@ -64,18 +65,25 @@ def get_time():
     # Convert time zone
     central = utc.astimezone(to_zone)
 
-    return central.strftime('%m/%d/%Y %H:%M:%S %Z')
+    # return central.strftime('%m/%d/%Y %H:%M:%S %Z')
+    return central.strftime('%m/%d/%Y %H:%M:%S')
+
 
 def get_window_image(window_name):
-    hwnd = win32gui.FindWindow(None, window_name)
-    win32gui.MoveWindow(hwnd, 0, 0, window_length_x, window_height_y, True)
-    bbox = win32gui.GetWindowRect(hwnd)
+    hwndMain = win32gui.FindWindow(None, window_name)
+    hwndChild = win32gui.GetWindow(hwndMain, win32con.GW_CHILD)
+
+    win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[1], window_height_y[1], True)
+    bbox = win32gui.GetWindowRect(hwndMain)
 
     im = PIL.ImageGrab.grab(bbox=bbox)
 
     im_np = np.array(im)
 
     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
+
+    # cv2.imshow("Window image", im_np)
+    # cv2.waitKey()
 
 def botting():
     return
@@ -142,20 +150,6 @@ def main(windowName):
 
         if is_auto_pickup == 1:
             pickup()
-
-        # if count % 10 == 0:
-        #     move_left()
-        # if count % 20 == 0:
-        #     move_right()
-        # if count == 400:
-        #     print("Picking things up..")
-        #     move_and_pickup()
-        #     count = 0
-        # #     # time.sleep(randint(0, 10))
-        # count = count + 1
-
-
-
 
 def ui():
     global maple_story
@@ -237,6 +231,11 @@ def testLoop1():
     for x  in range(400):
         print(x)
 
+def testHP_MP():
+    global windowName
+    auto_mp(mp_percent_to_drink_potion, resOption)
+    auto_hp(hp_percent_to_drink_potion, resOption)
+
 if __name__ == '__main__':
     try:
 
@@ -254,8 +253,10 @@ if __name__ == '__main__':
     print("Connected!")
     time.sleep(2)
 
-    threading.Thread(target=ui).start()
-    threading.Thread(target=main(windowName)).start()
+    testHP_MP()
+    # threading.Thread(target=ui).start()
+    # threading.Thread(target=main(windowName)).start()
+
 
 
     # write_walls()    # <-to uncomment replace first #

@@ -101,20 +101,18 @@ def move_and_pickup():
         pickup()
         send_keys('{RIGHT up}')
 
-def auto_hp(window_name, percent):
-    # Maple Legends
-    x1 = 224
-    x2 = 320
-    y1 = 745
-    y2 = 765
+def auto_hp(percent, resOption):
+    '''
+    choices: 1024 x 768 (0) OR 1280 x 960 (1)
+    '''
 
-    # 800 x 600 change to 1024 x 768
-    x1 = 285 # gap = 127
-    x2 = 412
-    y1 = 744
-    y2 = 762
+    x_start = [285, 356]
+    x_end = [412, 508]
+    y_start = [744, 936]
+    y_end = [762, 954]
 
-    bbox = (x1, y1, x2, y2)
+    bbox = (x_start[resOption], y_start[resOption], x_end[resOption], y_end[resOption])
+
     im = PIL.ImageGrab.grab(bbox=bbox)
 
     im_np = np.array(im)
@@ -122,7 +120,11 @@ def auto_hp(window_name, percent):
     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
     # pick an array to analyze current hp and full hp
-    im_np[10]
+    # print("HP: ", im_np[10])
+
+    # cv2.imshow("HP", im_np)
+    # cv2.waitKey()
+
     # return unique values and count of each unique value
     unique, counts = np.unique(im_np[10], return_counts=True)
 
@@ -130,25 +132,23 @@ def auto_hp(window_name, percent):
         print("Percent HP: ", counts[0] / (x2 - x1) * 100)
         drink_hp()
         # drink hp and delay for 1s
-        time.sleep(0.5)
+        time.sleep(0.2)
         return
 
     return
 
-def auto_mp(window_name, percent):
-    # Maple Legends
-    x1 = 333
-    x2 = 430
-    y1 = 750
-    y2 = 765
+def auto_mp(percent, resOption):
+    '''
+    choices: 1024 x 768 (0) OR 1280 x 960 (1)
+    '''
 
-    # 800 x 600 change to 1024 x 768
-    x1 = 424 # gap = 127
-    x2 = 551
-    y1 = 744
-    y2 = 762
+    x_start = [424, 530]
+    x_end = [551, 682]
+    y_start = [744, 936]
+    y_end = [762, 954]
 
-    bbox = (x1, y1, x2, y2)
+    bbox = (x_start[resOption], y_start[resOption], x_end[resOption], y_end[resOption])
+
     im = PIL.ImageGrab.grab(bbox=bbox)
 
     im_np = np.array(im)
@@ -157,26 +157,28 @@ def auto_mp(window_name, percent):
 
     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
-    # print(im_np[10])
+    print("MP: ", im_np[10])
 
     # cv2.imshow("MP", im_np)
     # cv2.waitKey()
 
     item = 0
 
-    # 178 is empty
+    # 178 is empty - 1024x768
+    # 134 is empty - 1280x960
     for x in range(len(im_np[10])):
-        if im_np[10][x] > 175:
+        if im_np[10][x] > 130:
             item = x
             break
+    print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
 
-    if item / (x2 - x1) * 100 < percent and item / (x2 - x1) * 100 != 0:
-        print("Percent MP: ", item / (x2 - x1) * 100)
-        drink_mana()
-        # drink mana and delay for 1s
-
-        time.sleep(0.5)
-        return
+    # if item / (x2 - x1) * 100 < percent and item / (x2 - x1) * 100 != 0:
+    #     print("Percent MP: ", item / (x2 - x1) * 100)
+    #     drink_mana()
+    #     # drink mana and delay for 1s
+    #
+    #     time.sleep(0.2)
+    #     return
 
 
     return
