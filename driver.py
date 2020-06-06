@@ -12,6 +12,8 @@ from tkinter import *
 import tkinter.ttk
 import threading
 from random import *
+import keyboard
+
 
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
@@ -21,6 +23,11 @@ window_length_x = [1024, 1280] # This will be modified at real-time
 window_height_y = [768, 960] # This should be modified at real-time
 
 resOption = 0 # 0 for 1024x768 | 1 for 1280x960
+
+is_auto_attack = 0
+is_auto_mp = 0
+is_auto_hp = 0
+is_auto_pickup = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 80 # percent
@@ -40,6 +47,9 @@ random_buff_delay[1] = randint(buff_delay[1] // 2, buff_delay[1])
 # Random Vars
 
 # bbox (left_x, top_y, right_x, bottom_y)
+
+def toggle(aState):
+    return not aState
 
 def get_time():
     # METHOD 2: Auto-detect zones:
@@ -91,6 +101,11 @@ def main(windowName):
         to_hp_global
     global buff_delay, \
         random_buff_delay
+    global is_auto_attack, \
+        is_auto_mp, \
+        is_auto_hp, \
+        is_auto_pickup
+
     # Buff all when start
     buff_0()
     time.sleep(0.2)
@@ -98,6 +113,10 @@ def main(windowName):
 
     time_at_buff = [datetime.utcnow()] * 4
     while True:
+        # Keyboard events
+        # if keyboard.is_pressed('f'):
+        #     is_auto_attack = not is_auto_attack
+        # Keyboard events
         if (datetime.utcnow() - time_at_buff[0]).total_seconds() > random_buff_delay[0]:
             buff_0()
             buff_0()
@@ -210,7 +229,7 @@ def ui():
     def change_auto_attack_state():
         global is_auto_attack
         is_auto_attack = not is_auto_attack
-        # print("Auto attack state", is_auto_attack)
+        print("Auto attack state", is_auto_attack)
         maple_story.activate()
 
     def change_auto_pickup_state():
@@ -335,6 +354,8 @@ def ui():
                 variable=is_auto_attack,
                 ).grid(row=row, sticky=W)
 
+    # root.bind("f", lambda event: change_auto_attack_state())
+
     #Auto Pickup Row
     row += 1
     Checkbutton(root,
@@ -356,7 +377,6 @@ def ui():
                 command=toggle_resolution,
                 variable=tkResOption,
                 value=1).grid(sticky=W)
-
 
     root.mainloop()
 
@@ -385,7 +405,7 @@ if __name__ == '__main__':
     # get_window_image(windowName)
 
     print("Connected!")
-    time.sleep(2)
+    time.sleep(1)
 
     threading.Thread(target=ui).start()
     threading.Thread(target=main(windowName)).start()
