@@ -14,7 +14,6 @@ import threading
 from random import *
 import keyboard
 
-
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
@@ -81,7 +80,7 @@ def get_window_image(window_name):
 
     im_np = np.array(im)
 
-    im_np = cv2.cvtColor(im_np, cv2.BGR2GRAY)
+    im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
     # cv2.imshow("Window image", im_np)
     # cv2.waitKey()
@@ -105,7 +104,6 @@ def main(windowName):
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup
-
     # Buff all when start
     buff_0()
     time.sleep(0.2)
@@ -114,8 +112,7 @@ def main(windowName):
     time_at_buff = [datetime.utcnow()] * 4
     while True:
         # Keyboard events
-        # if keyboard.is_pressed('f'):
-        #     is_auto_attack = not is_auto_attack
+
         # Keyboard events
         if (datetime.utcnow() - time_at_buff[0]).total_seconds() > random_buff_delay[0]:
             buff_0()
@@ -390,7 +387,18 @@ def testLoop1():
     for x  in range(400):
         print(x)
 
+def on_press_reaction(event):
+    #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
+    global is_auto_attack, is_auto_pickup
+    if event.name == 'a':
+        is_auto_attack = not is_auto_attack
+        print("Auto attack state %d" % is_auto_attack)
+    if event.name == 'd':
+        is_auto_pickup = not is_auto_pickup
+        print("Auto pick up state %d" % is_auto_pickup)
 if __name__ == '__main__':
+    keyboard.on_press(on_press_reaction)
+
     try:
 
         maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
@@ -402,7 +410,7 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    # get_window_image(windowName)
+    get_window_image(windowName)
 
     print("Connected!")
     time.sleep(1)
@@ -411,6 +419,8 @@ if __name__ == '__main__':
     threading.Thread(target=main(windowName)).start()
 
     # write_walls()    # <-to uncomment replace first #
+
+
 
 
 
