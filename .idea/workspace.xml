@@ -68,23 +68,23 @@
     <session id="57098464">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="7" />
           <entry key="project.open.time.0" value="2" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.4" value="3" />
+          <entry key="project.open.time.4" value="4" />
           <entry key="project.open.time.5" value="2" />
-          <entry key="project.opened" value="9" />
+          <entry key="project.opened" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="4144" />
+          <entry key="py" value="4149" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="4144" />
+          <entry key="Python" value="4149" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -106,20 +106,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/driver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="394" column="35" selection-start-line="394" selection-start-column="35" selection-end-line="394" selection-end-column="35" />
+            <state relative-caret-position="451">
+              <caret line="404" column="15" lean-forward="true" selection-start-line="404" selection-start-column="15" selection-end-line="404" selection-end-column="15" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <marker date="1591478034268" expanded="true" signature="1210:1234" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="1752:2264" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="2213:2262" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="2262:2264" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="4386:11084" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="6145:6151" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="6371:6609" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="6641:6646" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="7358:7363" ph="..." />
-                <marker date="1591478034268" expanded="true" signature="10552:11084" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="1210:1234" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="1752:2264" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="2213:2262" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="2262:2264" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="4386:11087" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="6145:6151" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="6371:6609" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="6641:6646" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="7358:7363" ph="..." />
+                <marker date="1591483630750" expanded="true" signature="10552:11087" ph="..." />
               </folding>
             </state>
           </provider>
@@ -230,6 +230,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -241,7 +242,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -414,13 +414,13 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3295964" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3295964" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39910313" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3295964" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3295964" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3295964" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5005314" side_tool="true" weight="0.3295964" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.3295964" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -459,20 +459,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/driver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="394" column="35" selection-start-line="394" selection-start-column="35" selection-end-line="394" selection-end-column="35" />
+        <state relative-caret-position="451">
+          <caret line="404" column="15" lean-forward="true" selection-start-line="404" selection-start-column="15" selection-end-line="404" selection-end-column="15" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1591478034268" expanded="true" signature="1210:1234" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="1752:2264" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="2213:2262" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="2262:2264" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="4386:11084" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="6145:6151" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="6371:6609" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="6641:6646" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="7358:7363" ph="..." />
-            <marker date="1591478034268" expanded="true" signature="10552:11084" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="1210:1234" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="1752:2264" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="2213:2262" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="2262:2264" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="4386:11087" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="6145:6151" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="6371:6609" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="6641:6646" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="7358:7363" ph="..." />
+            <marker date="1591483630750" expanded="true" signature="10552:11087" ph="..." />
           </folding>
         </state>
       </provider>

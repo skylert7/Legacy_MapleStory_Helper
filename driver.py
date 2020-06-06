@@ -390,12 +390,13 @@ def testLoop1():
 def on_press_reaction(event):
     #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
     global is_auto_attack, is_auto_pickup
-    if event.name == 'a':
+    if event.name == 'f3':
         is_auto_attack = not is_auto_attack
         print("Auto attack state %s" % is_auto_attack)
-    if event.name == 'd':
+    if event.name == 'f4':
         is_auto_pickup = not is_auto_pickup
         print("Auto pick up state %s" % is_auto_pickup)
+
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
 
