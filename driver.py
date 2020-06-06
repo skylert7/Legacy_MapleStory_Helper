@@ -392,10 +392,10 @@ def on_press_reaction(event):
     global is_auto_attack, is_auto_pickup
     if event.name == 'a':
         is_auto_attack = not is_auto_attack
-        print("Auto attack state %d" % is_auto_attack)
+        print("Auto attack state %s" % is_auto_attack)
     if event.name == 'd':
         is_auto_pickup = not is_auto_pickup
-        print("Auto pick up state %d" % is_auto_pickup)
+        print("Auto pick up state %s" % is_auto_pickup)
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
 
