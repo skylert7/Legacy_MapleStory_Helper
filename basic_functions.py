@@ -128,7 +128,7 @@ def auto_mp(percent, resOption):
     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
     # print("MP: ", im_np[10])
-
+    # print("Auto MP. Random percent: {}. Res Option: {}".format(percent, resOption))
     # cv2.imshow("MP", im_np)
     # cv2.waitKey()
 

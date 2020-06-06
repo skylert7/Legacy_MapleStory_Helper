@@ -22,15 +22,15 @@ window_height_y = [768, 960] # This should be modified at real-time
 
 resOption = 0 # 0 for 1024x768 | 1 for 1280x960
 
-from_mp_global = 0 # percent
-to_mp_global = 0 # percent
-from_hp_global = 0 # percent
-to_hp_global = 0 # percent
+from_mp_global = 50 # percent
+to_mp_global = 80 # percent
+from_hp_global = 70 # percent
+to_hp_global = 80 # percent
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
 
-hp_pecent_random = 80
+hp_percent_random = 80
 mp_percent_random = 80
 buff_delay = [600, 90, 0, 0, 0]
 random_buff_delay = [0, 0, 0, 0]
@@ -83,13 +83,14 @@ def lie_detector():
     return False
 
 def main(windowName):
-    global hp_pecent_random, \
+    global hp_percent_random, \
         mp_percent_random, \
-        hp_percent_to_drink_potion, \
-        mp_percent_to_drink_potion
+        from_mp_global, \
+        to_mp_global, \
+        from_hp_global, \
+        to_hp_global
     global buff_delay, \
         random_buff_delay
-
     # Buff all when start
     buff_0()
     time.sleep(0.2)
@@ -124,11 +125,12 @@ def main(windowName):
         #     time_at_buff = datetime.utcnow()
 
         if is_auto_hp == 1:
-            if auto_hp(hp_pecent_random, resOption):
-                hp_pecent_random = randint(from_hp_global, to_hp_global)
+            if auto_hp(hp_percent_random, resOption):
+                hp_percent_random = randint(from_hp_global, to_hp_global)
                 # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
         if is_auto_mp == 1:
+            # print("MP: {}".format(mp_percent_random))
             if auto_mp(mp_percent_random, resOption):
                 mp_percent_random = randint(from_mp_global, to_mp_global)
 
@@ -164,14 +166,14 @@ def ui():
     is_auto_pickup.set(0)
 
     fromHpEntry = StringVar()
-    fromHpEntry.set("0")
+    fromHpEntry.set(str(from_hp_global))
     toHpEntry = StringVar()
-    toHpEntry.set("0")
+    toHpEntry.set(str(to_hp_global))
 
     fromMpEntry = StringVar()
-    fromMpEntry.set("0")
+    fromMpEntry.set(str(from_mp_global))
     toMpEntry = StringVar()
-    toMpEntry.set("0")
+    toMpEntry.set(str(to_mp_global))
 
     time_buff_0_input = StringVar()
     time_buff_1_input = StringVar()
@@ -367,11 +369,6 @@ def testLoop():
 def testLoop1():
     for x  in range(400):
         print(x)
-
-def testHP_MP():
-    global windowName
-    auto_mp(mp_percent_to_drink_potion, resOption)
-    auto_hp(hp_percent_to_drink_potion, resOption)
 
 if __name__ == '__main__':
     try:
