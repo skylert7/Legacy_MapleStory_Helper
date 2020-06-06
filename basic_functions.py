@@ -91,7 +91,7 @@ def auto_hp(percent, resOption):
 
     # pick an array to analyze current hp and full hp
     # print("HP: ", im_np[10])
-
+    # print("Auto HP. Random percent: {}. Res Option: {}".format(percent, resOption))
     # cv2.imshow("HP", im_np)
     # cv2.waitKey()
 

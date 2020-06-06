@@ -30,8 +30,8 @@ to_hp_global = 0 # percent
 
 # Random Vars (to make things more random and trick lie detector)
 
-# hp_pecent_random = randint(hp_percent_to_drink_potion // 2, hp_percent_to_drink_potion)
-# mp_percent_random = randint(mp_percent_to_drink_potion // 2, mp_percent_to_drink_potion)
+hp_pecent_random = 80
+mp_percent_random = 80
 buff_delay = [600, 90, 0, 0, 0]
 random_buff_delay = [0, 0, 0, 0]
 random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
@@ -71,7 +71,7 @@ def get_window_image(window_name):
 
     im_np = np.array(im)
 
-    im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
+    im_np = cv2.cvtColor(im_np, cv2.BGR2GRAY)
 
     # cv2.imshow("Window image", im_np)
     # cv2.waitKey()
@@ -126,6 +126,7 @@ def main(windowName):
         if is_auto_hp == 1:
             if auto_hp(hp_pecent_random, resOption):
                 hp_pecent_random = randint(from_hp_global, to_hp_global)
+                # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
         if is_auto_mp == 1:
             if auto_mp(mp_percent_random, resOption):
@@ -228,6 +229,8 @@ def ui():
         try:
             from_hp_global = int(fromHpEntry.get())
             to_hp_global = int(toHpEntry.get())
+            # print("HP here: ", from_hp_global , to_hp_global)
+
         except:
             from_hp_global = 0
             to_hp_global = 0
@@ -238,6 +241,7 @@ def ui():
         try:
             from_mp_global = int(fromMpEntry.get())
             to_mp_global = int(toMpEntry.get())
+            # print("MP here: ", from_mp_global , to_mp_global)
         except:
             from_mp_global = 0
             to_mp_global = 0
@@ -321,6 +325,7 @@ def ui():
     w.create_line(0, y, canvas_width, y, fill="#476042")
     #Auto MP Row ---
 
+    #Auto Attack Row
     row += 1
     Checkbutton(root,
                 text='Auto Attack',
@@ -328,6 +333,7 @@ def ui():
                 variable=is_auto_attack,
                 ).grid(row=row, sticky=W)
 
+    #Auto Pickup Row
     row += 1
     Checkbutton(root,
                 text='Auto Pickup',
@@ -335,12 +341,14 @@ def ui():
                 variable=is_auto_pickup,
                 ).grid(row=row, sticky=W)
 
+    #1024x768 resolution
     Radiobutton(root,
                 text="1024x768",
                 command=toggle_resolution,
                 variable=tkResOption,
                 value=0).grid(sticky=W)
 
+    #1280x920 resolution
     Radiobutton(root,
                 text="1280x920",
                 command=toggle_resolution,
@@ -384,8 +392,6 @@ if __name__ == '__main__':
 
     threading.Thread(target=ui).start()
     threading.Thread(target=main(windowName)).start()
-
-
 
     # write_walls()    # <-to uncomment replace first #
 
