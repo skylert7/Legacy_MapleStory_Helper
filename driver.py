@@ -30,8 +30,9 @@ to_mp_global = 80 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 
-buff_delay = [120, 90, 600, 0]
+buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
+key_options = ["String"] * len(buff_delay)
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
@@ -97,16 +98,25 @@ def main(windowName):
         to_mp_global, \
         from_hp_global, \
         to_hp_global
+
     global buff_delay, \
-        random_buff_delay
+        random_buff_delay,\
+        key_options
+
     global is_auto_attack, \
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup
+
     # Buff all when start
     time.sleep(0.2)
 
     OPTIONS = list(key_codes.keys())
+
+    # Copy over key codes from OPTIONS to key_options for global use
+    for index in range(len(buff_delay)):
+        key_options[index] = OPTIONS[index]
+
     for index in range(len(buff_delay)):
         buff(key_codes[OPTIONS[index]])
         time.sleep(0.5)
@@ -117,11 +127,11 @@ def main(windowName):
         for index in range(len(buff_delay)):
             if buff_state[index]:
                 if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
-                    buff(key_codes[OPTIONS[index]])
-                    buff(key_codes[OPTIONS[index]])
+                    buff(key_codes[key_options[index]])
+                    buff(key_codes[key_options[index]])
                     print("Buff %d at: " % (index + 1), get_time())
                     time_at_buff[index] = datetime.utcnow()
-                    random_buff_delay[index] = randint(buff_delay[index] // 4, buff_delay[index]//2)
+                    random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
 
         # AutoHP
         if is_auto_hp == 1:
@@ -157,7 +167,8 @@ def ui():
         to_hp_global, \
         from_mp_global, \
         from_hp_global, \
-        buff_delay
+        buff_delay, \
+        key_options
 
     root = Tk()
 
@@ -183,18 +194,15 @@ def ui():
     toMpEntry.set(str(to_mp_global))
 
     buff_reset_time = list()
+    buff_state_ui = list()
+
     for index in range(len(buff_delay)):
         varTime = StringVar()
         varTime.set(str(buff_delay[index]))
+        varState = IntVar()
+        varState.set(0)
         buff_reset_time.append(varTime)
-
-
-    # buff_1_reset_time = StringVar()
-    # buff_1_reset_time.set(str(buff_delay[1]))
-    # buff_2_reset_time = StringVar()
-    # buff_2_reset_time.set(str(buff_delay[2]))
-    # buff_3_reset_time = StringVar()
-    # buff_3_reset_time.set(str(buff_delay[3]))
+        buff_state_ui.append(varState)
 
     tkResOption = IntVar()
     tkResOption.set(0)  # 0 for 1024x768 | 1 for 1280x960
@@ -263,6 +271,12 @@ def ui():
             from_mp_global = 0
             to_mp_global = 0
             print("Invalid input MP")
+
+    def re_assign_time_and_key_buff(num):
+        for var in range(len(var_list)):
+            key_options[var] = var_list[var].get()
+            buff_delay[var] = buff_reset_time[var].get()
+            buff_state[var] = buff_state_ui[var].get()
 
     # Some variables to use
     canvas_width = 100
@@ -401,33 +415,43 @@ def ui():
                        sticky=W)
 
     #Buff Rows
-    for index in range(4):
+    var_list = list()
+    for pos in range(4):
         row += 1
         Checkbutton(root,
-                    text='Buff {}'.format(index)
+                    text='Buff {}'.format(pos),
+                    variable=buff_state_ui[pos],
+                    command=lambda x=index: re_assign_time_and_key_buff(x)
                     ).grid(column=0,
                            row=row)
         Label(root,
               text="Reset Time:").grid(column=1,
                                        row=row)
         Entry(root,
-              textvariable=buff_reset_time[index],
+              textvariable=buff_reset_time[pos],
               width=8
               ).grid(column=2,
                      row=row)
 
+        Label(root,
+              text="Key:"
+              ).grid(column=3,
+                     row=row)
+
+        #https://stackoverflow.com/questions/45441885/how-can-i-create-a-dropdown-menu-from-a-list-in-tkinter
         variable = StringVar(root)
-        variable.set(OPTIONS[index])  # default value
-
-        optionMenu = OptionMenu(root, variable, *OPTIONS)
+        variable.set(OPTIONS[pos])  # default value
+        var_list.append(variable)
+        optionMenu = OptionMenu(root, var_list[pos], *OPTIONS)
         optionMenu.grid(row=row,
-                        column=3)
+                        column=4)
+        #https://stackoverflow.com/questions/45441885/how-can-i-create-a-dropdown-menu-from-a-list-in-tkinter
 
-        Button(root, text='Set',
-               command=setMpRange).grid(column=4,
-                                        row=row)
-
-
+        Button(root,
+               text='Set',
+               command=lambda x=index: re_assign_time_and_key_buff(x)
+               ).grid(column=5,
+                      row=row)
 
         # line
         row += 1
@@ -451,14 +475,6 @@ def ui():
 
     return
 
-def testLoop():
-    for x  in range(2000):
-        print(x)
-
-def testLoop1():
-    for x  in range(400):
-        print(x)
-
 def on_press_reaction(event):
     #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
     global is_auto_attack, is_auto_pickup
@@ -470,26 +486,26 @@ def on_press_reaction(event):
         print("Auto pick up state %s" % is_auto_pickup)
 
 if __name__ == '__main__':
-    # keyboard.on_press(on_press_reaction)
-    #
-    # try:
-    #
-    #     maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
-    #
-    # except:
-    #
-    #     print("Can't find MapleLegends... Exiting")
-    #     exit(0)
-    #
-    # maple_story.activate() # Bring window on top
-    #
-    # get_window_image(windowName)
+    keyboard.on_press(on_press_reaction)
+
+    try:
+
+        maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
+
+    except:
+
+        print("Can't find MapleStory Client... Exiting")
+        exit(0)
+
+    maple_story.activate() # Bring window on top
+
+    get_window_image(windowName)
 
     print("Connected!")
     time.sleep(1)
 
     threading.Thread(target=ui).start()
-    # threading.Thread(target=main(windowName)).start()
+    threading.Thread(target=main(windowName)).start()
 
     # write_walls()    # <-to uncomment replace first #
 
