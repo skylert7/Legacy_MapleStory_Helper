@@ -1,9 +1,16 @@
 from telecast import *
-from datetime import datetime
-from random import randint
 import PIL.ImageGrab
 import cv2
 import numpy as np
+
+key_codes = {'Shift': '{VK_SHIFT}',
+             'Control': '{VK_CONTROL}',
+             'Insert': '{VK_INSERT}',
+             'Delete': '{VK_DELETE}',
+             'PageUp': '{PGUP}',
+             'PageDown': '{PGDN}',
+             'Home': '{VK_HOME}',
+             'End': '{VK_END}'}
 
 # General customized functions
 def drink_mana(assign_slot):

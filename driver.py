@@ -1,18 +1,15 @@
-import time
 from datetime import datetime
 from basic_functions import *
 import pygetwindow as gw
 from dateutil import tz
-import PIL.ImageGrab
 import win32gui
 import win32con
 import win32api
-import numpy as np
 from tkinter import *
-import tkinter.ttk
 import threading
 from random import *
 import keyboard
+import tkinter as tk
 
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
@@ -32,6 +29,7 @@ from_mp_global = 50 # percent
 to_mp_global = 80 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
+
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
@@ -362,18 +360,26 @@ def ui():
                 ).grid(row=row, sticky=W)
 
     #1024x768 resolution
+    row += 1
     Radiobutton(root,
                 text="1024x768",
                 command=toggle_resolution,
                 variable=tkResOption,
-                value=0).grid(sticky=W)
+                value=0).grid(row=row, sticky=W)
 
     #1280x920 resolution
+    row += 1
     Radiobutton(root,
                 text="1280x920",
                 command=toggle_resolution,
                 variable=tkResOption,
-                value=1).grid(sticky=W)
+                value=1).grid(row=row, sticky=W)
+
+    #Notes (Text)
+    row += 1
+    note_text = Label(root, text="Notes:\nF3 to toggle Auto Attack.\nF4 to toggle Auto Pickup.")
+    note_text.grid(row=row, sticky=W)
+
 
     root.mainloop()
 
