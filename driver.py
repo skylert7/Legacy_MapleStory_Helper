@@ -108,18 +108,16 @@ def main(windowName):
         is_auto_hp, \
         is_auto_pickup
 
-    # Buff all when start
-    time.sleep(0.2)
-
     OPTIONS = list(key_codes.keys())
 
     # Copy over key codes from OPTIONS to key_options for global use
     for index in range(len(buff_delay)):
         key_options[index] = OPTIONS[index]
 
+    # Buff all when start
     for index in range(len(buff_delay)):
         buff(key_codes[OPTIONS[index]])
-        time.sleep(0.5)
+        time.sleep(2)
 
     time_at_buff = [datetime.utcnow()] * len(buff_delay)
     while True:
@@ -487,7 +485,6 @@ def on_press_reaction(event):
 
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
-
     try:
 
         maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
