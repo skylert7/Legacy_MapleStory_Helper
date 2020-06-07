@@ -3,14 +3,15 @@ import PIL.ImageGrab
 import cv2
 import numpy as np
 
-key_codes = {'Shift': '{VK_SHIFT}',
-             'Control': '{VK_CONTROL}',
-             'Insert': '{VK_INSERT}',
+key_codes = {'Insert': '{VK_INSERT}',
              'Delete': '{VK_DELETE}',
+             'Home': '{VK_HOME}',
+             'End': '{VK_END}',
+             'Shift': '{VK_SHIFT}',
+             'Control': '{VK_CONTROL}',
              'PageUp': '{PGUP}',
              'PageDown': '{PGDN}',
-             'Home': '{VK_HOME}',
-             'End': '{VK_END}'}
+             }
 
 # General customized functions
 def drink_mana(assign_slot):
@@ -54,29 +55,8 @@ def pickup():
     send_keys('{z down}')
     send_keys('{z up}')
 
-def buff_0():
-    send_keys('{VK_HOME down}')
-    send_keys('{VK_HOME up}')
-    send_keys('{VK_HOME down}')
-    send_keys('{VK_HOME up}')
-    send_keys('{VK_HOME down}')
-    send_keys('{VK_HOME up}')
-
-def buff_1():
-    send_keys('{VK_DELETE down}')
-    send_keys('{VK_DELETE up}')
-    send_keys('{VK_DELETE down}')
-    send_keys('{VK_DELETE up}')
-    send_keys('{VK_DELETE down}')
-    send_keys('{VK_DELETE up}')
-
-def buff_2():
-    send_keys('{VK_INSERT down}')
-    send_keys('{VK_INSERT up}')
-
-def buff_3():
-    send_keys('{VK_END down}')
-    send_keys('{VK_END up}')
+def buff(key_code):
+    send_keys(key_code)
 
 def auto_hp(percent, resOption):
     '''

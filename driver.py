@@ -30,16 +30,17 @@ to_mp_global = 80 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 
+buff_delay = [120, 90, 600, 0]
+buff_state = [0] * len(buff_delay)
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
 
 hp_percent_random = 80
 mp_percent_random = 80
-buff_delay = [600, 90, 0, 0, 0]
-random_buff_delay = [0, 0, 0, 0]
-random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
-random_buff_delay[1] = randint(buff_delay[1] // 2, buff_delay[1])
+random_buff_delay = [0] * len(buff_delay)
+for i in range(len(buff_delay)):
+    random_buff_delay[i] = randint(buff_delay[i] // 4, buff_delay[i]//2)
 
 # Random Vars
 
@@ -103,68 +104,60 @@ def main(windowName):
         is_auto_hp, \
         is_auto_pickup
     # Buff all when start
-    buff_0()
     time.sleep(0.2)
-    buff_1()
 
-    time_at_buff = [datetime.utcnow()] * 4
+    OPTIONS = list(key_codes.keys())
+    for index in range(len(buff_delay)):
+        buff(key_codes[OPTIONS[index]])
+        time.sleep(0.5)
+
+    time_at_buff = [datetime.utcnow()] * len(buff_delay)
     while True:
-        # Keyboard events
+        # Buffs
+        for index in range(len(buff_delay)):
+            if buff_state[index]:
+                if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
+                    buff(key_codes[OPTIONS[index]])
+                    buff(key_codes[OPTIONS[index]])
+                    print("Buff %d at: " % (index + 1), get_time())
+                    time_at_buff[index] = datetime.utcnow()
+                    random_buff_delay[index] = randint(buff_delay[index] // 4, buff_delay[index]//2)
 
-        # Keyboard events
-        if (datetime.utcnow() - time_at_buff[0]).total_seconds() > random_buff_delay[0]:
-            buff_0()
-            buff_0()
-            print("Buff 0 at: ", get_time())
-            time_at_buff[0] = datetime.utcnow()
-            random_buff_delay[0] = randint(buff_delay[0] // 2, buff_delay[0])
-
-        if (datetime.utcnow() - time_at_buff[1]).total_seconds() > random_buff_delay[1]:
-            buff_1()
-            buff_1()
-            print("Buff 1 at: ", get_time())
-            time_at_buff[1] = datetime.utcnow()
-            random_buff_delay[1] = randint(buff_delay[1] // 2, buff_delay[1])
-
-        # if (datetime.utcnow() - time_at_buff).total_seconds() > buff_delay[0]:
-        #     buff_0()
-        #     buff_0()
-        #     print("Buff at: ", get_time())
-        #     time_at_buff = datetime.utcnow()
-        #
-        # if (datetime.utcnow() - time_at_buff).total_seconds() > buff_delay[0]:
-        #     buff_0()
-        #     buff_0()
-        #     print("Buff at: ", get_time())
-        #     time_at_buff = datetime.utcnow()
-
+        # AutoHP
         if is_auto_hp == 1:
             if auto_hp(hp_percent_random, resOption):
                 hp_percent_random = randint(from_hp_global, to_hp_global)
                 # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
+        # AutoMP
         if is_auto_mp == 1:
             # print("MP: {}".format(mp_percent_random))
             if auto_mp(mp_percent_random, resOption):
                 mp_percent_random = randint(from_mp_global, to_mp_global)
 
+        # AutoAttack
         if is_auto_attack == 1:
             auto_attack()
 
+        # AutoPickUp
         if is_auto_pickup == 1:
             pickup()
 
 def ui():
     global maple_story
+    # Global for True/False var
     global is_auto_attack, \
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup,\
-        resOption
+        resOption, \
+        buff_state
+    # Global for string/int var
     global to_mp_global, \
         to_hp_global, \
         from_mp_global, \
-        from_hp_global
+        from_hp_global, \
+        buff_delay
 
     root = Tk()
 
@@ -189,11 +182,19 @@ def ui():
     toMpEntry = StringVar()
     toMpEntry.set(str(to_mp_global))
 
-    time_buff_0_input = StringVar()
-    time_buff_1_input = StringVar()
-    time_buff_2_input = StringVar()
-    time_buff_3_input = StringVar()
-    time_buff_4_input = StringVar()
+    buff_reset_time = list()
+    for index in range(len(buff_delay)):
+        varTime = StringVar()
+        varTime.set(str(buff_delay[index]))
+        buff_reset_time.append(varTime)
+
+
+    # buff_1_reset_time = StringVar()
+    # buff_1_reset_time.set(str(buff_delay[1]))
+    # buff_2_reset_time = StringVar()
+    # buff_2_reset_time.set(str(buff_delay[2]))
+    # buff_3_reset_time = StringVar()
+    # buff_3_reset_time.set(str(buff_delay[3]))
 
     tkResOption = IntVar()
     tkResOption.set(0)  # 0 for 1024x768 | 1 for 1280x960
@@ -263,10 +264,14 @@ def ui():
             to_mp_global = 0
             print("Invalid input MP")
 
+    # Some variables to use
     canvas_width = 100
     canvas_height = 10
+    OPTIONS = list(key_codes.keys())
+    # Some variables to use
 
-    root.geometry('{}x{}'.format(450, 250))
+    # default panel size
+    root.geometry('{}x{}'.format(450, 500))
 
     # Auto HP Row
     row = 0
@@ -274,25 +279,33 @@ def ui():
                 text='Auto HP',
                 command=change_auto_hp_state,
                 variable=is_auto_hp,
-                ).grid(row=row)
+                ).grid(row=row,
+                       column=0)
 
     fromHpLabel = Label(root,
-                        text="From:").grid(column=4,
-                                           row=row)
+                        text="From:"
+                        ).grid(column=1,
+                               row=row)
     Entry(root,
-          textvariable=fromHpEntry).grid(column=5,
-                                         row=row)
+          textvariable=fromHpEntry,
+          width=8).grid(column=2,
+                        row=row)
 
     toHpLabel = Label(root,
-                      text="To:").grid(column=8,
-                                       row=row)
+                      text="To:"
+                      ).grid(column=3,
+                             row=row)
     Entry(root,
-          textvariable=toHpEntry).grid(column=9,
-                                       row=row)
+          textvariable=toHpEntry,
+          width=8
+          ).grid(column=4,
+                 row=row)
 
-    Button(root, text='Set',
-           command=setHpRange).grid(column=10,
-                                    row=row)
+    Button(root,
+           text='Set',
+           command=setHpRange
+           ).grid(column=5,
+                  row=row)
     # line
     row += 1
     w = Canvas(root,
@@ -313,22 +326,30 @@ def ui():
                 ).grid(column=0, row=row)
 
     fromMpLabel = Label(root,
-                        text="From:").grid(column=4,
-                                           row=row)
+                        text="From:"
+                        ).grid(column=1,
+                               row=row)
     Entry(root,
-          textvariable=fromMpEntry).grid(column=5,
-                                         row=row)
+          textvariable=fromMpEntry,
+          width=8
+          ).grid(column=2,
+                 row=row)
 
     toMpLabel = Label(root,
-                      text="To:").grid(column=8,
-                                       row=row)
+                      text="To:"
+                      ).grid(column=3,
+                             row=row)
     Entry(root,
-          textvariable=toMpEntry).grid(column=9,
-                                       row=row)
+          textvariable=toMpEntry,
+          width=8
+          ).grid(column=4,
+                 row=row)
 
-    Button(root, text='Set',
-           command=setMpRange).grid(column=10,
-                                    row=row)
+    Button(root,
+           text='Set',
+           command=setMpRange
+           ).grid(column=5,
+                  row=row)
 
     # line
     row += 1
@@ -347,9 +368,7 @@ def ui():
                 text='Auto Attack',
                 command=change_auto_attack_state,
                 variable=is_auto_attack,
-                ).grid(row=row, sticky=W)
-
-    # root.bind("f", lambda event: change_auto_attack_state())
+                ).grid(row=row, column=0, sticky=W)
 
     #Auto Pickup Row
     row += 1
@@ -357,7 +376,7 @@ def ui():
                 text='Auto Pickup',
                 command=change_auto_pickup_state,
                 variable=is_auto_pickup,
-                ).grid(row=row, sticky=W)
+                ).grid(row=row, column=0, sticky=W)
 
     #1024x768 resolution
     row += 1
@@ -365,7 +384,10 @@ def ui():
                 text="1024x768",
                 command=toggle_resolution,
                 variable=tkResOption,
-                value=0).grid(row=row, sticky=W)
+                value=0
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
 
     #1280x920 resolution
     row += 1
@@ -373,7 +395,51 @@ def ui():
                 text="1280x920",
                 command=toggle_resolution,
                 variable=tkResOption,
-                value=1).grid(row=row, sticky=W)
+                value=1
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+
+    #Buff Rows
+    for index in range(4):
+        row += 1
+        Checkbutton(root,
+                    text='Buff {}'.format(index)
+                    ).grid(column=0,
+                           row=row)
+        Label(root,
+              text="Reset Time:").grid(column=1,
+                                       row=row)
+        Entry(root,
+              textvariable=buff_reset_time[index],
+              width=8
+              ).grid(column=2,
+                     row=row)
+
+        variable = StringVar(root)
+        variable.set(OPTIONS[index])  # default value
+
+        optionMenu = OptionMenu(root, variable, *OPTIONS)
+        optionMenu.grid(row=row,
+                        column=3)
+
+        Button(root, text='Set',
+               command=setMpRange).grid(column=4,
+                                        row=row)
+
+
+
+        # line
+        row += 1
+        w = Canvas(root,
+                   width=canvas_width,
+                   height=canvas_height)
+        w.grid(row=row)
+
+        y = int(canvas_height / 2)
+        w.create_line(0, y, canvas_width, y, fill="#476042")
+    #Buff Rows ---
+
 
     #Notes (Text)
     row += 1
@@ -404,26 +470,26 @@ def on_press_reaction(event):
         print("Auto pick up state %s" % is_auto_pickup)
 
 if __name__ == '__main__':
-    keyboard.on_press(on_press_reaction)
-
-    try:
-
-        maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
-
-    except:
-
-        print("Can't find MapleLegends... Exiting")
-        exit(0)
-
-    maple_story.activate() # Bring window on top
-
-    get_window_image(windowName)
+    # keyboard.on_press(on_press_reaction)
+    #
+    # try:
+    #
+    #     maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
+    #
+    # except:
+    #
+    #     print("Can't find MapleLegends... Exiting")
+    #     exit(0)
+    #
+    # maple_story.activate() # Bring window on top
+    #
+    # get_window_image(windowName)
 
     print("Connected!")
     time.sleep(1)
 
     threading.Thread(target=ui).start()
-    threading.Thread(target=main(windowName)).start()
+    # threading.Thread(target=main(windowName)).start()
 
     # write_walls()    # <-to uncomment replace first #
 
