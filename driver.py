@@ -24,14 +24,18 @@ is_auto_attack = 0
 is_auto_mp = 0
 is_auto_hp = 0
 is_auto_pickup = 0
+is_move_left = 0
+is_move_right = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 80 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
-
+attack_delay_global = 100 # milliseconds
 buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
+moveDelay = [2500, 2500]  # [left, right] in milliseconds
+
 key_options = ["String"] * len(buff_delay)
 # GLOBAL SETTINGS
 
@@ -106,7 +110,9 @@ def main(windowName):
     global is_auto_attack, \
         is_auto_mp, \
         is_auto_hp, \
-        is_auto_pickup
+        is_auto_pickup, \
+        is_move_left, \
+        is_move_right
 
     OPTIONS = list(key_codes.keys())
 
@@ -120,6 +126,8 @@ def main(windowName):
         time.sleep(2)
 
     time_at_buff = [datetime.utcnow()] * len(buff_delay)
+    time_at_move = [datetime.utcnow()] * len(moveDelay)
+    time_at_attack = datetime.utcnow()
     while True:
         # Buffs
         for index in range(len(buff_delay)):
@@ -145,11 +153,24 @@ def main(windowName):
 
         # AutoAttack
         if is_auto_attack == 1:
-            auto_attack()
+            if (datetime.utcnow() - time_at_attack).total_seconds() > (attack_delay_global / 1000):
+                auto_attack()
+                time_at_attack = datetime.utcnow()
 
         # AutoPickUp
         if is_auto_pickup == 1:
             pickup()
+
+        if is_move_left == 1:
+            if (datetime.utcnow() - time_at_move[0]).total_seconds() > (moveDelay[0] / 1000):
+                move_left_mage()
+                time_at_move[0] = datetime.utcnow()
+
+        if is_move_right == 1:
+            if (datetime.utcnow() - time_at_move[1]).total_seconds() > (moveDelay[1] / 1000):
+                move_right_mage()
+                time_at_move[1] = datetime.utcnow()
+
 
 def ui():
     global maple_story
@@ -165,6 +186,7 @@ def ui():
         to_hp_global, \
         from_mp_global, \
         from_hp_global, \
+        attack_delay_global, \
         buff_delay, \
         key_options
 
@@ -172,14 +194,10 @@ def ui():
 
     # UI Vars
 
-    is_auto_hp = IntVar()
-    is_auto_hp.set(0)
-    is_auto_mp = IntVar()
-    is_auto_mp.set(0)
-    is_auto_attack = IntVar()
-    is_auto_attack.set(0)
-    is_auto_pickup = IntVar()
-    is_auto_pickup.set(0)
+    is_auto_hp = IntVar(value=int(is_auto_hp))
+    is_auto_mp = IntVar(value=int(is_auto_mp))
+    is_auto_attack = IntVar(value=int(is_auto_attack))
+    is_auto_pickup = IntVar(value=int(is_auto_pickup))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -190,6 +208,9 @@ def ui():
     fromMpEntry.set(str(from_mp_global))
     toMpEntry = StringVar()
     toMpEntry.set(str(to_mp_global))
+
+    attackDelayUI = StringVar()
+    attackDelayUI.set(str(attack_delay_global))
 
     buff_reset_time = list()
     buff_state_ui = list()
@@ -209,11 +230,6 @@ def ui():
 
     root.title("MapleStory Bot")
 
-    is_auto_hp = IntVar(value=0)
-    is_auto_mp = IntVar(value=0)
-    is_auto_attack = IntVar(value=0)
-    is_auto_pickup = IntVar(value=0)
-
 
     def change_auto_mp_state():
         global is_auto_mp
@@ -226,7 +242,6 @@ def ui():
         is_auto_hp = not is_auto_hp
         # print("Auto HP state", is_auto_hp)
         maple_story.activate()
-
 
     def change_auto_attack_state():
         global is_auto_attack
@@ -270,11 +285,23 @@ def ui():
             to_mp_global = 0
             print("Invalid input MP")
 
+    def set_attack_delay():
+        global attack_delay_global
+        try:
+            attack_delay_global = int(attackDelayUI.get())
+            # print("MP here: ", from_mp_global , to_mp_global)
+        except TypeError:
+            attack_delay_global = 100
+            print("Invalid input Attack Delay")
+
     def re_assign_time_and_key_buff(num):
         for var in range(len(var_list)):
             key_options[var] = var_list[var].get()
             buff_delay[var] = buff_reset_time[var].get()
             buff_state[var] = buff_state_ui[var].get()
+
+    def panic():
+        exit(0)
 
     # Some variables to use
     canvas_width = 100
@@ -283,7 +310,7 @@ def ui():
     # Some variables to use
 
     # default panel size
-    root.geometry('{}x{}'.format(450, 500))
+    root.geometry('{}x{}'.format(550, 600))
 
     # Auto HP Row
     row = 0
@@ -380,7 +407,41 @@ def ui():
                 text='Auto Attack',
                 command=change_auto_attack_state,
                 variable=is_auto_attack,
-                ).grid(row=row, column=0, sticky=W)
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+
+    Label(root,
+          text="Attack Delay (ms):"
+          ).grid(column=1,
+                 row=row)
+
+    Entry(root,
+          textvariable=attackDelayUI,
+          width=8).grid(column=2,
+                        row=row)
+
+    Button(root,
+           text='Set',
+           command=set_attack_delay
+           ).grid(column=5,
+                  row=row)
+
+    # #Move Left Row
+    # row += 1
+    # Checkbutton(root,
+    #             text='Move Left',
+    #             command=change_auto_attack_state,
+    #             variable=is_auto_attack,
+    #             ).grid(row=row, column=0, sticky=W)
+    #
+    # #Move Right Row
+    # row += 1
+    # Checkbutton(root,
+    #             text='Move Right',
+    #             command=change_auto_attack_state,
+    #             variable=is_auto_attack,
+    #             ).grid(row=row, column=0, sticky=W)
 
     #Auto Pickup Row
     row += 1
@@ -465,9 +526,22 @@ def ui():
 
     #Notes (Text)
     row += 1
-    note_text = Label(root, text="Notes:\nF3 to toggle Auto Attack.\nF4 to toggle Auto Pickup.")
+    note_text = Label(root, text="Notes:"
+                                 "\nF3 to toggle Auto Attack."
+                                 "\nF4 to toggle Auto Pickup."
+                                 "\nAll time variables is in "
+                                 "\nmilliseconds (1s = 1000ms).")
     note_text.grid(row=row, sticky=W)
 
+    #Panic button
+    row += 1
+    Button(root,
+           text='Panic Button',
+           command=panic,
+           height=4,
+           width=12,
+           ).grid(column=5,
+                  row=row)
 
     root.mainloop()
 
@@ -475,13 +549,23 @@ def ui():
 
 def on_press_reaction(event):
     #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
-    global is_auto_attack, is_auto_pickup
+    global is_auto_attack, is_auto_pickup, is_move_left, is_move_right
     if event.name == 'f3':
         is_auto_attack = not is_auto_attack
         print("Auto attack state %s" % is_auto_attack)
     if event.name == 'f4':
         is_auto_pickup = not is_auto_pickup
         print("Auto pick up state %s" % is_auto_pickup)
+    if event.name == 'f5': # move left
+        if is_move_right == 1:
+            is_move_right = 0
+        is_move_left = not is_move_left
+        print("Move left state %s" % is_move_left)
+    if event.name == 'f6': # move right
+        if is_move_left == 1:
+            is_move_left = 0
+        is_move_right = not is_move_right
+        print("Move right state %s" % is_move_right)
 
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
@@ -500,7 +584,6 @@ if __name__ == '__main__':
 
     print("Connected!")
     time.sleep(1)
-
     threading.Thread(target=ui).start()
     threading.Thread(target=main(windowName)).start()
 

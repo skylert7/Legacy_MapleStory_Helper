@@ -35,12 +35,21 @@ def drink_hp():
 def auto_attack():
     send_keys('{VK_CONTROL}')
 
-def move_left():
+def move_left_mage():
+    # send_keys('+{LEFT}')
+    send_keys('{RIGHT up}')
+    send_keys('{LEFT up}')
     send_keys('{LEFT down}')
+    send_keys('{VK_SHIFT down}')
+    send_keys('{VK_SHIFT up}')
     send_keys('{LEFT up}')
 
-def move_right():
+def move_right_mage():
+    send_keys('{RIGHT up}')
+    send_keys('{LEFT up}')
     send_keys('{RIGHT down}')
+    send_keys('{VK_SHIFT down}')
+    send_keys('{VK_SHIFT up}')
     send_keys('{RIGHT up}')
 
 def pickup():
@@ -88,8 +97,8 @@ def auto_hp(percent, resOption):
     if (counts[0] / (x_end[resOption] - x_start[resOption])) * 100 < percent:
         print("Percent HP: ", counts[0] / (x_end[resOption] - x_start[resOption]) * 100)
         drink_hp()
-        # drink hp and delay for .2s
-        time.sleep(0.2)
+        # drink hp and delay for .1s
+        time.sleep(0.1)
         return True
 
     return False
@@ -133,8 +142,8 @@ def auto_mp(percent, resOption):
             item / (x_end[resOption] - x_start[resOption]) * 100 != 0:
         print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
         drink_mana()
-        # drink mana and delay for .2s
-        time.sleep(0.2)
+        # drink mana and delay for .1s
+        time.sleep(0.1)
         return True
 
     return False
