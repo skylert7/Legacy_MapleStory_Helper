@@ -10,6 +10,8 @@ import threading
 from random import *
 import keyboard
 import tkinter as tk
+import sys
+import os
 
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
@@ -301,7 +303,7 @@ def ui():
             buff_state[var] = buff_state_ui[var].get()
 
     def panic():
-        exit(0)
+        os._exit(0)
 
     # Some variables to use
     canvas_width = 100
@@ -529,6 +531,8 @@ def ui():
     note_text = Label(root, text="Notes:"
                                  "\nF3 to toggle Auto Attack."
                                  "\nF4 to toggle Auto Pickup."
+                                 "\nF5 to toggle Move Left."
+                                 "\nF6 to toggle Move Right."
                                  "\nAll time variables is in "
                                  "\nmilliseconds (1s = 1000ms).")
     note_text.grid(row=row, sticky=W)
