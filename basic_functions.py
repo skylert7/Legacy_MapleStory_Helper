@@ -1,6 +1,7 @@
 from import_standalone import *
 from pywinauto.keyboard import send_keys
 from PIL import ImageGrab
+import numpy as np
 
 
 key_codes = {'Insert': '{VK_INSERT}',

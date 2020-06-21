@@ -1,4 +1,5 @@
 from import_standalone import *
+import numpy as np
 
 class MapleWindowNotFoundError(Exception):
     pass
