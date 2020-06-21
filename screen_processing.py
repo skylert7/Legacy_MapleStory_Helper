@@ -59,9 +59,9 @@ class MapleScreenCapturer:
             self.hwnd = self.ms_get_screen_hwnd()
         if not rect:
             rect = self.ms_get_screen_rect(self.hwnd)
-        if set_focus:
-            win32gui.SetForegroundWindow(self.hwnd)
-            time.sleep(0.1)
+        # if set_focus:
+        #     win32gui.SetForegroundWindow(self.hwnd)
+        #     time.sleep(0.1)
         img = ImageGrab.grab(rect)
         img = np.array(img)
 
@@ -141,7 +141,9 @@ class StaticImageProcessor:
 
 
 
-    def update_image(self, src=None, set_focus=True, update_rect=False):
+    def update_image(self, src=None, set_focus=False, update_rect=False):
+    # def update_image(self, src=None, set_focus=True, update_rect=False):
+
         """
         Calls ScreenCapturer's update function and updates images.
         :param src : rgb image data from PIL ImageGrab
@@ -155,6 +157,7 @@ class StaticImageProcessor:
             if not self.ms_screen_rect:
                 self.ms_screen_rect = self.img_handle.ms_get_screen_rect(self.hwnd)
             self.rgb_img = self.img_handle.capture(set_focus, self.hwnd, self.ms_screen_rect)
+
             # if not rgb_img:
             #     assert self.bgr_img != 0, "self.img_handle did not return img"
 
@@ -331,10 +334,9 @@ if __name__ == "__main__":
     static = StaticImageProcessor(dx)
     static.update_image()
 
-    x, y, w, h = static.get_minimap_rect()
+    # x, y, w, h = static.get_minimap_rect()
     # print("x: {}; y: {}; w: {}; h: {}".format(x, y, w, h))
     # bbox = (15, 35, 139, 54)
-
 
     # img = np.array(img)
     # cv2.imshow("Minimap", img)

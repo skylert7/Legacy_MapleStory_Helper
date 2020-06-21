@@ -615,7 +615,7 @@ if __name__ == '__main__':
 
     print("Connected!")
     # time.sleep(1)
-    # threading.Thread(target=ui).start()
+    threading.Thread(target=ui).start()
     threading.Thread(target=main(windowName)).start()
 
     # write_walls()    # <-to uncomment replace first #
