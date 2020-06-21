@@ -1,7 +1,6 @@
-from telecast import *
-import PIL.ImageGrab
-import cv2
-import numpy as np
+from import_standalone import *
+from pywinauto.keyboard import send_keys
+
 
 key_codes = {'Insert': '{VK_INSERT}',
              'Delete': '{VK_DELETE}',
@@ -79,7 +78,7 @@ def auto_hp(percent, resOption):
 
     bbox = (x_start[resOption], y_start[resOption], x_end[resOption], y_end[resOption])
 
-    im = PIL.ImageGrab.grab(bbox=bbox)
+    im = ImageGrab.grab(bbox=bbox)
 
     im_np = np.array(im)
 
@@ -115,7 +114,7 @@ def auto_mp(percent, resOption):
 
     bbox = (x_start[resOption], y_start[resOption], x_end[resOption], y_end[resOption])
 
-    im = PIL.ImageGrab.grab(bbox=bbox)
+    im = ImageGrab.grab(bbox=bbox)
 
     im_np = np.array(im)
 
