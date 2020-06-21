@@ -2,6 +2,7 @@ from import_standalone import *
 from pywinauto.keyboard import send_keys
 from PIL import ImageGrab
 import numpy as np
+import cv2, win32gui, time, math, win32con, win32ui
 
 
 key_codes = {'Insert': '{VK_INSERT}',

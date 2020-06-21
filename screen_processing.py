@@ -1,5 +1,7 @@
 from import_standalone import *
 import numpy as np
+import cv2, win32gui, time, math, win32con, win32ui
+from PIL import ImageGrab
 
 class MapleWindowNotFoundError(Exception):
     pass
