@@ -100,7 +100,7 @@ def botting():
         # Bottom Right: (125, 54)
         # Bottom Left: (15, 54)
         # middle_point = (139 - 15)//2
-        middle_point = (0.8*w - 20) // 2 # 0.8 * width of the minimap
+        middle_point = (0.8*w - 15) // 2 # 0.8 * width of the minimap
         middle_area = [middle_point - 2,
                        middle_point + 2,
                        middle_point - 1,
