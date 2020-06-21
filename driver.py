@@ -15,7 +15,7 @@ is_auto_hp = 0
 is_auto_pickup = 0
 is_move_left = 0
 is_move_right = 0
-is_keep_center = 1
+is_keep_center = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 80 # percent
@@ -80,7 +80,37 @@ def get_window_image(window_name):
     # cv2.waitKey()
 
 def botting():
-    return
+    try:
+        static.update_image()
+        x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
+        user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
+        # Ghost Ship 1024x768
+        # Top Right: (139, 35)
+        # Top Left: (15, 35)
+        # Bottom Right: (125, 54)
+        # Bottom Left: (15, 54)
+        # middle_point = (139 - 15)//2
+        middle_point = (125 - 15) // 2
+        middle_area = [middle_point - 2,
+                       middle_point + 2,
+                       middle_point - 1,
+                       middle_point + 1,
+                       middle_point]
+        # print(user_coor)
+        # print(type(user_coor))
+
+        if user_coor[0] in middle_area:
+            # print("Middle")
+            pass
+        elif user_coor[0] > middle_point:  # char is on the right
+            # print("Right")
+            move_left_mage()
+        elif user_coor[0] < middle_point:  # char is on the left
+            # print("Left")
+            move_right_mage()
+    except:
+        move_right_mage()
+        move_left_mage()
 
 def lie_detector():
     return False
@@ -102,7 +132,8 @@ def main(windowName):
         is_auto_hp, \
         is_auto_pickup, \
         is_move_left, \
-        is_move_right
+        is_move_right, \
+        is_keep_center
 
     OPTIONS = list(key_codes.keys())
 
@@ -170,36 +201,9 @@ def main(windowName):
                 move_right_mage()
                 time_at_move[1] = datetime.utcnow()
 
+        # Move Around Map Horizontally
         if is_keep_center == 1:
-            try:
-                static.update_image()
-                x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
-                user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap]) #tuple
-                # Ghost Ship 1024x768
-                # Top Right: (139, 35)
-                # Top Left: (15, 35)
-                # Bottom Right: (125, 54)
-                # Bottom Left: (15, 54)
-                middle_point = (139 - 15)//2
-                middle_area = [middle_point - 2,
-                               middle_point + 2,
-                               middle_point - 1,
-                               middle_point + 1,
-                               middle_point]
-                # print(user_coor)
-                # print(type(user_coor))
-
-                if user_coor[0] in middle_area:
-                    # print("Middle")
-                    continue
-                elif user_coor[0] > middle_point: #char is on the right
-                    # print("Right")
-                    move_left_mage()
-                elif user_coor[0] < middle_point: #char is on the left
-                    # print("Left")
-                    move_right_mage()
-            except:
-                continue
+            botting()
 
 def ui():
     global maple_story
@@ -208,6 +212,7 @@ def ui():
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup,\
+        is_keep_center, \
         resOption, \
         buff_state
     # Global for string/int var
@@ -227,6 +232,7 @@ def ui():
     is_auto_mp = IntVar(value=int(is_auto_mp))
     is_auto_attack = IntVar(value=int(is_auto_attack))
     is_auto_pickup = IntVar(value=int(is_auto_pickup))
+    is_keep_center = IntVar(value=int(is_keep_center))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -282,6 +288,11 @@ def ui():
         global is_auto_pickup
         is_auto_pickup = not is_auto_pickup
         # print("Auto pick up state", is_auto_pickup)
+        maple_story.activate()
+
+    def change_keep_center():
+        global is_keep_center
+        is_keep_center = not is_keep_center
         maple_story.activate()
 
     def toggle_resolution():
@@ -456,28 +467,20 @@ def ui():
            ).grid(column=5,
                   row=row)
 
-    # #Move Left Row
-    # row += 1
-    # Checkbutton(root,
-    #             text='Move Left',
-    #             command=change_auto_attack_state,
-    #             variable=is_auto_attack,
-    #             ).grid(row=row, column=0, sticky=W)
-    #
-    # #Move Right Row
-    # row += 1
-    # Checkbutton(root,
-    #             text='Move Right',
-    #             command=change_auto_attack_state,
-    #             variable=is_auto_attack,
-    #             ).grid(row=row, column=0, sticky=W)
-
     #Auto Pickup Row
     row += 1
     Checkbutton(root,
                 text='Auto Pickup',
                 command=change_auto_pickup_state,
                 variable=is_auto_pickup,
+                ).grid(row=row, column=0, sticky=W)
+
+    #Move Left Row
+    row += 1
+    Checkbutton(root,
+                text='Move Around Map',
+                command=change_keep_center,
+                variable=is_keep_center,
                 ).grid(row=row, column=0, sticky=W)
 
     #1024x768 resolution
@@ -558,8 +561,7 @@ def ui():
     note_text = Label(root, text="Notes:"
                                  "\nF3 to toggle Auto Attack."
                                  "\nF4 to toggle Auto Pickup."
-                                 "\nF5 to toggle Move Left."
-                                 "\nF6 to toggle Move Right."
+                                 "\nF8 to toggle Move Around."
                                  "\nAll time variables is in "
                                  "\nmilliseconds (1s = 1000ms).")
     note_text.grid(row=row, sticky=W)
@@ -580,13 +582,16 @@ def ui():
 
 def on_press_reaction(event):
     #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
-    global is_auto_attack, is_auto_pickup, is_move_left, is_move_right
+    global is_auto_attack, is_auto_pickup, is_move_left, is_move_right, is_keep_center
     if event.name == 'f3': # attack
         is_auto_attack = not is_auto_attack
         print("Auto attack state %s" % is_auto_attack)
     if event.name == 'f4': # pick up
         is_auto_pickup = not is_auto_pickup
         print("Auto pick up state %s" % is_auto_pickup)
+    if event.name == 'f8':
+        is_keep_center = not is_keep_center
+        print("Keep center state %s" % is_keep_center)
     # if event.name == 'f5': # move left
     #     if is_move_right == 1:
     #         is_move_right = 0

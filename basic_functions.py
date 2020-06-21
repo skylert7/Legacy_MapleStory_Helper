@@ -97,10 +97,10 @@ def auto_hp(percent, resOption):
     unique, counts = np.unique(im_np[10], return_counts=True)
 
     if (counts[0] / (x_end[resOption] - x_start[resOption])) * 100 < percent:
-        print("Percent HP: ", counts[0] / (x_end[resOption] - x_start[resOption]) * 100)
+        # print("Percent HP: ", counts[0] / (x_end[resOption] - x_start[resOption]) * 100)
         drink_hp()
         # drink hp and delay for .1s
-        time.sleep(0.1)
+        time.sleep(0.2)
         return True
 
     return False
@@ -142,10 +142,10 @@ def auto_mp(percent, resOption):
 
     if item / (x_end[resOption] - x_start[resOption]) * 100 < percent and \
             item / (x_end[resOption] - x_start[resOption]) * 100 != 0:
-        print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
+        # print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
         drink_mana()
         # drink mana and delay for .1s
-        time.sleep(0.1)
+        time.sleep(0.2)
         return True
 
     return False
