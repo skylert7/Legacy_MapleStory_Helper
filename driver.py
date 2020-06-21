@@ -81,7 +81,17 @@ def get_window_image(window_name):
 
 def botting():
     try:
+        # Screen Processing
+        dx = MapleScreenCapturer()
+        hwnd = dx.ms_get_screen_hwnd()
+        rect = dx.ms_get_screen_rect(hwnd)
+
+        static = StaticImageProcessor(dx)
         static.update_image()
+        x, y, w, h = static.get_minimap_rect()
+
+        # Screen Processing
+
         x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
         user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
         # Ghost Ship 1024x768
@@ -90,7 +100,7 @@ def botting():
         # Bottom Right: (125, 54)
         # Bottom Left: (15, 54)
         # middle_point = (139 - 15)//2
-        middle_point = (125 - 15) // 2
+        middle_point = (0.8*w - 20) // 2 # 0.8 * width of the minimap
         middle_area = [middle_point - 2,
                        middle_point + 2,
                        middle_point - 1,
