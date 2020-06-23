@@ -733,7 +733,7 @@ def on_press_reaction(event):
         print("Keep center state %s" % is_keep_center)
     if event.name == 'f9':
         is_move_around = not is_move_around
-        print("Move around state %s" % is_keep_center)
+        print("Move around state %s" % is_move_around)
     if event.name == 'f12':
         os._exit(0)
     # if event.name == 'f5': # move left
