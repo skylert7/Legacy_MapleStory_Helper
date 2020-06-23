@@ -41,6 +41,8 @@ def move_left_mage():
     # send_keys('+{LEFT}')
     send_keys('{RIGHT up}')
     send_keys('{LEFT up}')
+    send_keys('{UP up}')
+
     send_keys('{LEFT down}')
     send_keys('{VK_SHIFT down}')
     send_keys('{VK_SHIFT up}')
@@ -49,10 +51,22 @@ def move_left_mage():
 def move_right_mage():
     send_keys('{RIGHT up}')
     send_keys('{LEFT up}')
+    send_keys('{UP up}')
+
     send_keys('{RIGHT down}')
     send_keys('{VK_SHIFT down}')
     send_keys('{VK_SHIFT up}')
     send_keys('{RIGHT up}')
+
+def move_up_mage():
+    send_keys('{RIGHT up}')
+    send_keys('{LEFT up}')
+    send_keys('{UP up}')
+
+    send_keys('{UP down}')
+    send_keys('{VK_SHIFT down}')
+    send_keys('{VK_SHIFT up}')
+    send_keys('{UP up}')
 
 def pickup():
     send_keys('{z down}')

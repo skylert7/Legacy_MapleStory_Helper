@@ -80,6 +80,7 @@ def get_window_image(window_name):
     # cv2.waitKey()
 
 def botting():
+    calibration = 15
     try:
         # Screen Processing
         dx = MapleScreenCapturer()
@@ -100,7 +101,7 @@ def botting():
         # Bottom Right: (125, 54)
         # Bottom Left: (15, 54)
         # middle_point = (139 - 15)//2
-        middle_point = (0.8*w - 15) // 2 # 0.8 * width of the minimap
+        middle_point = (0.8*w - calibration) // 2 # 0.8 * width of the minimap
         middle_area = [middle_point - 2,
                        middle_point + 2,
                        middle_point - 1,
@@ -121,6 +122,7 @@ def botting():
     except:
         move_right_mage()
         move_left_mage()
+        move_up_mage()
 
 def lie_detector():
     return False
@@ -201,15 +203,15 @@ def main(windowName):
         if is_auto_pickup == 1:
             pickup()
 
-        if is_move_left == 1:
-            if (datetime.utcnow() - time_at_move[0]).total_seconds() > (moveDelay[0] / 1000):
-                move_left_mage()
-                time_at_move[0] = datetime.utcnow()
-
-        if is_move_right == 1:
-            if (datetime.utcnow() - time_at_move[1]).total_seconds() > (moveDelay[1] / 1000):
-                move_right_mage()
-                time_at_move[1] = datetime.utcnow()
+        # if is_move_left == 1:
+        #     if (datetime.utcnow() - time_at_move[0]).total_seconds() > (moveDelay[0] / 1000):
+        #         move_left_mage()
+        #         time_at_move[0] = datetime.utcnow()
+        #
+        # if is_move_right == 1:
+        #     if (datetime.utcnow() - time_at_move[1]).total_seconds() > (moveDelay[1] / 1000):
+        #         move_right_mage()
+        #         time_at_move[1] = datetime.utcnow()
 
         # Move Around Map Horizontally
         if is_keep_center == 1:
