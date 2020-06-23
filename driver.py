@@ -716,7 +716,12 @@ def ui():
 
 def on_press_reaction(event):
     #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
-    global is_auto_attack, is_auto_pickup, is_move_left, is_move_right, is_keep_center
+    global is_auto_attack, \
+        is_auto_pickup, \
+        is_move_left, \
+        is_move_right, \
+        is_keep_center, is_move_around
+
     if event.name == 'f3': # attack
         is_auto_attack = not is_auto_attack
         print("Auto attack state %s" % is_auto_attack)
@@ -726,6 +731,9 @@ def on_press_reaction(event):
     if event.name == 'f8':
         is_keep_center = not is_keep_center
         print("Keep center state %s" % is_keep_center)
+    if event.name == 'f9':
+        is_move_around = not is_move_around
+        print("Move around state %s" % is_keep_center)
     if event.name == 'f12':
         os._exit(0)
     # if event.name == 'f5': # move left
