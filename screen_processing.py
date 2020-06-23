@@ -232,32 +232,47 @@ class StaticImageProcessor:
         # cv2.waitKey()
 
         mask = cv2.inRange(cropped, self.lower_player_marker, self.upper_player_marker)
+
+        # for i in range(len(mask)):
+        #     if 255 in mask[i]:
+        #         print(i)
+
         # print(mask)
         # cv2.imshow("Mask", mask)
         # cv2.waitKey()
         td = np.transpose(np.where(mask > 0)).tolist()
+
+        # [y, x]
         if len(td) > 0:
-            avg_x = 0
-            avg_y = 0
-            totalpoints = 0
-            for coord in td:
-                nearest_points = 0  # Points which are close to coord pixel
-                for ref_coord in td:
-                    # Calculate the range between every single pixel
-                    if math.sqrt(abs(ref_coord[0]-coord[0])**2 + abs(ref_coord[1]-coord[1])**2) <= 3:
-                        nearest_points += 1
-
-                if nearest_points >= 10 and nearest_points <= 13:
-                    avg_y += coord[0]
-                    avg_x += coord[1]
-                    totalpoints += 1
-
-            if totalpoints == 0:
-                return 0
-
-            avg_y = int(avg_y / totalpoints)
-            avg_x = int(avg_x / totalpoints)
+            x_list = [x[1] for x in td]
+            y_list = [x[0] for x in td]
+            avg_x = int(sum(x_list) / len(x_list))
+            avg_y = int(sum(y_list) / len(y_list))
             return avg_x, avg_y
+            # print((avg_x, avg_y))
+
+        # if len(td) > 0:
+        #     avg_x = 0
+        #     avg_y = 0
+        #     totalpoints = 0
+        #     for coord in td:
+        #         nearest_points = 0  # Points which are close to coord pixel
+        #         for ref_coord in td:
+        #             # Calculate the range between every single pixel
+        #             if math.sqrt(abs(ref_coord[0]-coord[0])**2 + abs(ref_coord[1]-coord[1])**2) <= 3:
+        #                 nearest_points += 1
+        #
+        #         if nearest_points >= 10 and nearest_points <= 13:
+        #             avg_y += coord[0]
+        #             avg_x += coord[1]
+        #             totalpoints += 1
+        #
+        #     if totalpoints == 0:
+        #         return 0
+        #
+        #     avg_y = int(avg_y / totalpoints)
+        #     avg_x = int(avg_x / totalpoints)
+        #     return avg_x, avg_y
 
         return 0
 
@@ -337,7 +352,7 @@ if __name__ == "__main__":
     static = StaticImageProcessor(dx)
     static.update_image()
 
-    # x, y, w, h = static.get_minimap_rect()
+    x, y, w, h = static.get_minimap_rect()
     # print("x: {}; y: {}; w: {}; h: {}".format(x, y, w, h))
     # bbox = (15, 35, 139, 54)
 
@@ -345,21 +360,16 @@ if __name__ == "__main__":
     # cv2.imshow("Minimap", img)
     # cv2.waitKey()
 
-    #Ghost Ship 1024x768
-    #Top Right: (139, 35)
-    #Top Left: (15, 35)
-    #Bottom Right: (125, 54)
-    #Bottom Left: (15, 54)
 
-    #Ghost Ship 1280x960
-    #Top Right: (174, 44)
-    #Top Left: (20, 44)
-    #Bottom Right: (174, 68)
-    #Bottom Left: (20, 68)
-    #Middle Top: (103, 44)
-    # print("User coor: ", static.find_player_minimap_marker(rect=[x, y, w, h]))
+    print("User coor: ", static.find_player_minimap_marker(rect=[x, y, w, h]))
     #
     # dx.capture(rect=rect)
+
+
+
+
+
+
 
 
 

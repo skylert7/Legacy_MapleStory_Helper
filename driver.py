@@ -16,17 +16,22 @@ is_auto_pickup = 0
 is_move_left = 0
 is_move_right = 0
 is_keep_center = 0
+is_move_around = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 80 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 attack_delay_global = 100 # milliseconds
+keep_center_calibration_global = 15
 buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
 moveDelay = [1000, 1000]  # [left, right] in milliseconds
 
 key_options = ["String"] * len(buff_delay)
+
+left_area_is_reached = False
+right_area_is_reached = False
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
@@ -79,8 +84,7 @@ def get_window_image(window_name):
     # cv2.imshow("Window image", im_np)
     # cv2.waitKey()
 
-def botting():
-    calibration = 15
+def keep_center(calibration=15):
     try:
         # Screen Processing
         dx = MapleScreenCapturer()
@@ -107,8 +111,6 @@ def botting():
                        middle_point - 1,
                        middle_point + 1,
                        middle_point]
-        # print(user_coor)
-        # print(type(user_coor))
 
         if user_coor[0] in middle_area:
             # print("Middle")
@@ -123,6 +125,61 @@ def botting():
         move_right_mage()
         move_left_mage()
         move_up_mage()
+
+def move_around():
+    global left_area_is_reached, right_area_is_reached
+    if not left_area_is_reached and not right_area_is_reached:
+        left_area_is_reached = True
+
+    try:
+        # Screen Processing
+        dx = MapleScreenCapturer()
+        hwnd = dx.ms_get_screen_hwnd()
+        rect = dx.ms_get_screen_rect(hwnd)
+
+        static = StaticImageProcessor(dx)
+        static.update_image()
+        x, y, w, h = static.get_minimap_rect()
+
+        # Screen Processing
+
+        x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
+        user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
+        # middle_point = (139 - 15)//2
+        far_right = int(85*w/100)
+        far_left = int(20*w/100)
+        left_area = [far_left-2,
+                     far_left-1,
+                     far_left,
+                     far_left+1,
+                     far_left+2]
+
+        right_area = [far_right-2,
+                      far_right-1,
+                      far_right,
+                      far_right+1,
+                      far_right+2]
+
+        if user_coor[0] < far_left:
+            left_area_is_reached = True
+            right_area_is_reached = False
+            # print("In Left")
+
+        if user_coor[0] > far_right:
+            right_area_is_reached = True
+            left_area_is_reached = False
+            # print("In Right")
+
+        if not left_area_is_reached:
+            move_left_mage()
+        else:
+            move_right_mage()
+    except:
+        move_right_mage()
+        move_left_mage()
+        move_up_mage()
+
+    return
 
 def lie_detector():
     return False
@@ -145,7 +202,8 @@ def main(windowName):
         is_auto_pickup, \
         is_move_left, \
         is_move_right, \
-        is_keep_center
+        is_keep_center, \
+        is_move_around
 
     OPTIONS = list(key_codes.keys())
 
@@ -213,9 +271,13 @@ def main(windowName):
         #         move_right_mage()
         #         time_at_move[1] = datetime.utcnow()
 
-        # Move Around Map Horizontally
+        # It does what it says
         if is_keep_center == 1:
-            botting()
+            keep_center(keep_center_calibration_global)
+
+        # Move Around Map Horizontally
+        if is_move_around == 1:
+            move_around()
 
 def ui():
     global maple_story
@@ -225,6 +287,7 @@ def ui():
         is_auto_hp, \
         is_auto_pickup,\
         is_keep_center, \
+        is_move_around, \
         resOption, \
         buff_state
     # Global for string/int var
@@ -233,6 +296,7 @@ def ui():
         from_mp_global, \
         from_hp_global, \
         attack_delay_global, \
+        keep_center_calibration_global, \
         buff_delay, \
         key_options
 
@@ -245,6 +309,7 @@ def ui():
     is_auto_attack = IntVar(value=int(is_auto_attack))
     is_auto_pickup = IntVar(value=int(is_auto_pickup))
     is_keep_center = IntVar(value=int(is_keep_center))
+    is_move_around = IntVar(value=int(is_move_around))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -258,6 +323,9 @@ def ui():
 
     attackDelayUI = StringVar()
     attackDelayUI.set(str(attack_delay_global))
+
+    keepCenterCalibrationUI = StringVar()
+    keepCenterCalibrationUI.set(str(keep_center_calibration_global))
 
     buff_reset_time = list()
     buff_state_ui = list()
@@ -307,6 +375,11 @@ def ui():
         is_keep_center = not is_keep_center
         maple_story.activate()
 
+    def change_move_around():
+        global is_move_around
+        is_move_around = not is_move_around
+        maple_story.activate()
+
     def toggle_resolution():
         global resOption, windowName
         resOption = tkResOption.get()
@@ -346,6 +419,14 @@ def ui():
             attack_delay_global = 100
             print("Invalid input Attack Delay")
 
+    def set_keep_center_calibration():
+        global keep_center_calibration_global
+        try:
+            keep_center_calibration_global = int(keepCenterCalibrationUI.get())
+        except:
+            keep_center_calibration_global = 15
+            print("Invalid input Calibration")
+
     def re_assign_time_and_key_buff(num):
         for var in range(len(var_list)):
             key_options[var] = var_list[var].get()
@@ -362,7 +443,7 @@ def ui():
     # Some variables to use
 
     # default panel size
-    root.geometry('{}x{}'.format(550, 600))
+    root.geometry('{}x{}'.format(550, 650))
 
     # Auto HP Row
     row = 0
@@ -478,6 +559,7 @@ def ui():
            command=set_attack_delay
            ).grid(column=5,
                   row=row)
+    #Auto Attack Row ---
 
     #Auto Pickup Row
     row += 1
@@ -485,15 +567,50 @@ def ui():
                 text='Auto Pickup',
                 command=change_auto_pickup_state,
                 variable=is_auto_pickup,
-                ).grid(row=row, column=0, sticky=W)
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+    #Auto Pickup Row ---
 
-    #Move Left Row
+    #Keep Center Row
     row += 1
     Checkbutton(root,
-                text='Move Around Map',
+                text='Keep Center',
                 command=change_keep_center,
                 variable=is_keep_center,
-                ).grid(row=row, column=0, sticky=W)
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+
+
+    Label(root,
+          text="Calibration:\n(Higher = More Left)\nMax = 100"
+          ).grid(column=1,
+                 row=row)
+
+    Entry(root,
+          textvariable=keepCenterCalibrationUI,
+          width=8).grid(column=2,
+                        row=row)
+
+    Button(root,
+           text='Set',
+           command=set_keep_center_calibration
+           ).grid(column=5,
+                  row=row)
+    #Keep Center Row ---
+
+    #Move Around Row
+    row += 1
+    Checkbutton(root,
+                text='Move Around',
+                command=change_move_around,
+                variable=is_move_around,
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+
+    #Move Around Row ---
 
     #1024x768 resolution
     row += 1
@@ -528,7 +645,7 @@ def ui():
                     ).grid(column=0,
                            row=row)
         Label(root,
-              text="Reset Time:").grid(column=1,
+              text="Reset Time (s):").grid(column=1,
                                        row=row)
         Entry(root,
               textvariable=buff_reset_time[pos],
@@ -570,23 +687,28 @@ def ui():
 
     #Notes (Text)
     row += 1
-    note_text = Label(root, text="Notes:"
-                                 "\nF3 to toggle Auto Attack."
-                                 "\nF4 to toggle Auto Pickup."
-                                 "\nF8 to toggle Move Around."
-                                 "\nAll time variables is in "
-                                 "\nmilliseconds (1s = 1000ms).")
+    note_text = Label(root,
+                      text="Notes:"
+                           "\nF3 to toggle Auto Attack."
+                           "\nF4 to toggle Auto Pickup."
+                           "\nF8 to toggle Keep Center."
+                           "\nF9 to toggle Move Around."
+                           "\nF12 to terminate all."
+                      )
+                                 # "\nAll time variables is in "
+                                 # "\nmilliseconds (1s = 1000ms).")
     note_text.grid(row=row, sticky=W)
 
     #Panic button
     row += 1
     Button(root,
-           text='Panic Button',
+           text='Panic Button (F12)',
            command=panic,
            height=4,
-           width=12,
+           width=16,
            ).grid(column=5,
                   row=row)
+
 
     root.mainloop()
 
@@ -604,6 +726,8 @@ def on_press_reaction(event):
     if event.name == 'f8':
         is_keep_center = not is_keep_center
         print("Keep center state %s" % is_keep_center)
+    if event.name == 'f12':
+        os._exit(0)
     # if event.name == 'f5': # move left
     #     if is_move_right == 1:
     #         is_move_right = 0

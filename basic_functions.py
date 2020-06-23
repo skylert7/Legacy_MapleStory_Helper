@@ -5,6 +5,8 @@ import numpy as np
 import cv2, win32gui, time, math, win32con, win32ui
 
 
+
+# key_codes: {<Name  Appear>: <Key Code to Send>}
 key_codes = {'Insert': '{VK_INSERT}',
              'Delete': '{VK_DELETE}',
              'Home': '{VK_HOME}',
@@ -13,6 +15,9 @@ key_codes = {'Insert': '{VK_INSERT}',
              'Control': '{VK_CONTROL}',
              'PageUp': '{PGUP}',
              'PageDown': '{PGDN}',
+             'A': 'a',
+             'B': 'b',
+             'Z': 'z',
              }
 
 # General customized functions
