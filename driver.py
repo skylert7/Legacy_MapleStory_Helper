@@ -291,7 +291,7 @@ def main(windowName):
 
         # It does what it says
         if is_keep_center == 1:
-            keep_center(keep_center_calibration_global)
+            keep_center()
 
         # Move Around Map Horizontally
         if is_move_around == 1:
