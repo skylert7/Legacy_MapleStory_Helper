@@ -23,7 +23,7 @@ to_mp_global = 80 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 attack_delay_global = 100 # milliseconds
-keep_center_calibration_global = 15
+keep_center_calibration_global = 0
 buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
 moveDelay = [1000, 1000]  # [left, right] in milliseconds
@@ -84,7 +84,8 @@ def get_window_image(window_name):
     # cv2.imshow("Window image", im_np)
     # cv2.waitKey()
 
-def keep_center(calibration=15):
+def keep_center():
+    global keep_center_calibration_global
     try:
         # Screen Processing
         dx = MapleScreenCapturer()
@@ -105,12 +106,29 @@ def keep_center(calibration=15):
         # Bottom Right: (125, 54)
         # Bottom Left: (15, 54)
         # middle_point = (139 - 15)//2
-        middle_point = (0.8*w - calibration) // 2 # 0.8 * width of the minimap
-        middle_area = [middle_point - 2,
-                       middle_point + 2,
+        middle_point = (0.8*w - keep_center_calibration_global) // 2 # 0.8 * width of the minimap
+        middle_area = [middle_point - 10,
+                       middle_point - 9,
+                       middle_point - 8,
+                       middle_point - 7,
+                       middle_point - 6,
+                       middle_point - 5,
+                       middle_point - 4,
+                       middle_point - 3,
+                       middle_point - 2,
                        middle_point - 1,
+                       middle_point + 0,
                        middle_point + 1,
-                       middle_point]
+                       middle_point + 2,
+                       middle_point + 3,
+                       middle_point + 4,
+                       middle_point + 5,
+                       middle_point + 6,
+                       middle_point + 7,
+                       middle_point + 8,
+                       middle_point + 9,
+                       middle_point + 10,
+                       ]
 
         if user_coor[0] in middle_area:
             # print("Middle")
