@@ -106,8 +106,16 @@ def keep_center():
         # Bottom Right: (125, 54)
         # Bottom Left: (15, 54)
         # middle_point = (139 - 15)//2
-        middle_point = (0.8*w - keep_center_calibration_global) // 2 # 0.8 * width of the minimap
-        middle_area = [middle_point - 10,
+        middle_point = (0.9*w - keep_center_calibration_global) // 2 # 0.9 * width of the minimap
+        middle_area = [middle_point - 18,
+                       middle_point - 17,
+                       middle_point - 16,
+                       middle_point - 15,
+                       middle_point - 14,
+                       middle_point - 13,
+                       middle_point - 12,
+                       middle_point - 11,
+                       middle_point - 10,
                        middle_point - 9,
                        middle_point - 8,
                        middle_point - 7,
@@ -127,7 +135,14 @@ def keep_center():
                        middle_point + 7,
                        middle_point + 8,
                        middle_point + 9,
-                       middle_point + 10,
+                       middle_point + 11,
+                       middle_point + 12,
+                       middle_point + 13,
+                       middle_point + 14,
+                       middle_point + 15,
+                       middle_point + 16,
+                       middle_point + 17,
+                       middle_point + 18,
                        ]
 
         if user_coor[0] in middle_area:
@@ -142,7 +157,7 @@ def keep_center():
     except:
         move_right_mage()
         move_left_mage()
-        move_up_mage()
+        # move_up_mage()
 
 def move_around():
     global left_area_is_reached, right_area_is_reached
@@ -747,9 +762,13 @@ def on_press_reaction(event):
         is_auto_pickup = not is_auto_pickup
         print("Auto pick up state %s" % is_auto_pickup)
     if event.name == 'f8':
+        if is_move_around == 1:
+            is_move_around = 0
         is_keep_center = not is_keep_center
         print("Keep center state %s" % is_keep_center)
     if event.name == 'f9':
+        if is_keep_center == 1:
+            is_keep_center = 0
         is_move_around = not is_move_around
         print("Move around state %s" % is_move_around)
     if event.name == 'f12':

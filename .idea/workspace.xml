@@ -68,26 +68,26 @@
     <session id="57098464">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="21" />
+          <entry key="project.closed" value="22" />
           <entry key="project.open.time.0" value="4" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.3" value="2" />
-          <entry key="project.open.time.4" value="9" />
+          <entry key="project.open.time.4" value="10" />
           <entry key="project.open.time.5" value="6" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="24" />
+          <entry key="project.opened" value="25" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="md" value="237" />
-          <entry key="py" value="13570" />
+          <entry key="py" value="13646" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Markdown" value="237" />
-          <entry key="Python" value="13570" />
+          <entry key="Python" value="13646" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -111,13 +111,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/driver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="363">
-              <caret line="294" lean-forward="true" selection-start-line="294" selection-end-line="294" />
+            <state relative-caret-position="346">
+              <caret line="760" column="26" lean-forward="true" selection-start-line="760" selection-start-column="26" selection-end-line="760" selection-end-column="26" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
-                <element signature="e#3894#5221#0" />
-                <marker date="1592891677209" expanded="true" signature="1320:1322" ph="..." />
-                <marker date="1592891677209" expanded="true" signature="1840:6092" ph="..." />
+                <marker date="1592986157767" expanded="true" signature="1320:1322" ph="..." />
+                <marker date="1592986157767" expanded="true" signature="1840:6724" ph="..." />
               </folding>
             </state>
           </provider>
@@ -227,7 +226,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -239,6 +237,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -495,6 +494,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/driver.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="760" column="26" lean-forward="true" selection-start-line="760" selection-start-column="26" selection-end-line="760" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+            <marker date="1592986157767" expanded="true" signature="1320:1322" ph="..." />
+            <marker date="1592986157767" expanded="true" signature="1840:6724" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/basic_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="31" selection-start-column="31" selection-end-column="31" />
+          <folding>
+            <marker date="1592874941962" expanded="true" signature="764:854" ph="..." />
+            <marker date="1592874941962" expanded="true" signature="942:968" ph="..." />
+            <marker date="1592874941962" expanded="true" signature="986:987" ph="..." />
+            <marker date="1592874941962" expanded="false" signature="1039:1044" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/import_standalone.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -520,32 +544,6 @@
           <caret selection-end-line="6" selection-end-column="29" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/basic_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="31" selection-start-column="31" selection-end-column="31" />
-          <folding>
-            <marker date="1592874941962" expanded="true" signature="764:854" ph="..." />
-            <marker date="1592874941962" expanded="true" signature="942:968" ph="..." />
-            <marker date="1592874941962" expanded="true" signature="986:987" ph="..." />
-            <marker date="1592874941962" expanded="false" signature="1039:1044" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/driver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
-          <caret line="294" lean-forward="true" selection-start-line="294" selection-end-line="294" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-            <element signature="e#3894#5221#0" />
-            <marker date="1592891677209" expanded="true" signature="1320:1322" ph="..." />
-            <marker date="1592891677209" expanded="true" signature="1840:6092" ph="..." />
           </folding>
         </state>
       </provider>
