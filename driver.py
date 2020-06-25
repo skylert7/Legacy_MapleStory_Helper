@@ -25,7 +25,7 @@ from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 attack_delay_global = 100 # milliseconds
 keep_center_calibration_global = 0 # bias to left or right
-user_coor_global = (0, 0) # user coordinate
+user_coor_global = (110, 70) # user coordinate
 buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
 moveDelay = [1000, 1000]  # [left, right] in milliseconds
@@ -36,7 +36,7 @@ keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
 left_area_is_reached = False # var for move_around
 right_area_is_reached = False # var for move_around
-keep_center_radius = 30 # var for keep_center
+keep_center_radius = 40 # var for keep_center
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
@@ -142,32 +142,25 @@ def keep_center():
     global keep_center_calibration_global, \
         keep_center_radius, \
         keep_center_left_wall_is_reached, \
-        keep_center_right_wall_is_reached
+        keep_center_right_wall_is_reached, \
+        user_coor_global
     if not keep_center_left_wall_is_reached and not keep_center_right_wall_is_reached:
         keep_center_left_wall_is_reached = True
 
     try:
         user_coor, w = get_user_coord()
-        # middle_point = (139 - 15)//2
-        # middle_point = int((0.9*w - keep_center_calibration_global) / 2) # 0.9 * width of the minimap
-        middle_point = 108
 
-        # middle_area_left = [mid for mid in range(middle_point,
-        #                                          middle_point - keep_center_radius,
-        #                                          -1)] #Left hand side of mid
-        #
-        # middle_area_right = [mid for mid in range(middle_point,
-        #                                           middle_point + keep_center_radius,
-        #                                           )] #Right hand side of mid
+        if user_coor_global == 0:
+            return
 
-
-        wall = [middle_point - keep_center_radius,
-                middle_point + keep_center_radius]
+        # wall = []
+        wall = [90 - keep_center_radius,
+                90 + keep_center_radius]
+        # print(wall)
 
         if user_coor[0] < wall[0]: # wall left
             keep_center_left_wall_is_reached = True
             keep_center_right_wall_is_reached = False
-            # print("In Left")
 
         if user_coor[0] > wall[1]: # wall right
             keep_center_right_wall_is_reached = True
@@ -176,11 +169,15 @@ def keep_center():
 
         if not keep_center_left_wall_is_reached:
             move_left_mage()
+            # print("Move Left")
+
         else:
             move_right_mage()
+            # print("Move Right")
+
 
     except Exception as e:
-        # print(e)
+        print(e)
         # print(user_coor)
         move_right_mage()
         move_left_mage()
@@ -192,7 +189,7 @@ def move_around():
         left_area_is_reached = True
 
     try:
-        user_coor = get_user_coord()
+        user_coor, w = get_user_coord()
 
         far_right = int(85*w/100)
         far_left = int(20*w/100)
@@ -474,7 +471,7 @@ def ui():
             user_coor_global, w_random = get_user_coord()
         except:
             user_coor_global = (0, 0)
-        userCoordinateUI.set('({}, {})'.format(user_coor_global[0], user_coor_global[1]))
+        userCoorLabel['text'] = '({}, {})'.format(user_coor_global[0], user_coor_global[1])
 
     def re_assign_time_and_key_buff(num):
         for var in range(len(var_list)):
@@ -634,37 +631,34 @@ def ui():
                        column=0,
                        sticky=W)
 
+    Button(root,
+           text="Get User \nPosition",
+           command=get_user_coordianate_ui
+           ).grid(column=1,
+                  row=row)
+    userCoorLabel = Label(root,
+                          text=userCoordinateUI
+                          )
+
+    userCoorLabel.grid(column=2,
+                       row=row)
 
     Label(root,
           text="Radius:"
-          ).grid(column=1,
+          ).grid(column=3,
                  row=row)
 
     Entry(root,
           textvariable=keepCenterRadiusUI,
-          width=8).grid(column=2,
+          width=8).grid(column=4,
                         row=row)
 
     Button(root,
-           text="Get User Position",
-           command=get_user_coordianate_ui
-           ).grid(column=3,
-                  row=row)
-    userCoorLabel = Label(root,
-                          text=userCoordinateUI
-                          ).grid(column=4,
-                                 row=row)
-
-    def set_userCoorLabel():
-        get_user_coordianate_ui()
-        userCoorLabel.configure(text=userCoordinateUI)
-        return
-
-    Button(root,
            text='Set',
-           command=set_userCoorLabel
+           command=set_keep_center_radius
            ).grid(column=5,
                   row=row)
+
     #Keep Center Row ---
 
     #Move Around Row
