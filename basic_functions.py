@@ -18,6 +18,7 @@ key_codes = {'Insert': '{VK_INSERT}',
              'A': 'a',
              'B': 'b',
              'Z': 'z',
+             ',': ',',
              }
 
 # General customized functions

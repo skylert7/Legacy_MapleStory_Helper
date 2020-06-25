@@ -1,3 +1,6 @@
+# Version 1.2
+# Released Date: 6/24/2020
+
 from import_standalone import *
 from screen_processing import *
 # GLOBAL SETTINGS
@@ -13,25 +16,27 @@ is_auto_attack = 0
 is_auto_mp = 0
 is_auto_hp = 0
 is_auto_pickup = 0
-is_move_left = 0
-is_move_right = 0
 is_keep_center = 0
 is_move_around = 0
 
 from_mp_global = 50 # percent
-to_mp_global = 80 # percent
+to_mp_global = 60 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 attack_delay_global = 100 # milliseconds
-keep_center_calibration_global = 0
+keep_center_calibration_global = 0 # bias to left or right
+user_coor_global = (0, 0) # user coordinate
 buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
 moveDelay = [1000, 1000]  # [left, right] in milliseconds
 
 key_options = ["String"] * len(buff_delay)
 
-left_area_is_reached = False
-right_area_is_reached = False
+keep_center_left_wall_is_reached = False # var for keep_center
+keep_center_right_wall_is_reached = False # var for keep_center
+left_area_is_reached = False # var for move_around
+right_area_is_reached = False # var for move_around
+keep_center_radius = 30 # var for keep_center
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
@@ -84,8 +89,10 @@ def get_window_image(window_name):
     # cv2.imshow("Window image", im_np)
     # cv2.waitKey()
 
-def keep_center():
-    global keep_center_calibration_global
+def get_user_coord():
+    global user_coor_global
+    user_coor = user_coor_global
+    w_minmap = 171
     try:
         # Screen Processing
         dx = MapleScreenCapturer()
@@ -94,67 +101,87 @@ def keep_center():
 
         static = StaticImageProcessor(dx)
         static.update_image()
-        x, y, w, h = static.get_minimap_rect()
-
         # Screen Processing
 
         x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
         user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
-        # Ghost Ship 1024x768
-        # Top Right: (139, 35)
-        # Top Left: (15, 35)
-        # Bottom Right: (125, 54)
-        # Bottom Left: (15, 54)
-        # middle_point = (139 - 15)//2
-        middle_point = (0.9*w - keep_center_calibration_global) // 2 # 0.9 * width of the minimap
-        middle_area = [middle_point - 18,
-                       middle_point - 17,
-                       middle_point - 16,
-                       middle_point - 15,
-                       middle_point - 14,
-                       middle_point - 13,
-                       middle_point - 12,
-                       middle_point - 11,
-                       middle_point - 10,
-                       middle_point - 9,
-                       middle_point - 8,
-                       middle_point - 7,
-                       middle_point - 6,
-                       middle_point - 5,
-                       middle_point - 4,
-                       middle_point - 3,
-                       middle_point - 2,
-                       middle_point - 1,
-                       middle_point + 0,
-                       middle_point + 1,
-                       middle_point + 2,
-                       middle_point + 3,
-                       middle_point + 4,
-                       middle_point + 5,
-                       middle_point + 6,
-                       middle_point + 7,
-                       middle_point + 8,
-                       middle_point + 9,
-                       middle_point + 11,
-                       middle_point + 12,
-                       middle_point + 13,
-                       middle_point + 14,
-                       middle_point + 15,
-                       middle_point + 16,
-                       middle_point + 17,
-                       middle_point + 18,
-                       ]
 
-        if user_coor[0] in middle_area:
-            # print("Middle")
-            pass
-        elif user_coor[0] > middle_point:  # char is on the right
-            # print("Right")
+        user_coor_global = user_coor
+        # print(user_coor)
+        # print("User global coor", user_coor_global)
+    except Exception as e:
+        # print(e)
+        pass
+    return user_coor, w_minmap
+
+def display_state_info():
+    os.system('cls')
+    global is_auto_hp, \
+        is_auto_mp, \
+        is_auto_attack, \
+        is_keep_center, \
+        is_move_around, \
+        is_auto_pickup
+
+    print('Auto HP State: {}\n'
+          'Auto MP State: {}\n'
+          'Auto Attack State: {}\n'
+          'Auto Pickup State: {}\n'
+          'Keep Center State: {}\n'
+          'Move Around State: {}\n'.format(is_auto_hp,
+                                           is_auto_mp,
+                                           is_auto_attack,
+                                           is_auto_pickup,
+                                           is_keep_center,
+                                           is_move_around)
+          )
+    print('--- Press F12 to terminate ---')
+    return
+
+def keep_center():
+    global keep_center_calibration_global, \
+        keep_center_radius, \
+        keep_center_left_wall_is_reached, \
+        keep_center_right_wall_is_reached
+    if not keep_center_left_wall_is_reached and not keep_center_right_wall_is_reached:
+        keep_center_left_wall_is_reached = True
+
+    try:
+        user_coor, w = get_user_coord()
+        # middle_point = (139 - 15)//2
+        # middle_point = int((0.9*w - keep_center_calibration_global) / 2) # 0.9 * width of the minimap
+        middle_point = 108
+
+        # middle_area_left = [mid for mid in range(middle_point,
+        #                                          middle_point - keep_center_radius,
+        #                                          -1)] #Left hand side of mid
+        #
+        # middle_area_right = [mid for mid in range(middle_point,
+        #                                           middle_point + keep_center_radius,
+        #                                           )] #Right hand side of mid
+
+
+        wall = [middle_point - keep_center_radius,
+                middle_point + keep_center_radius]
+
+        if user_coor[0] < wall[0]: # wall left
+            keep_center_left_wall_is_reached = True
+            keep_center_right_wall_is_reached = False
+            # print("In Left")
+
+        if user_coor[0] > wall[1]: # wall right
+            keep_center_right_wall_is_reached = True
+            keep_center_left_wall_is_reached = False
+            # print("In Right")
+
+        if not keep_center_left_wall_is_reached:
             move_left_mage()
-        elif user_coor[0] < middle_point:  # char is on the left
-            # print("Left")
+        else:
             move_right_mage()
-    except:
+
+    except Exception as e:
+        # print(e)
+        # print(user_coor)
         move_right_mage()
         move_left_mage()
         # move_up_mage()
@@ -165,33 +192,10 @@ def move_around():
         left_area_is_reached = True
 
     try:
-        # Screen Processing
-        dx = MapleScreenCapturer()
-        hwnd = dx.ms_get_screen_hwnd()
-        rect = dx.ms_get_screen_rect(hwnd)
+        user_coor = get_user_coord()
 
-        static = StaticImageProcessor(dx)
-        static.update_image()
-        x, y, w, h = static.get_minimap_rect()
-
-        # Screen Processing
-
-        x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
-        user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
-        # middle_point = (139 - 15)//2
         far_right = int(85*w/100)
         far_left = int(20*w/100)
-        left_area = [far_left-2,
-                     far_left-1,
-                     far_left,
-                     far_left+1,
-                     far_left+2]
-
-        right_area = [far_right-2,
-                      far_right-1,
-                      far_right,
-                      far_right+1,
-                      far_right+2]
 
         if user_coor[0] < far_left:
             left_area_is_reached = True
@@ -210,14 +214,13 @@ def move_around():
     except:
         move_right_mage()
         move_left_mage()
-        move_up_mage()
 
     return
 
 def lie_detector():
     return False
 
-def main(windowName):
+def main():
     global hp_percent_random, \
         mp_percent_random, \
         from_mp_global, \
@@ -329,7 +332,8 @@ def ui():
         from_mp_global, \
         from_hp_global, \
         attack_delay_global, \
-        keep_center_calibration_global, \
+        keep_center_radius, \
+        user_coor_global, \
         buff_delay, \
         key_options
 
@@ -357,11 +361,15 @@ def ui():
     attackDelayUI = StringVar()
     attackDelayUI.set(str(attack_delay_global))
 
-    keepCenterCalibrationUI = StringVar()
-    keepCenterCalibrationUI.set(str(keep_center_calibration_global))
+    keepCenterRadiusUI = StringVar()
+    keepCenterRadiusUI.set(str(keep_center_radius))
+
+    userCoordinateUI = StringVar()
+    userCoordinateUI.set('({}, {})'.format(user_coor_global[0], user_coor_global[1]))
 
     buff_reset_time = list()
     buff_state_ui = list()
+    # UI Vars ---
 
     for index in range(len(buff_delay)):
         varTime = StringVar()
@@ -376,7 +384,7 @@ def ui():
 
     # UI Vars
 
-    root.title("MapleStory Bot")
+    root.title("MapleStory Helper")
 
 
     def change_auto_mp_state():
@@ -452,19 +460,30 @@ def ui():
             attack_delay_global = 100
             print("Invalid input Attack Delay")
 
-    def set_keep_center_calibration():
-        global keep_center_calibration_global
+    def set_keep_center_radius():
+        global keep_center_radius
         try:
-            keep_center_calibration_global = int(keepCenterCalibrationUI.get())
+            keep_center_radius = int(keepCenterRadiusUI.get())
         except:
-            keep_center_calibration_global = 15
-            print("Invalid input Calibration")
+            keep_center_radius = 15
+            print("Invalid input radius")
+
+    def get_user_coordianate_ui():
+        global user_coor_global
+        try:
+            user_coor_global, w_random = get_user_coord()
+        except:
+            user_coor_global = (0, 0)
+        userCoordinateUI.set('({}, {})'.format(user_coor_global[0], user_coor_global[1]))
 
     def re_assign_time_and_key_buff(num):
         for var in range(len(var_list)):
             key_options[var] = var_list[var].get()
             buff_delay[var] = buff_reset_time[var].get()
             buff_state[var] = buff_state_ui[var].get()
+
+    def update_status():
+        return
 
     def panic():
         os._exit(0)
@@ -617,18 +636,33 @@ def ui():
 
 
     Label(root,
-          text="Calibration:\n(Higher = More Left)\nMax = 100"
+          text="Radius:"
           ).grid(column=1,
                  row=row)
 
     Entry(root,
-          textvariable=keepCenterCalibrationUI,
+          textvariable=keepCenterRadiusUI,
           width=8).grid(column=2,
                         row=row)
 
     Button(root,
+           text="Get User Position",
+           command=get_user_coordianate_ui
+           ).grid(column=3,
+                  row=row)
+    userCoorLabel = Label(root,
+                          text=userCoordinateUI
+                          ).grid(column=4,
+                                 row=row)
+
+    def set_userCoorLabel():
+        get_user_coordianate_ui()
+        userCoorLabel.configure(text=userCoordinateUI)
+        return
+
+    Button(root,
            text='Set',
-           command=set_keep_center_calibration
+           command=set_userCoorLabel
            ).grid(column=5,
                   row=row)
     #Keep Center Row ---
@@ -755,6 +789,8 @@ def on_press_reaction(event):
         is_move_right, \
         is_keep_center, is_move_around
 
+    if event.name == 'f1': # info
+        display_state_info()
     if event.name == 'f3': # attack
         is_auto_attack = not is_auto_attack
         print("Auto attack state %s" % is_auto_attack)
@@ -802,7 +838,7 @@ if __name__ == '__main__':
     print("Connected!")
     # time.sleep(1)
     threading.Thread(target=ui).start()
-    threading.Thread(target=main(windowName)).start()
+    threading.Thread(target=main()).start()
 
     # write_walls()    # <-to uncomment replace first #
 
