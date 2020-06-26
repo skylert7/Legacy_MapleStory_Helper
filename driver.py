@@ -1,5 +1,5 @@
-# Version 1.2
-# Released Date: 6/24/2020
+# Version 1.3
+# Released Date: 6/26/2020
 
 from import_standalone import *
 from screen_processing import *
