@@ -24,14 +24,15 @@ to_mp_global = 60 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 attack_delay_global = 100 # milliseconds
-keep_center_calibration_global = 0 # bias to left or right
-user_coor_global = (110, 70) # user coordinate
 buff_delay = [200, 200, 600, 0]
 buff_state = [0] * len(buff_delay)
 moveDelay = [1000, 1000]  # [left, right] in milliseconds
 
 key_options = ["String"] * len(buff_delay)
 
+user_coor_global = (0, 0) # user coordinate
+user_coor_center_point = (0, 0) # user coordinate center point to run around
+keep_center_calibration_global = 0 # bias to left or right
 keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
 left_area_is_reached = False # var for move_around
@@ -72,7 +73,6 @@ def get_time():
     # return central.strftime('%m/%d/%Y %H:%M:%S %Z')
     return central.strftime('%m/%d/%Y %H:%M:%S')
 
-
 def get_window_image(window_name):
     hwndMain = win32gui.FindWindow(None, window_name)
     hwndChild = win32gui.GetWindow(hwndMain, win32con.GW_CHILD)
@@ -91,8 +91,8 @@ def get_window_image(window_name):
 
 def get_user_coord():
     global user_coor_global
-    user_coor = user_coor_global
-    w_minmap = 171
+    user_coor = (0, 0)
+    w_minmap = 0
     try:
         # Screen Processing
         dx = MapleScreenCapturer()
@@ -143,19 +143,19 @@ def keep_center():
         keep_center_radius, \
         keep_center_left_wall_is_reached, \
         keep_center_right_wall_is_reached, \
-        user_coor_global
+        user_coor_center_point
     if not keep_center_left_wall_is_reached and not keep_center_right_wall_is_reached:
         keep_center_left_wall_is_reached = True
 
     try:
-        user_coor, w = get_user_coord()
+        user_coor, w_minmap = get_user_coord()
 
-        if user_coor_global == 0:
+        if user_coor[0] == 0:
             return
 
         # wall = []
-        wall = [90 - keep_center_radius,
-                90 + keep_center_radius]
+        wall = [user_coor_center_point[0] - keep_center_radius,
+                user_coor_center_point[0] + keep_center_radius]
         # print(wall)
 
         if user_coor[0] < wall[0]: # wall left
@@ -331,6 +331,7 @@ def ui():
         attack_delay_global, \
         keep_center_radius, \
         user_coor_global, \
+        user_coor_center_point, \
         buff_delay, \
         key_options
 
@@ -465,13 +466,13 @@ def ui():
             keep_center_radius = 15
             print("Invalid input radius")
 
-    def get_user_coordianate_ui():
-        global user_coor_global
+    def get_user_coordinate_center_point_ui():
+        global user_coor_center_point
         try:
-            user_coor_global, w_random = get_user_coord()
+            user_coor_center_point, w_random = get_user_coord()
         except:
-            user_coor_global = (0, 0)
-        userCoorLabel['text'] = '({}, {})'.format(user_coor_global[0], user_coor_global[1])
+            user_coor_center_point = (0, 0)
+        userCoorLabel['text'] = '({}, {})'.format(user_coor_center_point[0], user_coor_center_point[1])
 
     def re_assign_time_and_key_buff(num):
         for var in range(len(var_list)):
@@ -633,7 +634,7 @@ def ui():
 
     Button(root,
            text="Get User \nPosition",
-           command=get_user_coordianate_ui
+           command=get_user_coordinate_center_point_ui
            ).grid(column=1,
                   row=row)
     userCoorLabel = Label(root,
