@@ -171,6 +171,16 @@ def auto_mp(percent, resOption):
 
     return False
 
+def reset_minimap():
+    send_keys('m')
+
+def send_text_to_maplestory(message):
+    send_keys('{ENTER}')
+    time.sleep(0.5)
+    send_keys(message)
+    time.sleep(0.5)
+    send_keys('{ENTER}')
+
 def exchange_giftbox():
     send_keys("{VK_SPACE}")
     time.sleep(0.5)
@@ -195,5 +205,6 @@ def send_sms(message_to_send, phone_number):
     return
 
 if __name__ == '__main__':
+    send_sms("Test message...", 14699695979)
 
     exit(0)

@@ -9,8 +9,8 @@ from playsound import playsound
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
 
-window_length_x = [1024, 1280] # This will be modified at real-time
-window_height_y = [768, 960] # This should be modified at real-time
+window_length_x = [1024, 1280] # Resolution
+window_height_y = [768, 960] # Resolution
 
 resOption = 0 # 0 for 1024x768 | 1 for 1280x960
 
@@ -37,13 +37,12 @@ user_coor_center_point = (0, 0) # user coordinate center point to run around
 keep_center_calibration_global = 0 # bias to left or right
 keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
-left_area_is_reached = False # var for move_around
-right_area_is_reached = False # var for move_around
 keep_center_radius = 40 # var for keep_center
 # GLOBAL SETTINGS
 
 # Random Vars (to make things more random and trick lie detector)
 
+minimap_reset_times = 0
 hp_percent_random = 80
 mp_percent_random = 80
 random_buff_delay = [0] * len(buff_delay)
@@ -104,7 +103,7 @@ def check_for_chaos_scroll():
 
     # Store width and height of template in w and h
     w1, h1 = template1.shape[::-1]
-    w2, h2 = template1.shape[::-1]
+    w2, h2 = template2.shape[::-1]
 
     # Perform match operations.
     res1 = cv2.matchTemplate(img_gray, template1, cv2.TM_CCOEFF_NORMED)
@@ -131,7 +130,7 @@ def check_for_chaos_scroll():
     return False
 
 def get_user_coord():
-    global user_coor_global
+    global user_coor_global, minimap_reset_times
     user_coor = (0, 0)
     w_minmap = 0
     try:
@@ -148,11 +147,16 @@ def get_user_coord():
         user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
 
         user_coor_global = user_coor
+
+        minimap_reset_times = 0
         # print(user_coor)
         # print("User global coor", user_coor_global)
     except Exception as e:
         # print(e)
-        pass
+        reset_minimap()
+        time.sleep(1)
+        minimap_reset_times = minimap_reset_times + 1
+        return None
     return user_coor, w_minmap
 
 def display_state_info():
@@ -220,40 +224,40 @@ def keep_center():
     except Exception as e:
         print(e)
         # print(user_coor)
-        move_right_mage()
-        move_left_mage()
+        # move_right_mage()
+        # move_left_mage()
         # move_up_mage()
 
-def move_around():
-    global left_area_is_reached, right_area_is_reached
-    if not left_area_is_reached and not right_area_is_reached:
-        left_area_is_reached = True
-
-    try:
-        user_coor, w = get_user_coord()
-
-        far_right = int(85*w/100)
-        far_left = int(20*w/100)
-
-        if user_coor[0] < far_left:
-            left_area_is_reached = True
-            right_area_is_reached = False
-            # print("In Left")
-
-        if user_coor[0] > far_right:
-            right_area_is_reached = True
-            left_area_is_reached = False
-            # print("In Right")
-
-        if not left_area_is_reached:
-            move_left_mage()
-        else:
-            move_right_mage()
-    except:
-        move_right_mage()
-        move_left_mage()
-
-    return
+# def move_around():
+#     global left_area_is_reached, right_area_is_reached
+#     if not left_area_is_reached and not right_area_is_reached:
+#         left_area_is_reached = True
+#
+#     try:
+#         user_coor, w = get_user_coord()
+#
+#         far_right = int(85*w/100)
+#         far_left = int(20*w/100)
+#
+#         if user_coor[0] < far_left:
+#             left_area_is_reached = True
+#             right_area_is_reached = False
+#             # print("In Left")
+#
+#         if user_coor[0] > far_right:
+#             right_area_is_reached = True
+#             left_area_is_reached = False
+#             # print("In Right")
+#
+#         if not left_area_is_reached:
+#             move_left_mage()
+#         else:
+#             move_right_mage()
+#     except:
+#         move_right_mage()
+#         move_left_mage()
+#
+#     return
 
 def lie_detector():
     return False
@@ -310,21 +314,27 @@ def main():
                 if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
                     buff(key_codes[key_options[index]])
                     buff(key_codes[key_options[index]])
-                    print("Buff %d at: " % (index + 1), get_time())
+                    # print("Buff %d at: " % (index + 1), get_time())
                     time_at_buff[index] = datetime.utcnow()
                     random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
 
         # AutoHP
         if is_auto_hp == 1:
             if auto_hp(hp_percent_random, resOption):
-                hp_percent_random = randint(from_hp_global, to_hp_global)
+                try:
+                    hp_percent_random = randint(from_hp_global, to_hp_global)
+                except:
+                    hp_percent_random = 80
                 # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
         # AutoMP
         if is_auto_mp == 1:
-            # print("MP: {}".format(mp_percent_random))
             if auto_mp(mp_percent_random, resOption):
-                mp_percent_random = randint(from_mp_global, to_mp_global)
+                try:
+                    mp_percent_random = randint(from_mp_global, to_mp_global)
+                except:
+                    mp_percent_random = 80
+                # print("MP: {}".format(mp_percent_random))
 
         # AutoAttack
         if is_auto_attack == 1:
@@ -340,14 +350,22 @@ def main():
         if is_keep_center == 1:
             keep_center()
 
-        # Move Around Map Horizontally
-        if is_move_around == 1:
-            move_around()
-
+        # Check for Chaos Scroll drop
         if (datetime.utcnow() - time_at_check).total_seconds() > 60:
-            if check_for_chaos_scroll():
-                playsound("Windows_Unlock.wav")
-                time_at_check = datetime.utcnow()
+            try:
+                if check_for_chaos_scroll():
+                    playsound("Windows_Unlock.wav")
+                    time_at_check = datetime.utcnow()
+            except Exception as e:
+                pass
+
+        # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
+        # => send an sms message saying GM might be available)
+        if minimap_reset_times >= 4:
+            send_sms("GM might be here.... Come check!!", 14699695979)
+            is_auto_attack = 0
+            is_keep_center = 0
+            send_text_to_maplestory("hello?")
 
 def ui():
     global maple_story
@@ -699,17 +717,17 @@ def ui():
 
     #Keep Center Row ---
 
-    #Move Around Row
-    row += 1
-    Checkbutton(root,
-                text='Move Around',
-                command=change_move_around,
-                variable=is_move_around,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
-
-    #Move Around Row ---
+    # #Move Around Row
+    # row += 1
+    # Checkbutton(root,
+    #             text='Move Around',
+    #             command=change_move_around,
+    #             variable=is_move_around,
+    #             ).grid(row=row,
+    #                    column=0,
+    #                    sticky=W)
+    #
+    # #Move Around Row ---
 
     #1024x768 resolution
     row += 1
@@ -738,7 +756,7 @@ def ui():
     for pos in range(4):
         row += 1
         Checkbutton(root,
-                    text='Buff {}'.format(pos),
+                    text='Buff {}'.format(str(pos + 1)),
                     variable=buff_state_ui[pos],
                     command=lambda x=index: re_assign_time_and_key_buff(x)
                     ).grid(column=0,
@@ -791,7 +809,7 @@ def ui():
                            "\nF3 to toggle Auto Attack."
                            "\nF4 to toggle Auto Pickup."
                            "\nF8 to toggle Keep Center."
-                           "\nF9 to toggle Move Around."
+                           # "\nF9 to toggle Move Around."
                            "\nF12 to terminate all."
                       )
                                  # "\nAll time variables is in "
@@ -834,11 +852,11 @@ def on_press_reaction(event):
             is_move_around = 0
         is_keep_center = not is_keep_center
         print("Keep center state %s" % is_keep_center)
-    if event.name == 'f9':
-        if is_keep_center == 1:
-            is_keep_center = 0
-        is_move_around = not is_move_around
-        print("Move around state %s" % is_move_around)
+    # if event.name == 'f9':
+    #     if is_keep_center == 1:
+    #         is_keep_center = 0
+    #     is_move_around = not is_move_around
+    #     print("Move around state %s" % is_move_around)
     if event.name == 'f12':
         os._exit(0)
     # if event.name == 'f5': # move left
@@ -870,7 +888,7 @@ if __name__ == '__main__':
     print("Connected!")
     time.sleep(1)
     threading.Thread(target=ui).start()
-    threading.Thread(target=main()).start()
+    threading.Thread(target=main).start()
 
     # while True:
     #     exchange_giftbox()
