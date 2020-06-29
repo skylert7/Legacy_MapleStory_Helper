@@ -1,5 +1,5 @@
-# Version 1.3
-# Released Date: 6/26/2020
+# Version 1.4
+# Released Date: 6/29/2020
 
 from import_standalone import *
 from screen_processing import *
@@ -868,9 +868,9 @@ if __name__ == '__main__':
     get_window_image(windowName)
 
     print("Connected!")
-    # time.sleep(1)
-    # threading.Thread(target=ui).start()
-    # threading.Thread(target=main()).start()
+    time.sleep(1)
+    threading.Thread(target=ui).start()
+    threading.Thread(target=main()).start()
 
     # while True:
     #     exchange_giftbox()

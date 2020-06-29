@@ -20,12 +20,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90750363-505f-4976-b3ed-91d327e1f190" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/CS_1024x768.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CS_1280x920.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CS_test.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Windows_Unlock.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/basic_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/basic_functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/driver.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
