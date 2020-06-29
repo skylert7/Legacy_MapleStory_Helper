@@ -3,6 +3,7 @@ from pywinauto.keyboard import send_keys
 from PIL import ImageGrab
 import numpy as np
 import cv2, win32gui, time, math, win32con, win32ui
+from twilio.rest import Client
 
 
 
@@ -169,3 +170,30 @@ def auto_mp(percent, resOption):
         return True
 
     return False
+
+def exchange_giftbox():
+    send_keys("{VK_SPACE}")
+    time.sleep(0.5)
+    send_keys("{VK_DOWN}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    time.sleep(0.5)
+    send_keys("{RIGHT}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+
+def send_sms(message_to_send, phone_number):
+    # Need to store it somewhere else
+    account = "ACbbe9514e4619e8c9af58b344ba886df6"
+    token = "a1b9b4b9d387cf79a0945f6be5314160"
+    # Need to store it somewhere else
+    client = Client(account, token)
+    message = client.messages.create(to="+{}".format(phone_number), from_="+12058399940",
+                                     body=message_to_send)
+    return
+
+if __name__ == '__main__':
+
+    exit(0)

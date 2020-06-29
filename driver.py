@@ -3,6 +3,8 @@
 
 from import_standalone import *
 from screen_processing import *
+from playsound import playsound
+
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
@@ -84,10 +86,49 @@ def get_window_image(window_name):
 
     im_np = np.array(im)
 
-    im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
+    # im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
 
     # cv2.imshow("Window image", im_np)
     # cv2.waitKey()
+    return im_np
+
+def check_for_chaos_scroll():
+    global windowName
+    img_rgb = get_window_image(windowName)
+    # Convert it to grayscale
+    img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+
+    # Read the template
+    template1 = cv2.imread('CS_1024x768.JPG', 0)
+    template2 = cv2.imread('CS_1280x920.JPG', 0)
+
+    # Store width and height of template in w and h
+    w1, h1 = template1.shape[::-1]
+    w2, h2 = template1.shape[::-1]
+
+    # Perform match operations.
+    res1 = cv2.matchTemplate(img_gray, template1, cv2.TM_CCOEFF_NORMED)
+    res2 = cv2.matchTemplate(img_gray, template2, cv2.TM_CCOEFF_NORMED)
+
+    # Specify a threshold
+    threshold = 0.8
+
+    # Store the coordinates of matched area in a numpy array
+    loc1 = np.where(res1 >= threshold)
+    loc2 = np.where(res2 >= threshold)
+    if len(loc1[0]) > 0:
+        return True
+
+    if len(loc2[0]) > 0:
+        return True
+    # Draw a rectangle around the matched region.
+    # for pt in zip(*loc[::-1]):
+    #     cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
+
+    #     # Show the final image with the matched area.
+    # cv2.imshow('Detected', img_rgb)
+    # cv2.waitKey()
+    return False
 
 def get_user_coord():
     global user_coor_global
@@ -259,8 +300,9 @@ def main():
         time.sleep(2)
 
     time_at_buff = [datetime.utcnow()] * len(buff_delay)
-    time_at_move = [datetime.utcnow()] * len(moveDelay)
+    time_at_check = datetime.utcnow()
     time_at_attack = datetime.utcnow()
+
     while True:
         # Buffs
         for index in range(len(buff_delay)):
@@ -294,16 +336,6 @@ def main():
         if is_auto_pickup == 1:
             pickup()
 
-        # if is_move_left == 1:
-        #     if (datetime.utcnow() - time_at_move[0]).total_seconds() > (moveDelay[0] / 1000):
-        #         move_left_mage()
-        #         time_at_move[0] = datetime.utcnow()
-        #
-        # if is_move_right == 1:
-        #     if (datetime.utcnow() - time_at_move[1]).total_seconds() > (moveDelay[1] / 1000):
-        #         move_right_mage()
-        #         time_at_move[1] = datetime.utcnow()
-
         # It does what it says
         if is_keep_center == 1:
             keep_center()
@@ -311,6 +343,11 @@ def main():
         # Move Around Map Horizontally
         if is_move_around == 1:
             move_around()
+
+        if (datetime.utcnow() - time_at_check).total_seconds() > 60:
+            if check_for_chaos_scroll():
+                playsound("Windows_Unlock.wav")
+                time_at_check = datetime.utcnow()
 
 def ui():
     global maple_story
@@ -832,8 +869,14 @@ if __name__ == '__main__':
 
     print("Connected!")
     # time.sleep(1)
-    threading.Thread(target=ui).start()
-    threading.Thread(target=main()).start()
+    # threading.Thread(target=ui).start()
+    # threading.Thread(target=main()).start()
+
+    # while True:
+    #     exchange_giftbox()
+    #     time.sleep(randint(1, 4))
+
+
 
     # write_walls()    # <-to uncomment replace first #
 
