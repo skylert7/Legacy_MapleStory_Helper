@@ -180,7 +180,7 @@ class StaticImageProcessor:
         cropped = self.gray_img[self.default_minimap_scan_area[1]:self.default_minimap_scan_area[3], self.default_minimap_scan_area[0]:self.default_minimap_scan_area[2]]
         blurred_img = cv2.GaussianBlur(cropped, (3,3), 3)
         morphed_img = cv2.erode(blurred_img, (7,7))
-        # cv2.imshow("Map", morphed_img)
+        # cv2.imshow("Map", cropped)
         # cv2.waitKey()
         canny = cv2.Canny(morphed_img, threshold1=180, threshold2=255)
         try:
@@ -224,9 +224,7 @@ class StaticImageProcessor:
             rect = self.get_minimap_rect()
         else:
             rect = self.minimap_rect
-
         assert rect, "Invalid minimap coordinates"
-
         cropped = self.rgb_img[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
         # cv2.imshow("Minimap", cropped)
         # cv2.waitKey()

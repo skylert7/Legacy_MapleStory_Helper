@@ -19,22 +19,19 @@ is_auto_mp = 0
 is_auto_hp = 0
 is_auto_pickup = 0
 is_keep_center = 0
-is_move_around = 0
+is_check_for_GM = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 60 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 attack_delay_global = 100 # milliseconds
-buff_delay = [200, 200, 600, 0]
+buff_delay = [200, 200, 600, 100]
 buff_state = [0] * len(buff_delay)
-moveDelay = [1000, 1000]  # [left, right] in milliseconds
 
 key_options = ["String"] * len(buff_delay)
 
 user_coor_global = (0, 0) # user coordinate
-user_coor_center_point = (0, 0) # user coordinate center point to run around
-keep_center_calibration_global = 0 # bias to left or right
 keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
 keep_center_radius = 40 # var for keep_center
@@ -93,40 +90,48 @@ def get_window_image(window_name):
 
 def check_for_chaos_scroll():
     global windowName
-    img_rgb = get_window_image(windowName)
-    # Convert it to grayscale
-    img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+    try:
+        img_rgb = get_window_image(windowName)
+        # Convert it to grayscale
+        img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
-    # Read the template
-    template1 = cv2.imread('CS_1024x768.JPG', 0)
-    template2 = cv2.imread('CS_1280x920.JPG', 0)
+        # Read the template
+        template1 = cv2.imread('CS_1024x768.JPG', 0)
+        template2 = cv2.imread('CS_1280x920.JPG', 0)
 
-    # Store width and height of template in w and h
-    w1, h1 = template1.shape[::-1]
-    w2, h2 = template2.shape[::-1]
+        # Store width and height of template in w and h
+        w1, h1 = template1.shape[::-1]
+        w2, h2 = template2.shape[::-1]
 
-    # Perform match operations.
-    res1 = cv2.matchTemplate(img_gray, template1, cv2.TM_CCOEFF_NORMED)
-    res2 = cv2.matchTemplate(img_gray, template2, cv2.TM_CCOEFF_NORMED)
+        # Perform match operations.
+        res1 = cv2.matchTemplate(img_gray, template1, cv2.TM_CCOEFF_NORMED)
+        res2 = cv2.matchTemplate(img_gray, template2, cv2.TM_CCOEFF_NORMED)
 
-    # Specify a threshold
-    threshold = 0.8
+        # Specify a threshold
+        threshold = 0.8
 
-    # Store the coordinates of matched area in a numpy array
-    loc1 = np.where(res1 >= threshold)
-    loc2 = np.where(res2 >= threshold)
-    if len(loc1[0]) > 0:
-        return True
+        # Store the coordinates of matched area in a numpy array
+        loc1 = np.where(res1 >= threshold)
+        loc2 = np.where(res2 >= threshold)
+        if len(loc1[0]) > 0:
+            # Draw a rectangle around the matched region.
+            for pt in zip(*loc1[::-1]):
+                cv2.rectangle(img_rgb, pt, (pt[0] + w1, pt[1] + h1), (0, 255, 255), 2)
+            # Show the final image with the matched area.
+            # cv2.imshow('Detected1', img_rgb)
+            # cv2.waitKey()
+            return True
 
-    if len(loc2[0]) > 0:
-        return True
-    # Draw a rectangle around the matched region.
-    # for pt in zip(*loc[::-1]):
-    #     cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
-
-    #     # Show the final image with the matched area.
-    # cv2.imshow('Detected', img_rgb)
-    # cv2.waitKey()
+        if len(loc2[0]) > 0:
+            # Draw a rectangle around the matched region.
+            for pt in zip(*loc2[::-1]):
+                cv2.rectangle(img_rgb, pt, (pt[0] + w2, pt[1] + h2), (0, 255, 255), 2)
+            # Show the final image with the matched area.
+            # cv2.imshow('Detected2', img_rgb)
+            # cv2.waitKey()
+            return True
+    except Exception as e:
+        print(e)
     return False
 
 def get_user_coord():
@@ -144,19 +149,18 @@ def get_user_coord():
         # Screen Processing
 
         x_minmap, y_minmap, w_minmap, h_minmap = static.get_minimap_rect()
+
         user_coor = static.find_player_minimap_marker(rect=[x_minmap, y_minmap, w_minmap, h_minmap])  # tuple
 
-        user_coor_global = user_coor
-
-        minimap_reset_times = 0
         # print(user_coor)
         # print("User global coor", user_coor_global)
     except Exception as e:
-        # print(e)
-        reset_minimap()
-        time.sleep(1)
-        minimap_reset_times = minimap_reset_times + 1
-        return None
+        print(e)
+        if is_check_for_GM:
+            reset_minimap()
+            time.sleep(0.5)
+            minimap_reset_times = minimap_reset_times + 1
+        # return user_coor, w_minmap
     return user_coor, w_minmap
 
 def display_state_info():
@@ -184,24 +188,32 @@ def display_state_info():
     return
 
 def keep_center():
-    global keep_center_calibration_global, \
-        keep_center_radius, \
+    global keep_center_radius, \
         keep_center_left_wall_is_reached, \
         keep_center_right_wall_is_reached, \
-        user_coor_center_point
+        user_coor_global
+
     if not keep_center_left_wall_is_reached and not keep_center_right_wall_is_reached:
         keep_center_left_wall_is_reached = True
 
     try:
         user_coor, w_minmap = get_user_coord()
 
+        # print(user_coor)
+        if user_coor == 0:
+            reset_minimap()
+            time.sleep(0.5)
+            return None
+
         if user_coor[0] == 0:
-            return
+            reset_minimap()
+            time.sleep(0.5)
+            return None
 
         # wall = []
-        wall = [user_coor_center_point[0] - keep_center_radius,
-                user_coor_center_point[0] + keep_center_radius]
-        # print(wall)
+        wall = [user_coor_global[0] - keep_center_radius,
+                user_coor_global[0] + keep_center_radius]
+        # print("Wall: ", wall)
 
         if user_coor[0] < wall[0]: # wall left
             keep_center_left_wall_is_reached = True
@@ -223,41 +235,11 @@ def keep_center():
 
     except Exception as e:
         print(e)
+        os.system('cls')
         # print(user_coor)
         # move_right_mage()
         # move_left_mage()
         # move_up_mage()
-
-# def move_around():
-#     global left_area_is_reached, right_area_is_reached
-#     if not left_area_is_reached and not right_area_is_reached:
-#         left_area_is_reached = True
-#
-#     try:
-#         user_coor, w = get_user_coord()
-#
-#         far_right = int(85*w/100)
-#         far_left = int(20*w/100)
-#
-#         if user_coor[0] < far_left:
-#             left_area_is_reached = True
-#             right_area_is_reached = False
-#             # print("In Left")
-#
-#         if user_coor[0] > far_right:
-#             right_area_is_reached = True
-#             left_area_is_reached = False
-#             # print("In Right")
-#
-#         if not left_area_is_reached:
-#             move_left_mage()
-#         else:
-#             move_right_mage()
-#     except:
-#         move_right_mage()
-#         move_left_mage()
-#
-#     return
 
 def lie_detector():
     return False
@@ -271,6 +253,7 @@ def main():
         to_hp_global
 
     global buff_delay, \
+        minimap_reset_times, \
         random_buff_delay,\
         key_options
 
@@ -278,10 +261,7 @@ def main():
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup, \
-        is_move_left, \
-        is_move_right, \
-        is_keep_center, \
-        is_move_around
+        is_keep_center
 
     OPTIONS = list(key_codes.keys())
 
@@ -356,6 +336,7 @@ def main():
                 if check_for_chaos_scroll():
                     playsound("Windows_Unlock.wav")
                     time_at_check = datetime.utcnow()
+                    send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
                 pass
 
@@ -365,7 +346,9 @@ def main():
             send_sms("GM might be here.... Come check!!", 14699695979)
             is_auto_attack = 0
             is_keep_center = 0
+            is_auto_pickup = 0
             send_text_to_maplestory("hello?")
+            minimap_reset_times = 0
 
 def ui():
     global maple_story
@@ -375,7 +358,6 @@ def ui():
         is_auto_hp, \
         is_auto_pickup,\
         is_keep_center, \
-        is_move_around, \
         resOption, \
         buff_state
     # Global for string/int var
@@ -386,7 +368,6 @@ def ui():
         attack_delay_global, \
         keep_center_radius, \
         user_coor_global, \
-        user_coor_center_point, \
         buff_delay, \
         key_options
 
@@ -399,7 +380,6 @@ def ui():
     is_auto_attack = IntVar(value=int(is_auto_attack))
     is_auto_pickup = IntVar(value=int(is_auto_pickup))
     is_keep_center = IntVar(value=int(is_keep_center))
-    is_move_around = IntVar(value=int(is_move_around))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -469,11 +449,6 @@ def ui():
         is_keep_center = not is_keep_center
         maple_story.activate()
 
-    def change_move_around():
-        global is_move_around
-        is_move_around = not is_move_around
-        maple_story.activate()
-
     def toggle_resolution():
         global resOption, windowName
         resOption = tkResOption.get()
@@ -522,12 +497,13 @@ def ui():
             print("Invalid input radius")
 
     def get_user_coordinate_center_point_ui():
-        global user_coor_center_point
+        global user_coor_global
         try:
-            user_coor_center_point, w_random = get_user_coord()
+            user_coor_global, w_random = get_user_coord()
+            userCoorLabel['text'] = '({}, {})'.format(user_coor_global[0], user_coor_global[1])
         except:
-            user_coor_center_point = (0, 0)
-        userCoorLabel['text'] = '({}, {})'.format(user_coor_center_point[0], user_coor_center_point[1])
+            user_coor_global = (0, 0)
+            userCoorLabel['text'] = '(0, 0)'
 
     def re_assign_time_and_key_buff(num):
         for var in range(len(var_list)):
@@ -837,7 +813,7 @@ def on_press_reaction(event):
         is_auto_pickup, \
         is_move_left, \
         is_move_right, \
-        is_keep_center, is_move_around
+        is_keep_center
 
     if event.name == 'f1': # info
         display_state_info()
@@ -848,8 +824,6 @@ def on_press_reaction(event):
         is_auto_pickup = not is_auto_pickup
         print("Auto pick up state %s" % is_auto_pickup)
     if event.name == 'f8':
-        if is_move_around == 1:
-            is_move_around = 0
         is_keep_center = not is_keep_center
         print("Keep center state %s" % is_keep_center)
     # if event.name == 'f9':
@@ -859,16 +833,7 @@ def on_press_reaction(event):
     #     print("Move around state %s" % is_move_around)
     if event.name == 'f12':
         os._exit(0)
-    # if event.name == 'f5': # move left
-    #     if is_move_right == 1:
-    #         is_move_right = 0
-    #     is_move_left = not is_move_left
-    #     print("Move left state %s" % is_move_left)
-    # if event.name == 'f6': # move right
-    #     if is_move_left == 1:
-    #         is_move_left = 0
-    #     is_move_right = not is_move_right
-    #     print("Move right state %s" % is_move_right)
+
 
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
@@ -887,16 +852,17 @@ if __name__ == '__main__':
 
     print("Connected!")
     time.sleep(1)
+
     threading.Thread(target=ui).start()
     threading.Thread(target=main).start()
 
     # while True:
-    #     exchange_giftbox()
+    #     print(get_user_coord())
+    #     # reset_minimap()
+    #     time.sleep(4)
+    # while True:
+    #     exchange_regular_gac()
     #     time.sleep(randint(1, 4))
-
-
-
-    # write_walls()    # <-to uncomment replace first #
 
 
 

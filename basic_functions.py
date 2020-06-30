@@ -172,13 +172,14 @@ def auto_mp(percent, resOption):
     return False
 
 def reset_minimap():
-    send_keys('m')
+    send_keys('{m down}')
+    send_keys('{m up}')
 
 def send_text_to_maplestory(message):
     send_keys('{ENTER}')
     time.sleep(0.5)
     send_keys(message)
-    time.sleep(0.5)
+    time.sleep(2)
     send_keys('{ENTER}')
 
 def exchange_giftbox():
@@ -191,6 +192,13 @@ def exchange_giftbox():
     send_keys("{RIGHT}")
     time.sleep(0.5)
     send_keys("{ENTER}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+
+def exchange_regular_gac():
+    send_keys("{VK_SPACE}")
+    time.sleep(0.5)
+    send_keys("{DOWN}")
     time.sleep(0.5)
     send_keys("{ENTER}")
 
