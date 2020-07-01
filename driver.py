@@ -4,7 +4,7 @@
 from import_standalone import *
 from screen_processing import *
 from playsound import playsound
-
+from tkinter import ttk
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
@@ -19,6 +19,7 @@ is_auto_mp = 0
 is_auto_hp = 0
 is_auto_pickup = 0
 is_keep_center = 0
+is_check_for_cs = 0
 is_check_for_GM = 0
 
 from_mp_global = 50 # percent
@@ -131,11 +132,12 @@ def check_for_chaos_scroll():
             # cv2.waitKey()
             return True
     except Exception as e:
-        print(e)
+        print("Check for CS scroll exception: ", e)
+        pass
     return False
 
 def get_user_coord():
-    global user_coor_global, minimap_reset_times
+    global user_coor_global, minimap_reset_times, is_check_for_GM
     user_coor = (0, 0)
     w_minmap = 0
     try:
@@ -155,7 +157,7 @@ def get_user_coord():
         # print(user_coor)
         # print("User global coor", user_coor_global)
     except Exception as e:
-        print(e)
+        # print(e)
         if is_check_for_GM:
             reset_minimap()
             time.sleep(0.5)
@@ -169,7 +171,6 @@ def display_state_info():
         is_auto_mp, \
         is_auto_attack, \
         is_keep_center, \
-        is_move_around, \
         is_auto_pickup
 
     print('Auto HP State: {}\n'
@@ -182,7 +183,7 @@ def display_state_info():
                                            is_auto_attack,
                                            is_auto_pickup,
                                            is_keep_center,
-                                           is_move_around)
+                                           )
           )
     print('--- Press F12 to terminate ---')
     return
@@ -200,6 +201,7 @@ def keep_center():
         user_coor, w_minmap = get_user_coord()
 
         # print(user_coor)
+        # Why do this?
         if user_coor == 0:
             reset_minimap()
             time.sleep(0.5)
@@ -234,8 +236,8 @@ def keep_center():
 
 
     except Exception as e:
-        print(e)
         os.system('cls')
+        print(e)
         # print(user_coor)
         # move_right_mage()
         # move_left_mage()
@@ -261,7 +263,9 @@ def main():
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup, \
-        is_keep_center
+        is_keep_center, \
+        is_check_for_cs, \
+        is_check_for_GM
 
     OPTIONS = list(key_codes.keys())
 
@@ -331,18 +335,19 @@ def main():
             keep_center()
 
         # Check for Chaos Scroll drop
-        if (datetime.utcnow() - time_at_check).total_seconds() > 60:
+        if is_check_for_cs and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
                 if check_for_chaos_scroll():
                     playsound("Windows_Unlock.wav")
                     time_at_check = datetime.utcnow()
                     send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
+                print(e)
                 pass
 
         # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
         # => send an sms message saying GM might be available)
-        if minimap_reset_times >= 4:
+        if minimap_reset_times >= 5:
             send_sms("GM might be here.... Come check!!", 14699695979)
             is_auto_attack = 0
             is_keep_center = 0
@@ -358,6 +363,8 @@ def ui():
         is_auto_hp, \
         is_auto_pickup,\
         is_keep_center, \
+        is_check_for_cs, \
+        is_check_for_GM, \
         resOption, \
         buff_state
     # Global for string/int var
@@ -380,6 +387,8 @@ def ui():
     is_auto_attack = IntVar(value=int(is_auto_attack))
     is_auto_pickup = IntVar(value=int(is_auto_pickup))
     is_keep_center = IntVar(value=int(is_keep_center))
+    is_check_for_cs = IntVar(value=int(is_check_for_cs))
+    is_check_for_GM = IntVar(value=int(is_check_for_GM))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -416,7 +425,12 @@ def ui():
     tkResOption.set(0)  # 0 for 1024x768 | 1 for 1280x960
 
     # UI Vars
-
+    # tab_parent = ttk.Notebook(root)
+    # tab1 = ttk.Frame(tab_parent)
+    # tab2 = ttk.Frame(tab_parent)
+    # tab_parent.add(tab1, text='Tab 1')
+    # tab_parent.add(tab2, text='Tab 2')
+    # tab_parent.pack(expand=1, fill='both')
     root.title("MapleStory Helper")
 
 
@@ -448,6 +462,19 @@ def ui():
         global is_keep_center
         is_keep_center = not is_keep_center
         maple_story.activate()
+
+    def change_check_for_cs():
+        global is_check_for_cs
+        is_check_for_cs = not is_check_for_cs
+        # print(is_check_for_cs)
+        maple_story.activate()
+        return
+
+    def change_check_for_GM():
+        global is_check_for_GM
+        is_check_for_GM = not is_check_for_GM
+        maple_story.activate()
+        return
 
     def toggle_resolution():
         global resOption, windowName
@@ -523,7 +550,7 @@ def ui():
     OPTIONS = list(key_codes.keys())
     # Some variables to use
 
-    # default panel size
+    #default panel size
     root.geometry('{}x{}'.format(550, 650))
 
     # Auto HP Row
@@ -693,18 +720,6 @@ def ui():
 
     #Keep Center Row ---
 
-    # #Move Around Row
-    # row += 1
-    # Checkbutton(root,
-    #             text='Move Around',
-    #             command=change_move_around,
-    #             variable=is_move_around,
-    #             ).grid(row=row,
-    #                    column=0,
-    #                    sticky=W)
-    #
-    # #Move Around Row ---
-
     #1024x768 resolution
     row += 1
     Radiobutton(root,
@@ -777,6 +792,27 @@ def ui():
         w.create_line(0, y, canvas_width, y, fill="#476042")
     #Buff Rows ---
 
+    #Check for Chaos Scroll Row
+    row += 1
+    Checkbutton(root,
+                text='Check for Chaos Scroll',
+                command=change_check_for_cs,
+                variable=is_check_for_cs,
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+    #Check for Chaos Scroll Row ---
+
+    #Check for GM Scroll Row
+    row += 1
+    Checkbutton(root,
+                text='Check for GM',
+                command=change_check_for_GM,
+                variable=is_check_for_GM,
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+    #Check for GM Scroll Row ---
 
     #Notes (Text)
     row += 1
@@ -826,11 +862,6 @@ def on_press_reaction(event):
     if event.name == 'f8':
         is_keep_center = not is_keep_center
         print("Keep center state %s" % is_keep_center)
-    # if event.name == 'f9':
-    #     if is_keep_center == 1:
-    #         is_keep_center = 0
-    #     is_move_around = not is_move_around
-    #     print("Move around state %s" % is_move_around)
     if event.name == 'f12':
         os._exit(0)
 
