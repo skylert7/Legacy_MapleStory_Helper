@@ -335,7 +335,7 @@ def main():
             keep_center()
 
         # Check for Chaos Scroll drop
-        if is_check_for_cs and (datetime.utcnow() - time_at_check).total_seconds() > 60:
+        if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 10:
             try:
                 if check_for_chaos_scroll():
                     playsound("Windows_Unlock.wav")
