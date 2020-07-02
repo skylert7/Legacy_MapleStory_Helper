@@ -51,6 +51,12 @@ for i in range(len(buff_delay)):
 
 # bbox (left_x, top_y, right_x, bottom_y)
 
+# Pre-processing
+# Read the template
+template1 = cv2.imread('CS_1024x768.JPG', 0)
+template2 = cv2.imread('CS_1280x920.JPG', 0)
+# Pre-processing
+
 def toggle(aState):
     return not aState
 
@@ -90,16 +96,14 @@ def get_window_image(window_name):
     return im_np
 
 def check_for_chaos_scroll():
-    global windowName
+    global windowName, template1, template2
     try:
         img_rgb = get_window_image(windowName)
         # Convert it to grayscale
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
-        # Read the template
-        template1 = cv2.imread('CS_1024x768.JPG', 0)
-        template2 = cv2.imread('CS_1280x920.JPG', 0)
-
+        # print("Template 1: ", template1)
+        # print("Template 2: ", template2)
         # Store width and height of template in w and h
         w1, h1 = template1.shape[::-1]
         w2, h2 = template2.shape[::-1]
@@ -132,7 +136,7 @@ def check_for_chaos_scroll():
             # cv2.waitKey()
             return True
     except Exception as e:
-        print("Check for CS scroll exception: ", e)
+        print("Check for CS scsroll exception: ", e)
         pass
     return False
 
@@ -177,8 +181,7 @@ def display_state_info():
           'Auto MP State: {}\n'
           'Auto Attack State: {}\n'
           'Auto Pickup State: {}\n'
-          'Keep Center State: {}\n'
-          'Move Around State: {}\n'.format(is_auto_hp,
+          'Keep Center State: {}\n'.format(is_auto_hp,
                                            is_auto_mp,
                                            is_auto_attack,
                                            is_auto_pickup,
@@ -335,7 +338,7 @@ def main():
             keep_center()
 
         # Check for Chaos Scroll drop
-        if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 10:
+        if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
                 if check_for_chaos_scroll():
                     playsound("Windows_Unlock.wav")
@@ -347,7 +350,7 @@ def main():
 
         # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
         # => send an sms message saying GM might be available)
-        if minimap_reset_times >= 5:
+        if minimap_reset_times >= 7:
             send_sms("GM might be here.... Come check!!", 14699695979)
             is_auto_attack = 0
             is_keep_center = 0
