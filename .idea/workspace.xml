@@ -159,10 +159,10 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.driver" />
-      <item itemvalue="Python.pickup" />
-      <item itemvalue="Python.inactive_window_trial" />
       <item itemvalue="Python.basic_functions" />
+      <item itemvalue="Python.driver" />
+      <item itemvalue="Python.inactive_window_trial" />
+      <item itemvalue="Python.pickup" />
       <item itemvalue="Python.screen_processing" />
     </list>
     <recent_temporary>

@@ -35,6 +35,8 @@ key_options = ["String"] * len(buff_delay)
 user_coor_global = (0, 0) # user coordinate
 keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
+keep_center_move_delay = 2000 # move delay for keep_center
+time_at_move = [datetime.utcnow(), datetime.utcnow()]
 keep_center_radius = 40 # var for keep_center
 # GLOBAL SETTINGS
 
@@ -195,6 +197,8 @@ def keep_center():
     global keep_center_radius, \
         keep_center_left_wall_is_reached, \
         keep_center_right_wall_is_reached, \
+        keep_center_move_delay, \
+        time_at_move, \
         user_coor_global
 
     if not keep_center_left_wall_is_reached and not keep_center_right_wall_is_reached:
@@ -229,14 +233,15 @@ def keep_center():
             keep_center_left_wall_is_reached = False
             # print("In Right")
 
-        if not keep_center_left_wall_is_reached:
+        if (datetime.utcnow() - time_at_move[0]).total_seconds() > keep_center_move_delay and \
+                not keep_center_left_wall_is_reached:
             move_left_mage()
             # print("Move Left")
 
-        else:
+        elif (datetime.utcnow() - time_at_move[0]).total_seconds() > keep_center_move_delay and \
+                not keep_center_right_wall_is_reached:
             move_right_mage()
             # print("Move Right")
-
 
     except Exception as e:
         os.system('cls')
@@ -377,6 +382,7 @@ def ui():
         from_hp_global, \
         attack_delay_global, \
         keep_center_radius, \
+        keep_center_move_delay, \
         user_coor_global, \
         buff_delay, \
         key_options
@@ -408,6 +414,8 @@ def ui():
 
     keepCenterRadiusUI = StringVar()
     keepCenterRadiusUI.set(str(keep_center_radius))
+    keepCenterMoveDelayUI = StringVar()
+    keepCenterMoveDelayUI.set(str(keep_center_move_delay))
 
     userCoordinateUI = StringVar()
     userCoordinateUI.set('({}, {})'.format(user_coor_global[0], user_coor_global[1]))
@@ -491,11 +499,12 @@ def ui():
         try:
             from_hp_global = int(fromHpEntry.get())
             to_hp_global = int(toHpEntry.get())
+            if from_hp_global > to_hp_global:
+                to_hp_global = from_hp_global + 5
             # print("HP here: ", from_hp_global , to_hp_global)
-
         except:
-            from_hp_global = 0
-            to_hp_global = 0
+            from_hp_global = 50
+            to_hp_global = 50
             print("Invalid input HP")
 
     def setMpRange():
@@ -503,10 +512,12 @@ def ui():
         try:
             from_mp_global = int(fromMpEntry.get())
             to_mp_global = int(toMpEntry.get())
+            if from_mp_global > to_mp_global:
+                to_mp_global = from_mp_global + 5
             # print("MP here: ", from_mp_global , to_mp_global)
         except:
-            from_mp_global = 0
-            to_mp_global = 0
+            from_mp_global = 50
+            to_mp_global = 50
             print("Invalid input MP")
 
     def set_attack_delay():
@@ -518,13 +529,16 @@ def ui():
             attack_delay_global = 100
             print("Invalid input Attack Delay")
 
-    def set_keep_center_radius():
-        global keep_center_radius
+    def set_keep_center_radius_and_move_delay():
+        global keep_center_radius, keep_center_move_delay
         try:
             keep_center_radius = int(keepCenterRadiusUI.get())
+            keep_center_move_delay = int(keepCenterMoveDelayUI.get())
+
         except:
             keep_center_radius = 15
-            print("Invalid input radius")
+            keep_center_move_delay = 2000
+            print("Invalid input radius or move delay")
 
     def get_user_coordinate_center_point_ui():
         global user_coor_global
@@ -715,9 +729,19 @@ def ui():
           width=8).grid(column=4,
                         row=row)
 
+    Label(root,
+          text="Move Delay:"
+          ).grid(column=5,
+                 row=row)
+
+    Entry(root,
+          textvariable=keepCenterMoveDelayUI,
+          width=8).grid(column=6,
+                        row=row)
+
     Button(root,
            text='Set',
-           command=set_keep_center_radius
+           command=set_keep_center_radius_and_move_delay
            ).grid(column=5,
                   row=row)
 
