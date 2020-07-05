@@ -350,7 +350,7 @@ def main():
         if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
                 if check_for_chaos_scroll():
-                    playsound("C:\\Users\\Skyler\\Git_Folder\\BotMaple\\Windows_Unlock.wav")
+                    # playsound("C:\\Users\\Skyler\\Git_Folder\\BotMaple\\Windows_Unlock.wav")
                     time_at_check = datetime.utcnow()
                     send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
