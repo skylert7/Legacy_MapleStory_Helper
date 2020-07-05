@@ -55,10 +55,11 @@ for i in range(len(buff_delay)):
 
 # Pre-processing
 # Read the template
-template1 = cv2.imread('CS_1024x768.JPG', 0)
-template2 = cv2.imread('CS_1280x920.JPG', 0)
+template1 = cv2.imread('C:\\Users\\Skyler\\Git_Folder\\BotMaple\\CS_1280x920.JPG', 0)
+template2 = cv2.imread('C:\\Users\\Skyler\\Git_Folder\\BotMaple\\CS_1024x768.JPG', 0)
 # Pre-processing
-
+print(type(template1))
+print(type(template2))
 def toggle(aState):
     return not aState
 
@@ -164,11 +165,12 @@ def get_user_coord():
         # print("User global coor", user_coor_global)
     except Exception as e:
         # print(e)
-        if is_check_for_GM:
+        if is_check_for_GM == 1:
             reset_minimap()
             time.sleep(0.5)
             minimap_reset_times = minimap_reset_times + 1
         # return user_coor, w_minmap
+    minimap_reset_times = 0
     return user_coor, w_minmap
 
 def display_state_info():
@@ -233,16 +235,18 @@ def keep_center():
             keep_center_left_wall_is_reached = False
             # print("In Right")
 
-        if (datetime.utcnow() - time_at_move[0]).total_seconds() > keep_center_move_delay and \
-                not keep_center_left_wall_is_reached:
+        # if (datetime.utcnow() - time_at_move[0]).total_seconds() > keep_center_move_delay and \
+        #         not keep_center_left_wall_is_reached:
+        if not keep_center_left_wall_is_reached:
             move_left_mage()
             # print("Move Left")
 
-        elif (datetime.utcnow() - time_at_move[0]).total_seconds() > keep_center_move_delay and \
-                not keep_center_right_wall_is_reached:
+        # elif (datetime.utcnow() - time_at_move[0]).total_seconds() > keep_center_move_delay and \
+        #         not keep_center_right_wall_is_reached:
+        else:
             move_right_mage()
             # print("Move Right")
-
+        minimap_reset_times = 0
     except Exception as e:
         os.system('cls')
         print(e)
@@ -346,7 +350,7 @@ def main():
         if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
                 if check_for_chaos_scroll():
-                    playsound("Windows_Unlock.wav")
+                    playsound("C:\\Users\\Skyler\\Git_Folder\\BotMaple\\Windows_Unlock.wav")
                     time_at_check = datetime.utcnow()
                     send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
@@ -357,10 +361,10 @@ def main():
         # => send an sms message saying GM might be available)
         if minimap_reset_times >= 7:
             send_sms("GM might be here.... Come check!!", 14699695979)
-            is_auto_attack = 0
-            is_keep_center = 0
-            is_auto_pickup = 0
-            send_text_to_maplestory("hello?")
+            # is_auto_attack = 0
+            # is_keep_center = 0
+            # is_auto_pickup = 0
+            # send_text_to_maplestory("hello?")
             minimap_reset_times = 0
 
 def ui():
@@ -706,7 +710,32 @@ def ui():
                 ).grid(row=row,
                        column=0,
                        sticky=W)
+    Label(root,
+          text="Radius:"
+          ).grid(column=1,
+                 row=row)
 
+    Entry(root,
+          textvariable=keepCenterRadiusUI,
+          width=8).grid(column=2,
+                        row=row)
+
+    Label(root,
+          text="Move Delay:"
+          ).grid(column=3,
+                 row=row)
+
+    Entry(root,
+          textvariable=keepCenterMoveDelayUI,
+          width=8).grid(column=4,
+                        row=row)
+
+    Button(root,
+           text='Set',
+           command=set_keep_center_radius_and_move_delay
+           ).grid(column=5,
+                  row=row)
+    row += 1
     Button(root,
            text="Get User \nPosition",
            command=get_user_coordinate_center_point_ui
@@ -718,32 +747,6 @@ def ui():
 
     userCoorLabel.grid(column=2,
                        row=row)
-
-    Label(root,
-          text="Radius:"
-          ).grid(column=3,
-                 row=row)
-
-    Entry(root,
-          textvariable=keepCenterRadiusUI,
-          width=8).grid(column=4,
-                        row=row)
-
-    Label(root,
-          text="Move Delay:"
-          ).grid(column=5,
-                 row=row)
-
-    Entry(root,
-          textvariable=keepCenterMoveDelayUI,
-          width=8).grid(column=6,
-                        row=row)
-
-    Button(root,
-           text='Set',
-           command=set_keep_center_radius_and_move_delay
-           ).grid(column=5,
-                  row=row)
 
     #Keep Center Row ---
 
@@ -898,7 +901,7 @@ if __name__ == '__main__':
     try:
 
         maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
-
+        # print(gw.getWindowsWithTitle(windowName))
     except:
 
         print("Can't find MapleStory Client... Exiting")
@@ -921,8 +924,4 @@ if __name__ == '__main__':
     # while True:
     #     exchange_regular_gac()
     #     time.sleep(randint(1, 4))
-
-
-
-
 
