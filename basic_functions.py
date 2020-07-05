@@ -1,4 +1,4 @@
-from __future__ import print_function
+# from __future__ import print_function
 
 from import_standalone import *
 from pywinauto.keyboard import send_keys
@@ -7,12 +7,12 @@ import numpy as np
 import cv2, win32gui, time, math, win32con, win32ui
 from twilio.rest import Client
 import sys
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-PY3 = sys.version_info[0] == 3
+# import pytesseract
+# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+# PY3 = sys.version_info[0] == 3
 
-if PY3:
-    xrange = range
+# if PY3:
+#     xrange = range
 
 
 # key_codes: {<Name  Appear>: <Key Code to Send>}
