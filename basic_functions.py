@@ -4,7 +4,6 @@ from twilio.rest import Client
 import time
 from dateutil import tz
 from datetime import datetime
-from pywinauto import keyboard
 # key_codes: {<Name  Appear>: <Key Code to Send>}
 key_codes = {'Insert': '{VK_INSERT}',
              'Delete': '{VK_DELETE}',

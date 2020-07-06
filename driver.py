@@ -32,6 +32,7 @@ from_mp_global = 50 # percent
 to_mp_global = 60 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
+hp_mp_delay = [800, 800] # milliseconds [HP, MP]
 attack_delay_global = 100 # milliseconds
 buff_delay = [200, 200, 600, 100]
 buff_state = [0] * len(buff_delay)
@@ -222,7 +223,7 @@ def main():
     time_at_buff = [datetime.utcnow()] * len(buff_delay)
     time_at_check = datetime.utcnow()
     time_at_attack = datetime.utcnow()
-
+    time_at_hp_mp = [datetime.utcnow()] * len(hp_mp_delay)
     while True:
         static.update_image()
         # Buffs
@@ -235,25 +236,31 @@ def main():
                     time_at_buff[index] = datetime.utcnow()
                     random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
 
-        # AutoHP -- should we add delay?
+        # AutoHP
         if is_auto_hp == 1:
-            if static.get_HP_percent() < hp_percent_random:
-                drink_hp()
-                try:
-                    hp_percent_random = randint(from_hp_global, to_hp_global)
-                except:
-                    hp_percent_random = 80
-                # print("HP: {} {}".format(from_hp_global, to_hp_global))
+            if (datetime.utcnow() - time_at_hp_mp[0]).total_seconds() > hp_mp_delay[0] / 1000:
+                if static.get_HP_percent() < hp_percent_random:
+                    drink_hp()
+                    # print(static.get_HP_percent())
+                    time_at_hp_mp[0] = datetime.utcnow()
+                    try:
+                        hp_percent_random = randint(from_hp_global, to_hp_global)
+                    except:
+                        hp_percent_random = 80
+                    # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
-        # AutoMP -- should we add delay?
+        # AutoMP
         if is_auto_mp == 1:
-            if static.get_MP_percent() < mp_percent_random:
-                drink_mana()
-                try:
-                    mp_percent_random = randint(from_mp_global, to_mp_global)
-                except:
-                    mp_percent_random = 80
-                # print("MP: {}".format(mp_percent_random))
+            if (datetime.utcnow() - time_at_hp_mp[1]).total_seconds() > hp_mp_delay[1] / 1000:
+                if static.get_MP_percent() < mp_percent_random:
+                    drink_mana()
+                    time_at_hp_mp[1] = datetime.utcnow()
+                    # print(static.get_MP_percent())
+                    try:
+                        mp_percent_random = randint(from_mp_global, to_mp_global)
+                    except:
+                        mp_percent_random = 80
+                    # print("MP: {}".format(mp_percent_random))
 
         # AutoAttack
         if is_auto_attack == 1:

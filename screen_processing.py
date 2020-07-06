@@ -354,7 +354,7 @@ class StaticImageProcessor:
         # return unique values and count of each unique value
         unique, counts = np.unique(im_np[10], return_counts=True)
         percent = counts[0] / (x_end[resOption] - x_start[resOption]) * 100
-        print("Percent HP: ", percent)
+        # print("Percent HP: ", percent)
         return percent
 
     def get_MP_percent(self):
