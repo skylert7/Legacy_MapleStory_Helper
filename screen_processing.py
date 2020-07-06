@@ -7,7 +7,12 @@ from pathlib import Path
 import ctypes
 import ctypes.wintypes
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+try:
+    pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
+except:
+    pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
+
 
 class MapleWindowNotFoundError(Exception):
     pass
