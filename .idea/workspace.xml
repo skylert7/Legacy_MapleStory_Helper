@@ -21,7 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="90750363-505f-4976-b3ed-91d327e1f190" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/basic_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/basic_functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/driver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screen_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/screen_processing.py" afterDir="false" />
@@ -58,7 +57,7 @@
       <recent name="C:\Users\Skyler\Git_Folder\BotMaple" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.basic_functions">
+  <component name="RunManager" selected="Python.screen_processing">
     <configuration name="basic_functions" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="9D_Auto_Farm" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -173,9 +172,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.basic_functions" />
-        <item itemvalue="Python.driver" />
         <item itemvalue="Python.screen_processing" />
+        <item itemvalue="Python.driver" />
+        <item itemvalue="Python.basic_functions" />
         <item itemvalue="Python.inactive_window_trial" />
         <item itemvalue="Python.pickup" />
       </list>
@@ -220,22 +219,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1170" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594023677220" />
-    <state width="937" height="279" key="GridCell.Tab.0.bottom" timestamp="1594023636869">
+    <state x="1135" y="427" key="#com.jetbrains.python.refactoring.move.PyMakeFunctionTopLevelDialog" timestamp="1594030260171">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594023636869" />
-    <state width="937" height="279" key="GridCell.Tab.0.center" timestamp="1594023636869">
+    <state x="1135" y="427" key="#com.jetbrains.python.refactoring.move.PyMakeFunctionTopLevelDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594030260171" />
+    <state width="937" height="279" key="GridCell.Tab.0.bottom" timestamp="1594030429743">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594023636869" />
-    <state width="937" height="279" key="GridCell.Tab.0.left" timestamp="1594023636869">
+    <state width="937" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594030429743" />
+    <state width="937" height="279" key="GridCell.Tab.0.center" timestamp="1594030429742">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594023636869" />
-    <state width="937" height="279" key="GridCell.Tab.0.right" timestamp="1594023636869">
+    <state width="937" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594030429742" />
+    <state width="937" height="279" key="GridCell.Tab.0.left" timestamp="1594030429742">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594023636869" />
+    <state width="937" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594030429742" />
+    <state width="937" height="279" key="GridCell.Tab.0.right" timestamp="1594030429743">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="937" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594030429743" />
     <state x="886" y="168" key="SettingsEditor" timestamp="1593682457575">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -1,7 +1,13 @@
-from import_standalone import *
 import numpy as np
 import cv2, win32gui, time, math, win32con, win32ui
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
+import pytesseract
+import sys
+from pathlib import Path
+import ctypes
+import ctypes.wintypes
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class MapleWindowNotFoundError(Exception):
     pass
@@ -108,7 +114,11 @@ class StaticImageProcessor:
         """
         if not img_handle:
             raise Exception("img_handle must reference an MapleScreenCapturer class!!")
-
+        # Pre-processing
+        # Read the template
+        self.template1 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1280x920.JPG'.format(str(Path.home())), 0)
+        self.template2 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1024x768.JPG'.format(str(Path.home())), 0)
+        # Pre-processing
         self.img_handle = img_handle
         self.bgr_img = None
         self.rbg_img = None
@@ -117,6 +127,8 @@ class StaticImageProcessor:
         self.processed_img = None
         self.minimap_area = 0
         self.minimap_rect = None
+        self.chat_box_rgb_img = None
+        self.chat_box_bgr_img = None
 
         self.maximum_minimap_area = 40000
 
@@ -143,8 +155,6 @@ class StaticImageProcessor:
 
 
     def update_image(self, src=None, set_focus=False, update_rect=False):
-    # def update_image(self, src=None, set_focus=True, update_rect=False):
-
         """
         Calls ScreenCapturer's update function and updates images.
         :param src : rgb image data from PIL ImageGrab
@@ -163,10 +173,12 @@ class StaticImageProcessor:
             #     assert self.bgr_img != 0, "self.img_handle did not return img"
 
         self.bgr_img = cv2.cvtColor(np.array(self.rgb_img), cv2.COLOR_RGB2BGR)
-        # self.gray_img = cv2.cvtColor(self.bgr_img, cv2.COLOR_BGR2GRAY)
         self.gray_img = cv2.cvtColor(self.bgr_img, cv2.COLOR_BGR2GRAY)
         self.rbg_img = np.array(self.rbg_img)
 
+        h, w = self.rgb_img.shape[:-1]
+        self.chat_box_rgb_img = self.rgb_img[int(h / 1.8):int(h / 1.12), 0:int(w / 1.6)]
+        self.chat_box_bgr_img = self.bgr_img[int(h / 1.8):int(h / 1.12), 0:int(w / 1.6)]
         # cv2.imshow("RBG", np.array(self.rgb_img))
         # cv2.waitKey()
 
@@ -247,32 +259,7 @@ class StaticImageProcessor:
             return avg_x, avg_y
             # print((avg_x, avg_y))
 
-        # if len(td) > 0:
-        #     avg_x = 0
-        #     avg_y = 0
-        #     totalpoints = 0
-        #     for coord in td:
-        #         nearest_points = 0  # Points which are close to coord pixel
-        #         for ref_coord in td:
-        #             # Calculate the range between every single pixel
-        #             if math.sqrt(abs(ref_coord[0]-coord[0])**2 + abs(ref_coord[1]-coord[1])**2) <= 3:
-        #                 nearest_points += 1
-        #
-        #         if nearest_points >= 10 and nearest_points <= 13:
-        #             avg_y += coord[0]
-        #             avg_x += coord[1]
-        #             totalpoints += 1
-        #
-        #     if totalpoints == 0:
-        #         return 0
-        #
-        #     avg_y = int(avg_y / totalpoints)
-        #     avg_x = int(avg_x / totalpoints)
-        #     return avg_x, avg_y
-
         return 0
-
-
 
     def find_other_player_marker(self, rect=None):
         """
@@ -340,6 +327,145 @@ class StaticImageProcessor:
 
         return 0
 
+    def get_HP_percent(self):
+        '''
+        choices: 1024 x 768 (0) OR 1280 x 960 (1)
+        '''
+        h, w = self.rgb_img.shape[:-1]
+        resOption = 1
+        if h == 768:
+            resOption = 0
+        elif h == 960:
+            resOption = 1
+
+        x_start = [285, 356]
+        x_end = [412, 508]
+        y_start = [744, 936]
+        y_end = [762, 954]
+
+        im_np = self.gray_img[y_start[resOption]:y_end[resOption],
+                                x_start[resOption]:x_end[resOption]]
+
+        # pick an array to analyze current hp and full hp
+        # print("HP: ", im_np[10])
+        # cv2.imshow("HP", im_np)
+        # cv2.waitKey()
+
+        # return unique values and count of each unique value
+        unique, counts = np.unique(im_np[10], return_counts=True)
+        percent = counts[0] / (x_end[resOption] - x_start[resOption]) * 100
+        print("Percent HP: ", percent)
+        return percent
+
+    def get_MP_percent(self):
+        '''
+        choices: 1024 x 768 (0) OR 1280 x 960 (1)
+        '''
+
+        h, w = self.rgb_img.shape[:-1]
+        resOption = 1
+        if h == 768:
+            resOption = 0
+        elif h == 960:
+            resOption = 1
+
+        x_start = [424, 530]
+        x_end = [551, 682]
+        y_start = [744, 936]
+        y_end = [762, 954]
+
+        im_np = self.gray_img[y_start[resOption]:y_end[resOption],
+                                x_start[resOption]:x_end[resOption]]
+
+        # pick an array to analyze current hp and full hp
+        # print("MP: ", im_np[10])
+        # print("Auto MP. Random percent: {}. Res Option: {}".format(percent, resOption))
+        # cv2.imshow("MP", im_np)
+        # cv2.waitKey()
+
+        item = 0
+
+        # 178 is empty - 1024x768
+        # 134 is empty - 1280x960
+        empty = [175, 130]
+        for x in range(len(im_np[10])):
+            if im_np[10][x] > empty[resOption]:
+                item = x
+                break
+        # print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
+        percent = item / (x_end[resOption] - x_start[resOption]) * 100
+        if percent == 0:
+            return 100
+        return percent
+
+    def is_exist_chaos_scroll(self):
+        try:
+            # Store width and height of template in w and h
+            w1, h1 = self.template1.shape[::-1]
+            w2, h2 = self.template2.shape[::-1]
+
+            # Perform match operations.
+            res1 = cv2.matchTemplate(self.gray_img, self.template1, cv2.TM_CCOEFF_NORMED)
+            res2 = cv2.matchTemplate(self.gray_img, self.template2, cv2.TM_CCOEFF_NORMED)
+
+            # Specify a threshold
+            threshold = 0.8
+
+            # Store the coordinates of matched area in a numpy array
+            loc1 = np.where(res1 >= threshold)
+            loc2 = np.where(res2 >= threshold)
+            if len(loc1[0]) > 0:
+                return True
+
+            if len(loc2[0]) > 0:
+                return True
+
+        except Exception as e:
+            print("Check for CS scsroll exception: ", e)
+            pass
+        return False
+
+    def is_exist_GM_dungeon(self):
+        ###### Preprocessing (if needed)
+        # gray = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
+        # gray_thresh = cv2.threshold(gray, 0, 255,
+        #                             cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+        # # make a check to see if median blurring should be done to remove
+        # # noise
+        # gray_blur = cv2.medianBlur(gray, 3)
+        #
+        # text_bgr = pytesseract.image_to_string(im_np)
+        # print("BGR", text_bgr)
+        # # text_thresh = pytesseract.image_to_string(gray_thresh)
+        # # print("Thresh", text_thresh)
+        # text_blur = pytesseract.image_to_string(gray_blur)
+        # print("Blur", text_blur)
+        # cv2.imshow("Output Thresh", gray_thresh)
+        # cv2.imshow("Output Blur", gray_blur)
+        # cv2.waitKey(0)
+        ###### Preprocessing (if needed)-----
+
+        text_bgr = pytesseract.image_to_string(self.chat_box_bgr_img)
+        text_rgb = pytesseract.image_to_string(self.chat_box_rgb_img)
+
+        if "GM" or "Alex" or "GMAlex" in text_bgr:
+            return True
+        if "GM" or "Alex" or "GMAlex" in text_rgb:
+            return True
+        # cv2.imshow("img", test_img)
+        # cv2.waitKey()
+
+        return False
+
+    def is_exist_GM_regular(self):
+        return False
+
+    def display_image_attr(self):
+        cv2.imshow("BGR", self.bgr_img)
+        cv2.imshow("RGB", self.rgb_img)
+        cv2.imshow("Gray", self.gray_img)
+        cv2.waitKey()
+
 if __name__ == "__main__":
     dx = MapleScreenCapturer()
     hwnd = dx.ms_get_screen_hwnd()
@@ -347,48 +473,7 @@ if __name__ == "__main__":
 
     static = StaticImageProcessor(dx)
     static.update_image()
-
+    print(static.get_MP_percent())
     x, y, w, h = static.get_minimap_rect()
-    # print("x: {}; y: {}; w: {}; h: {}".format(x, y, w, h))
-    # bbox = (15, 35, 139, 54)
-
-    # img = np.array(img)
-    # cv2.imshow("Minimap", img)
-    # cv2.waitKey()
-
-
-    print("User coor: ", static.find_player_minimap_marker(rect=[x, y, w, h]))
-    #
+    # print(rect)
     # dx.capture(rect=rect)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Scratch, May need for later
-    # print(cropped)
-
-    # for i in range(len(cropped)):
-    #     cropped[i] = np.array([[0, 255, 255],
-    #                            [0, 255, 255],
-    #                            [136, 255, 255],
-    #                            [136, 255, 255],
-    #                            [0, 255, 255],
-    #                            [0, 255, 255]])
-
-    # for i in range(x, x+w):
-    #     cropped = static.rgb_img[y:y + h, i:x+i]
-    #     # 54
-    #     cv2.imshow("Minimap", cropped)
-    #     cv2.waitKey()

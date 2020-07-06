@@ -1,14 +1,14 @@
-# Version 1.4
-# Released Date: 6/29/2020
+# Version 1.5
+# Released Date: 7/6/2020
 
 from import_standalone import *
 from screen_processing import *
 from tkinter import ttk
-from pathlib import Path
+from basic_functions import *
 
 # GLOBAL SETTINGS
-windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
-windowName = windows[3]
+windows = ['Nine Dragons', 'MapleHome', 'MapleStory']
+windowName = windows[2]
 
 window_length_x = [1024, 1280] # Resolution
 window_height_y = [768, 960] # Resolution
@@ -21,7 +21,8 @@ is_auto_hp = 0
 is_auto_pickup = 0
 is_keep_center = 0
 is_check_for_cs = 0
-is_check_for_GM = 0
+is_check_for_GM_regular = 0
+is_check_for_GM_dungeon = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 60 # percent
@@ -52,97 +53,28 @@ for i in range(len(buff_delay)):
 
 # Random Vars
 
+# Screen Processing
+dx = MapleScreenCapturer()
+hwnd = dx.ms_get_screen_hwnd()
+rect = dx.ms_get_screen_rect(hwnd)
+
+static = StaticImageProcessor(dx)
+static.update_image()
+# Screen Processing
+
 # bbox (left_x, top_y, right_x, bottom_y)
 
-# Pre-processing
-# Read the template
-template1 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1280x920.JPG'.format(str(Path.home())), 0)
-template2 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1024x768.JPG'.format(str(Path.home())), 0)
-# Pre-processing
-print(type(template1))
-print(type(template2))
+
 def toggle(aState):
     return not aState
 
-def get_time():
-    # METHOD 2: Auto-detect zones:
-    from_zone = tz.tzutc()
-    to_zone = tz.tzlocal()
-
-    # utc = datetime.utcnow()
-    utc = datetime.utcnow()
-
-    # Tell the datetime object that it's in UTC time zone since
-    # datetime objects are 'naive' by default
-    utc = utc.replace(tzinfo=from_zone)
-
-    # Convert time zone
-    central = utc.astimezone(to_zone)
-
-    # return central.strftime('%m/%d/%Y %H:%M:%S %Z')
-    return central.strftime('%m/%d/%Y %H:%M:%S')
-
-def get_window_image(window_name):
-    hwndMain = win32gui.FindWindow(None, window_name)
+def rescale_window():
+    global windowName
+    hwndMain = win32gui.FindWindow(None, windowName)
     hwndChild = win32gui.GetWindow(hwndMain, win32con.GW_CHILD)
 
     win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[resOption], window_height_y[resOption], True)
     bbox = win32gui.GetWindowRect(hwndMain)
-
-    im = ImageGrab.grab(bbox=bbox)
-
-    im_np = np.array(im)
-
-    # im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
-
-    # cv2.imshow("Window image", im_np)
-    # cv2.waitKey()
-    return im_np
-
-def check_for_chaos_scroll():
-    global windowName, template1, template2
-    try:
-        img_rgb = get_window_image(windowName)
-        # Convert it to grayscale
-        img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-
-        # print("Template 1: ", template1)
-        # print("Template 2: ", template2)
-        # Store width and height of template in w and h
-        w1, h1 = template1.shape[::-1]
-        w2, h2 = template2.shape[::-1]
-
-        # Perform match operations.
-        res1 = cv2.matchTemplate(img_gray, template1, cv2.TM_CCOEFF_NORMED)
-        res2 = cv2.matchTemplate(img_gray, template2, cv2.TM_CCOEFF_NORMED)
-
-        # Specify a threshold
-        threshold = 0.8
-
-        # Store the coordinates of matched area in a numpy array
-        loc1 = np.where(res1 >= threshold)
-        loc2 = np.where(res2 >= threshold)
-        if len(loc1[0]) > 0:
-            # Draw a rectangle around the matched region.
-            for pt in zip(*loc1[::-1]):
-                cv2.rectangle(img_rgb, pt, (pt[0] + w1, pt[1] + h1), (0, 255, 255), 2)
-            # Show the final image with the matched area.
-            # cv2.imshow('Detected1', img_rgb)
-            # cv2.waitKey()
-            return True
-
-        if len(loc2[0]) > 0:
-            # Draw a rectangle around the matched region.
-            for pt in zip(*loc2[::-1]):
-                cv2.rectangle(img_rgb, pt, (pt[0] + w2, pt[1] + h2), (0, 255, 255), 2)
-            # Show the final image with the matched area.
-            # cv2.imshow('Detected2', img_rgb)
-            # cv2.waitKey()
-            return True
-    except Exception as e:
-        print("Check for CS scsroll exception: ", e)
-        pass
-    return False
 
 def get_user_coord():
     global user_coor_global, minimap_reset_times, is_check_for_GM
@@ -150,11 +82,6 @@ def get_user_coord():
     w_minmap = 0
     try:
         # Screen Processing
-        dx = MapleScreenCapturer()
-        hwnd = dx.ms_get_screen_hwnd()
-        rect = dx.ms_get_screen_rect(hwnd)
-
-        static = StaticImageProcessor(dx)
         static.update_image()
         # Screen Processing
 
@@ -251,10 +178,6 @@ def keep_center():
     except Exception as e:
         os.system('cls')
         print(e)
-        # print(user_coor)
-        # move_right_mage()
-        # move_left_mage()
-        # move_up_mage()
 
 def lie_detector():
     return False
@@ -278,18 +201,10 @@ def main():
         is_auto_pickup, \
         is_keep_center, \
         is_check_for_cs, \
-        is_check_for_GM
+        is_check_for_GM_regular, \
+        is_check_for_GM_dungeon
 
     OPTIONS = list(key_codes.keys())
-
-    # Screen Processing
-    dx = MapleScreenCapturer()
-    hwnd = dx.ms_get_screen_hwnd()
-    rect = dx.ms_get_screen_rect(hwnd)
-
-    static = StaticImageProcessor(dx)
-    static.update_image()
-    # Screen Processing
 
     # Copy over key codes from OPTIONS to key_options for global use
     for index in range(len(buff_delay)):
@@ -305,6 +220,7 @@ def main():
     time_at_attack = datetime.utcnow()
 
     while True:
+        static.update_image()
         # Buffs
         for index in range(len(buff_delay)):
             if buff_state[index]:
@@ -315,18 +231,20 @@ def main():
                     time_at_buff[index] = datetime.utcnow()
                     random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
 
-        # AutoHP
+        # AutoHP -- should we add delay?
         if is_auto_hp == 1:
-            if auto_hp(hp_percent_random, resOption):
+            if static.get_HP_percent() < hp_percent_random:
+                drink_hp()
                 try:
                     hp_percent_random = randint(from_hp_global, to_hp_global)
                 except:
                     hp_percent_random = 80
                 # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
-        # AutoMP
+        # AutoMP -- should we add delay?
         if is_auto_mp == 1:
-            if auto_mp(mp_percent_random, resOption):
+            if static.get_MP_percent() < mp_percent_random:
+                drink_mana()
                 try:
                     mp_percent_random = randint(from_mp_global, to_mp_global)
                 except:
@@ -350,12 +268,20 @@ def main():
         # Check for Chaos Scroll drop
         if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
-                if check_for_chaos_scroll():
+                if static.check_for_chaos_scroll():
                     time_at_check = datetime.utcnow()
                     send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
                 print(e)
                 pass
+
+        if is_check_for_GM_dungeon == 1:
+            if static.is_exist_GM_dungeon():
+                send_sms("GM might be here.... Come check!!", 14699695979)
+                is_auto_attack = 0
+                is_keep_center = 0
+                is_auto_pickup = 0
+                send_text_to_maplestory("hellooo")
 
         # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
         # => send an sms message saying GM might be available)
@@ -897,9 +823,7 @@ def on_press_reaction(event):
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
     try:
-
         maple_story = gw.getWindowsWithTitle(windowName)[0] # Get window by name
-        # print(gw.getWindowsWithTitle(windowName))
     except:
 
         print("Can't find MapleStory Client... Exiting")
@@ -907,7 +831,7 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    get_window_image(windowName)
+    rescale_window()
 
     print("Connected!")
     time.sleep(1)
