@@ -82,7 +82,7 @@ def rescale_window():
     bbox = win32gui.GetWindowRect(hwndMain)
 
 def get_user_coord():
-    global user_coor_global, minimap_reset_times, is_check_for_GM
+    global user_coor_global, minimap_reset_times, is_check_for_GM_regular
     user_coor = (0, 0)
     w_minmap = 0
     try:
@@ -98,7 +98,7 @@ def get_user_coord():
         # print("User global coor", user_coor_global)
     except Exception as e:
         # print(e)
-        if is_check_for_GM == 1:
+        if is_check_for_GM_regular == 1:
             reset_minimap()
             time.sleep(0.5)
             minimap_reset_times = minimap_reset_times + 1
