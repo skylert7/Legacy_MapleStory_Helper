@@ -8,6 +8,7 @@ import os
 from random import randint
 import pygetwindow as gw
 import threading
+import keyboard
 
 # GLOBAL SETTINGS
 windows = ['Nine Dragons', 'MapleHome', 'MapleStory']
