@@ -277,7 +277,7 @@ def main():
 
         if is_check_for_GM_dungeon == 1:
             if static.is_exist_GM_dungeon():
-                send_sms("GM might be here.... Come check!!", 14699695979)
+                # send_sms("GM might be here.... Come check!!", 14699695979)
                 is_auto_attack = 0
                 is_keep_center = 0
                 is_auto_pickup = 0
@@ -302,7 +302,8 @@ def ui():
         is_auto_pickup,\
         is_keep_center, \
         is_check_for_cs, \
-        is_check_for_GM, \
+        is_check_for_GM_regular, \
+        is_check_for_GM_dungeon, \
         resOption, \
         buff_state
     # Global for string/int var
@@ -326,7 +327,8 @@ def ui():
     is_auto_pickup = IntVar(value=int(is_auto_pickup))
     is_keep_center = IntVar(value=int(is_keep_center))
     is_check_for_cs = IntVar(value=int(is_check_for_cs))
-    is_check_for_GM = IntVar(value=int(is_check_for_GM))
+    is_check_for_GM_regular = IntVar(value=int(is_check_for_GM_regular))
+    is_check_for_GM_dungeon = IntVar(value=int(is_check_for_GM_dungeon))
 
 
     fromHpEntry = StringVar()
@@ -410,10 +412,14 @@ def ui():
         maple_story.activate()
         return
 
-    def change_check_for_GM():
-        global is_check_for_GM
-        is_check_for_GM = not is_check_for_GM
-        maple_story.activate()
+    def change_check_for_GM_regular():
+        global is_check_for_GM_regular
+        is_check_for_GM_regular = not is_check_for_GM_regular
+        return
+
+    def change_check_for_GM_dungeon():
+        global is_check_for_GM_dungeon
+        is_check_for_GM_dungeon = not is_check_for_GM_dungeon
         return
 
     def toggle_resolution():
@@ -497,7 +503,7 @@ def ui():
     # Some variables to use
 
     #default panel size
-    root.geometry('{}x{}'.format(550, 650))
+    root.geometry('{}x{}'.format(650, 700)) #Width x Height
 
     # Auto HP Row
     row = 0
@@ -646,7 +652,7 @@ def ui():
                         row=row)
 
     Label(root,
-          text="Move Delay:"
+          text="Move Delay (ms):"
           ).grid(column=3,
                  row=row)
 
@@ -758,16 +764,27 @@ def ui():
                        sticky=W)
     #Check for Chaos Scroll Row ---
 
-    #Check for GM Scroll Row
+    #Check for GM Regular Row
     row += 1
     Checkbutton(root,
-                text='Check for GM',
-                command=change_check_for_GM,
-                variable=is_check_for_GM,
+                text='Check for GM Regular',
+                command=change_check_for_GM_regular,
+                variable=is_check_for_GM_regular,
                 ).grid(row=row,
                        column=0,
                        sticky=W)
-    #Check for GM Scroll Row ---
+    #Check for GM Regular Row ---
+
+    #Check for GM Dungeon Row
+    row += 1
+    Checkbutton(root,
+                text='Check for GM Dungeon',
+                command=change_check_for_GM_dungeon,
+                variable=is_check_for_GM_dungeon,
+                ).grid(row=row,
+                       column=0,
+                       sticky=W)
+    #Check for GM Regular Row ---
 
     #Notes (Text)
     row += 1

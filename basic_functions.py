@@ -3,7 +3,7 @@ from pywinauto.keyboard import send_keys
 from twilio.rest import Client
 import time
 from dateutil import tz
-import datetime
+from datetime import datetime
 
 # key_codes: {<Name  Appear>: <Key Code to Send>}
 key_codes = {'Insert': '{VK_INSERT}',

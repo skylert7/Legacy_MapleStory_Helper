@@ -448,10 +448,14 @@ class StaticImageProcessor:
         text_bgr = pytesseract.image_to_string(self.chat_box_bgr_img)
         text_rgb = pytesseract.image_to_string(self.chat_box_rgb_img)
 
-        if "GM" or "Alex" or "GMAlex" in text_bgr:
-            return True
-        if "GM" or "Alex" or "GMAlex" in text_rgb:
-            return True
+        # print(type(text_rgb))
+        # print(type(text_rgb))
+        gm_name = ["GM", "Alex", "GMAlex"]
+        for i in gm_name:
+            if i in text_bgr:
+                return True
+            if i in text_rgb:
+                return True
         # cv2.imshow("img", test_img)
         # cv2.waitKey()
 
