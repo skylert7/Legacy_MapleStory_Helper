@@ -1,3 +1,4 @@
+This Helper needs pytesseract standalone installed.
 #TODO List
 - Add buttons for AutoHP, AutoMP, Attack, Pickup
 - Add auto detect HP and MP bars

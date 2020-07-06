@@ -1,10 +1,13 @@
 # Version 1.5
 # Released Date: 7/6/2020
 
-from import_standalone import *
 from screen_processing import *
-from tkinter import ttk
+from tkinter import *
 from basic_functions import *
+import os
+from random import randint
+import pygetwindow as gw
+import threading
 
 # GLOBAL SETTINGS
 windows = ['Nine Dragons', 'MapleHome', 'MapleStory']
@@ -277,7 +280,7 @@ def main():
 
         if is_check_for_GM_dungeon == 1:
             if static.is_exist_GM_dungeon():
-                # send_sms("GM might be here.... Come check!!", 14699695979)
+                send_sms("GM might be here.... Come check!!", 14699695979)
                 is_auto_attack = 0
                 is_keep_center = 0
                 is_auto_pickup = 0

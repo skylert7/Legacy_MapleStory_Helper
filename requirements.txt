@@ -24,6 +24,7 @@ pyglet==1.5.0
 Pygments==2.6.1
 PyMsgBox==1.0.7
 pyOpenSSL==19.1.0
+pytesseract==0.3.4
 pywin32==227
 pywinauto==0.6.8
 pyzmq==19.0.1

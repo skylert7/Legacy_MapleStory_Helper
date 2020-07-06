@@ -450,15 +450,15 @@ class StaticImageProcessor:
 
         # print(type(text_rgb))
         # print(type(text_rgb))
-        gm_name = ["GM", "Alex", "GMAlex"]
-        for i in gm_name:
+        gm_names = ["GM", "Alex", "GMAlex", "alex"]
+        # res = any(ele in text_bgr for ele in gm_names)
+        # res = any(ele in text_rgb for ele in gm_names)
+        # return res
+        for i in gm_names:
             if i in text_bgr:
                 return True
             if i in text_rgb:
                 return True
-        # cv2.imshow("img", test_img)
-        # cv2.waitKey()
-
         return False
 
     def is_exist_GM_regular(self):
