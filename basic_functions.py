@@ -2,17 +2,17 @@
 
 from import_standalone import *
 from pywinauto.keyboard import send_keys
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 import numpy as np
 import cv2, win32gui, time, math, win32con, win32ui
 from twilio.rest import Client
 import sys
-# import pytesseract
-# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-# PY3 = sys.version_info[0] == 3
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+PY3 = sys.version_info[0] == 3
 
-# if PY3:
-#     xrange = range
+if PY3:
+    xrange = range
 
 
 # key_codes: {<Name  Appear>: <Key Code to Send>}
@@ -324,7 +324,57 @@ def findHP():
     #     # print((avg_x, avg_y))
 
     return 0
+
+def chat_box():
+    resOption = 1
+
+    window_length_x = [1024, 1280]  # Resolution
+    window_height_y = [768, 960]  # Resolution
+
+    bbox = (0,
+            int(window_height_y[resOption]/2),
+            int(window_length_x[resOption]/1.6),
+            int(window_height_y[resOption]/1.12))
+
+    im = ImageGrab.grab(bbox=bbox)
+
+    im_np = np.array(im)
+
+    ###### Preprocessing (if needed)
+    # gray = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
+    # gray_thresh = cv2.threshold(gray, 0, 255,
+    #                             cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    # # make a check to see if median blurring should be done to remove
+    # # noise
+    # gray_blur = cv2.medianBlur(gray, 3)
+    #
+    # text_bgr = pytesseract.image_to_string(im_np)
+    # print("BGR", text_bgr)
+    # # text_thresh = pytesseract.image_to_string(gray_thresh)
+    # # print("Thresh", text_thresh)
+    # text_blur = pytesseract.image_to_string(gray_blur)
+    # print("Blur", text_blur)
+    # cv2.imshow("Output Thresh", gray_thresh)
+    # cv2.imshow("Output Blur", gray_blur)
+    # cv2.waitKey(0)
+    ###### Preprocessing (if needed)-----
+    # test_img = Image.open("C:\\Users\\Skyler\\Git_Folder\\BotMaple\\IMG_1448.JPG")
+    # text_test_img = pytesseract.image_to_string(test_img)
+    # print(text_test_img)
+    text_bgr = pytesseract.image_to_string(im_np)
+    im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2RGB)
+    text_rgb = pytesseract.image_to_string(im_np)
+
+    if "GM" or "Alex" or "GMAlex" in text_bgr:
+        print(True)
+    #     print(text_bgr)
+    # if "GM" or "Alex" or "GMAlex" in text_rgb:
+    #     print(True)
+    # cv2.imshow("img", test_img)
+    # cv2.waitKey()
+    return
+
 if __name__ == '__main__':
     # send_sms("Test message...", 14699695979)
-    findHP()
+    chat_box()
     exit(0)

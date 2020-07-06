@@ -3,8 +3,9 @@
 
 from import_standalone import *
 from screen_processing import *
-from playsound import playsound
 from tkinter import ttk
+from pathlib import Path
+
 # GLOBAL SETTINGS
 windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
 windowName = windows[3]
@@ -55,8 +56,8 @@ for i in range(len(buff_delay)):
 
 # Pre-processing
 # Read the template
-template1 = cv2.imread('C:\\Users\\Skyler\\Git_Folder\\BotMaple\\CS_1280x920.JPG', 0)
-template2 = cv2.imread('C:\\Users\\Skyler\\Git_Folder\\BotMaple\\CS_1024x768.JPG', 0)
+template1 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1280x920.JPG'.format(str(Path.home())), 0)
+template2 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1024x768.JPG'.format(str(Path.home())), 0)
 # Pre-processing
 print(type(template1))
 print(type(template2))
@@ -350,7 +351,6 @@ def main():
         if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
                 if check_for_chaos_scroll():
-                    # playsound("C:\\Users\\Skyler\\Git_Folder\\BotMaple\\Windows_Unlock.wav")
                     time_at_check = datetime.utcnow()
                     send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
@@ -392,7 +392,6 @@ def ui():
         key_options
 
     root = Tk()
-
     # UI Vars
 
     is_auto_hp = IntVar(value=int(is_auto_hp))
@@ -402,6 +401,7 @@ def ui():
     is_keep_center = IntVar(value=int(is_keep_center))
     is_check_for_cs = IntVar(value=int(is_check_for_cs))
     is_check_for_GM = IntVar(value=int(is_check_for_GM))
+
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -427,7 +427,6 @@ def ui():
     buff_reset_time = list()
     buff_state_ui = list()
     # UI Vars ---
-
     for index in range(len(buff_delay)):
         varTime = StringVar()
         varTime.set(str(buff_delay[index]))
@@ -867,7 +866,6 @@ def ui():
            width=16,
            ).grid(column=5,
                   row=row)
-
 
     root.mainloop()
 

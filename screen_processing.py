@@ -10,8 +10,6 @@ class MapleWindowNotFoundError(Exception):
 MAPLESTORY_WINDOW_TITLE = "MapleStory"
 
 
-
-
 class MapleScreenCapturer:
     """Container for capturing MS screen"""
     def __init__(self):
