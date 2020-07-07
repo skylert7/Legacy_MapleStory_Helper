@@ -2,16 +2,17 @@ import numpy as np
 import cv2, win32gui, time, math, win32con, win32ui
 from PIL import ImageGrab, Image
 import pytesseract
-import sys
+import os
 from pathlib import Path
 import ctypes
 import ctypes.wintypes
 
-try:
-    pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-
-except:
-    pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
+path1 = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+path2 = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
+if os.path.isfile(path1):
+    pytesseract.pytesseract.tesseract_cmd = path1
+else:
+    pytesseract.pytesseract.tesseract_cmd = path2
 
 
 class MapleWindowNotFoundError(Exception):
@@ -333,76 +334,83 @@ class StaticImageProcessor:
         return 0
 
     def get_HP_percent(self):
-        '''
-        choices: 1024 x 768 (0) OR 1280 x 960 (1)
-        '''
-        h, w = self.rgb_img.shape[:-1]
-        resOption = 1
-        if h == 768:
-            resOption = 0
-        elif h == 960:
+        percent = 100
+        try:
+            '''
+            choices: 1024 x 768 (0) OR 1280 x 960 (1)
+            '''
+            h, w = self.rgb_img.shape[:-1]
             resOption = 1
+            if h == 768:
+                resOption = 0
+            elif h == 960:
+                resOption = 1
 
-        x_start = [285, 356]
-        x_end = [412, 508]
-        y_start = [744, 936]
-        y_end = [762, 954]
+            x_start = [285, 356]
+            x_end = [412, 508]
+            y_start = [744, 936]
+            y_end = [762, 954]
 
-        im_np = self.gray_img[y_start[resOption]:y_end[resOption],
-                                x_start[resOption]:x_end[resOption]]
+            im_np = self.gray_img[y_start[resOption]:y_end[resOption],
+                    x_start[resOption]:x_end[resOption]]
 
-        # pick an array to analyze current hp and full hp
-        # print("HP: ", im_np[10])
-        # cv2.imshow("HP", im_np)
-        # cv2.waitKey()
+            # pick an array to analyze current hp and full hp
+            # print("HP: ", im_np[10])
+            # cv2.imshow("HP", im_np)
+            # cv2.waitKey()
 
-        # return unique values and count of each unique value
-        unique, counts = np.unique(im_np[10], return_counts=True)
-        percent = counts[0] / (x_end[resOption] - x_start[resOption]) * 100
-        # print("Percent HP: ", percent)
-        return percent
+            # return unique values and count of each unique value
+            unique, counts = np.unique(im_np[10], return_counts=True)
+            percent = counts[0] / (x_end[resOption] - x_start[resOption]) * 100
+            # print("Percent HP: ", percent)
+            return percent
+        except:
+            return percent
 
     def get_MP_percent(self):
-        '''
-        choices: 1024 x 768 (0) OR 1280 x 960 (1)
-        '''
+        percent = 100
+        try:
+            '''
+            choices: 1024 x 768 (0) OR 1280 x 960 (1)
+            '''
 
-        h, w = self.rgb_img.shape[:-1]
-        resOption = 1
-        if h == 768:
-            resOption = 0
-        elif h == 960:
+            h, w = self.rgb_img.shape[:-1]
             resOption = 1
+            if h == 768:
+                resOption = 0
+            elif h == 960:
+                resOption = 1
 
-        x_start = [424, 530]
-        x_end = [551, 682]
-        y_start = [744, 936]
-        y_end = [762, 954]
+            x_start = [424, 530]
+            x_end = [551, 682]
+            y_start = [744, 936]
+            y_end = [762, 954]
 
-        im_np = self.gray_img[y_start[resOption]:y_end[resOption],
-                                x_start[resOption]:x_end[resOption]]
+            im_np = self.gray_img[y_start[resOption]:y_end[resOption],
+                                    x_start[resOption]:x_end[resOption]]
 
-        # pick an array to analyze current hp and full hp
-        # print("MP: ", im_np[10])
-        # print("Auto MP. Random percent: {}. Res Option: {}".format(percent, resOption))
-        # cv2.imshow("MP", im_np)
-        # cv2.waitKey()
+            # pick an array to analyze current hp and full hp
+            # print("MP: ", im_np[10])
+            # print("Auto MP. Random percent: {}. Res Option: {}".format(percent, resOption))
+            # cv2.imshow("MP", im_np)
+            # cv2.waitKey()
 
-        item = 0
+            item = 0
 
-        # 178 is empty - 1024x768
-        # 134 is empty - 1280x960
-        empty = [175, 130]
-        for x in range(len(im_np[10])):
-            if im_np[10][x] > empty[resOption]:
-                item = x
-                break
-        # print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
-        percent = item / (x_end[resOption] - x_start[resOption]) * 100
-        if percent == 0:
-            return 100
-        return percent
-
+            # 178 is empty - 1024x768
+            # 134 is empty - 1280x960
+            empty = [175, 130]
+            for x in range(len(im_np[10])):
+                if im_np[10][x] > empty[resOption]:
+                    item = x
+                    break
+            # print("Percent MP: ", item / (x_end[resOption] - x_start[resOption]) * 100)
+            percent = item / (x_end[resOption] - x_start[resOption]) * 100
+            if percent == 0:
+                return 100
+            return percent
+        except:
+            return percent
     def is_exist_chaos_scroll(self):
         try:
             # Store width and height of template in w and h
