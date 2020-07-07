@@ -58,14 +58,14 @@ for i in range(len(buff_delay)):
 
 # Random Vars
 
-# Screen Processing
-dx = MapleScreenCapturer()
-hwnd = dx.ms_get_screen_hwnd()
-rect = dx.ms_get_screen_rect(hwnd)
-
-static = StaticImageProcessor(dx)
-static.update_image()
-# Screen Processing
+# # Screen Processing
+# dx = MapleScreenCapturer()
+# hwnd = dx.ms_get_screen_hwnd()
+# rect = dx.ms_get_screen_rect(hwnd)
+#
+# static = StaticImageProcessor(dx)
+# static.update_image()
+# # Screen Processing
 
 # bbox (left_x, top_y, right_x, bottom_y)
 
@@ -225,6 +225,11 @@ def main():
     time_at_attack = datetime.utcnow()
     time_at_hp_mp = [datetime.utcnow()] * len(hp_mp_delay)
     while True:
+        dx = MapleScreenCapturer()
+        hwnd = dx.ms_get_screen_hwnd()
+        rect = dx.ms_get_screen_rect(hwnd)
+
+        static = StaticImageProcessor(dx)
         static.update_image()
         # Buffs
         for index in range(len(buff_delay)):

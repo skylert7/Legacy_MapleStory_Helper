@@ -380,7 +380,7 @@ class StaticImageProcessor:
                 resOption = 0
             elif h == 960:
                 resOption = 1
-
+            print(h)
             x_start = [424, 530]
             x_end = [551, 682]
             y_start = [744, 936]
