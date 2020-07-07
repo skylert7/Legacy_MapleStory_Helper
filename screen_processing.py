@@ -380,7 +380,7 @@ class StaticImageProcessor:
                 resOption = 0
             elif h == 960:
                 resOption = 1
-            print(h)
+            # print(h)
             x_start = [424, 530]
             x_end = [551, 682]
             y_start = [744, 936]
@@ -411,6 +411,7 @@ class StaticImageProcessor:
             return percent
         except:
             return percent
+
     def is_exist_chaos_scroll(self):
         try:
             # Store width and height of template in w and h
