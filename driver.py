@@ -58,15 +58,6 @@ for i in range(len(buff_delay)):
 
 # Random Vars
 
-# # Screen Processing
-# dx = MapleScreenCapturer()
-# hwnd = dx.ms_get_screen_hwnd()
-# rect = dx.ms_get_screen_rect(hwnd)
-#
-# static = StaticImageProcessor(dx)
-# static.update_image()
-# # Screen Processing
-
 # bbox (left_x, top_y, right_x, bottom_y)
 
 
@@ -87,6 +78,11 @@ def get_user_coord():
     w_minmap = 0
     try:
         # Screen Processing
+        dx = MapleScreenCapturer()
+        hwnd = dx.ms_get_screen_hwnd()
+        rect = dx.ms_get_screen_rect(hwnd)
+
+        static = StaticImageProcessor(dx)
         static.update_image()
         # Screen Processing
 
@@ -284,7 +280,7 @@ def main():
         # Check for Chaos Scroll drop
         if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
             try:
-                if static.check_for_chaos_scroll():
+                if static.is_exist_chaos_scroll():
                     time_at_check = datetime.utcnow()
                     send_sms("CS Scroll some where....!!", 14699695979)
             except Exception as e:
