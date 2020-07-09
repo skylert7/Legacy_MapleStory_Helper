@@ -292,6 +292,7 @@ def main():
             if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
                 try:
                     if static.is_exist_GM_dungeon():
+                        # print("GM might be here.... Come check!!")
                         send_sms("GM might be here.... Come check!!", 14699695979)
                         is_auto_attack = 0
                         is_keep_center = 0
