@@ -142,6 +142,28 @@ def exchange_regular_gac():
     time.sleep(0.5)
     send_keys("{ENTER}")
 
+def exchange_maple_coins_monstercarnival():
+    send_keys("{VK_SPACE}")
+    time.sleep(0.5)
+    send_keys("{DOWN}")
+    time.sleep(0.5)
+    send_keys("{DOWN}")
+    time.sleep(0.5)
+    send_keys("{DOWN}")
+    time.sleep(0.5)
+    send_keys("{DOWN}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    time.sleep(0.5)
+    send_keys("{RIGHT}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    return
+
 def send_sms(message_to_send, phone_number):
     # Need to store it somewhere else
     account = "ACbbe9514e4619e8c9af58b344ba886df6"

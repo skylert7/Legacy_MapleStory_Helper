@@ -32,7 +32,7 @@ from_mp_global = 50 # percent
 to_mp_global = 60 # percent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
-hp_mp_delay = [800, 800] # milliseconds [HP, MP]
+hp_mp_delay = [400, 400] # milliseconds [HP, MP]
 attack_delay_global = 100 # milliseconds
 buff_delay = [200, 200, 600, 100]
 buff_state = [0] * len(buff_delay)
@@ -218,6 +218,7 @@ def main():
 
     time_at_buff = [datetime.utcnow()] * len(buff_delay)
     time_at_check = datetime.utcnow()
+    time_at_GM_exist_dungeon = datetime.utcnow()
     time_at_attack = datetime.utcnow()
     time_at_hp_mp = [datetime.utcnow()] * len(hp_mp_delay)
     while True:
@@ -287,13 +288,15 @@ def main():
                 print(e)
                 pass
 
-        if is_check_for_GM_dungeon == 1:
-            if static.is_exist_GM_dungeon():
-                send_sms("GM might be here.... Come check!!", 14699695979)
-                is_auto_attack = 0
-                is_keep_center = 0
-                is_auto_pickup = 0
-                send_text_to_maplestory("hellooo")
+        if is_check_for_GM_dungeon:
+            if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
+                if static.is_exist_GM_dungeon():
+                    send_sms("GM might be here.... Come check!!", 14699695979)
+                    is_auto_attack = 0
+                    is_keep_center = 0
+                    is_auto_pickup = 0
+                    send_text_to_maplestory("helloo")
+                    time_at_GM_exist_dungeon = datetime.utcnow()
 
         # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
         # => send an sms message saying GM might be available)
@@ -432,6 +435,7 @@ def ui():
     def change_check_for_GM_dungeon():
         global is_check_for_GM_dungeon
         is_check_for_GM_dungeon = not is_check_for_GM_dungeon
+        # print(is_check_for_GM_dungeon)
         return
 
     def toggle_resolution():
@@ -796,7 +800,7 @@ def ui():
                 ).grid(row=row,
                        column=0,
                        sticky=W)
-    #Check for GM Regular Row ---
+    #Check for GM Dungeon Row ---
 
     #Notes (Text)
     row += 1
@@ -873,6 +877,6 @@ if __name__ == '__main__':
     #     # reset_minimap()
     #     time.sleep(4)
     # while True:
-    #     exchange_regular_gac()
+    #     exchange_maple_coins_monstercarnival()
     #     time.sleep(randint(1, 4))
 

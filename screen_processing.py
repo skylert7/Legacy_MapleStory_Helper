@@ -149,6 +149,8 @@ class StaticImageProcessor:
         self.upper_player_marker = np.array([205, 256, 256])
         self.lower_rune_marker = np.array([254, 101, 220]) # B G R
         self.upper_rune_marker = np.array([255, 103, 222])
+        self.lower_red_marker = np.array([0, 0, 100]) # B G R
+        self.upper_red_marker = np.array([26, 26, 256])
 
         self.hwnd = self.img_handle.ms_get_screen_hwnd()
         self.ms_screen_rect = None
@@ -277,8 +279,11 @@ class StaticImageProcessor:
         if not rect:
             rect = self.get_minimap_rect()
         assert rect, "Invalid minimap coordinates"
-        cropped = self.bgr_img[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
-        mask = cv2.inRange(cropped, (0, 0, 255), (0, 0, 255))
+        cropped = self.rgb_img[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
+        mask = cv2.inRange(cropped, self.lower_red_marker, self.upper_red_marker)
+        # cv2.imshow("Cropped", np.array(cropped))
+        cv2.imshow("Mask for Other player", np.array(mask))
+        cv2.waitKey()
         td = np.transpose(np.where(mask > 0)).tolist()
         if len(td) > 0:
             avg_x = 0
@@ -439,7 +444,7 @@ class StaticImageProcessor:
             pass
         return False
 
-    def is_exist_GM_dungeon(self):
+    def is_exist_GM_dungeon(self, rect=None):
         ###### Preprocessing (if needed)
         # gray = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
         # gray_thresh = cv2.threshold(gray, 0, 255,
@@ -459,20 +464,40 @@ class StaticImageProcessor:
         # cv2.waitKey(0)
         ###### Preprocessing (if needed)-----
 
-        text_bgr = pytesseract.image_to_string(self.chat_box_bgr_img)
-        text_rgb = pytesseract.image_to_string(self.chat_box_rgb_img)
-
-        # print(type(text_rgb))
-        # print(type(text_rgb))
-        gm_names = ["GM", "Alex", "GMAlex", "alex"]
-        # res = any(ele in text_bgr for ele in gm_names)
-        # res = any(ele in text_rgb for ele in gm_names)
-        # return res
-        for i in gm_names:
-            if i in text_bgr:
-                return True
-            if i in text_rgb:
-                return True
+        ###### Using PyTesseract --- O(n) too long
+        # text_bgr = pytesseract.image_to_string(self.chat_box_bgr_img)
+        # text_rgb = pytesseract.image_to_string(self.chat_box_rgb_img)
+        #
+        # # print(type(text_rgb))
+        # # print(type(text_rgb))
+        # gm_names = ["GM", "Alex", "GMAlex", "alex"]
+        # # res = any(ele in text_bgr for ele in gm_names)
+        # # res = any(ele in text_rgb for ele in gm_names)
+        # # return res
+        # for i in gm_names:
+        #     if i in text_bgr:
+        #         return True
+        #     if i in text_rgb:
+        #         return True
+        # return False
+        ###### Using PyTesseract ---
+        """
+        Processes self.bgr_image to return coordinate of other players on minimap if exists.
+        Does not behave as expected when there are more than one other player on map. Use this function to just detect.
+        :param rect: [x,y,w,h] bounding box of minimap. Call self.get_minimap_rect
+        :return: True if GM exists in Dungeon because GM will appear as red on minimap, otherwise False
+        """
+        if not rect:
+            rect = self.get_minimap_rect()
+        assert rect, "Invalid minimap coordinates"
+        cropped = self.rgb_img[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
+        mask = cv2.inRange(cropped, self.lower_red_marker, self.upper_red_marker)
+        # cv2.imshow("Cropped", np.array(cropped))
+        # cv2.imshow("Mask for Other player", np.array(mask))
+        # cv2.waitKey()
+        td = np.transpose(np.where(mask > 0)).tolist()
+        if len(td) > 0:
+            return True
         return False
 
     def is_exist_GM_regular(self):
@@ -491,7 +516,7 @@ if __name__ == "__main__":
 
     static = StaticImageProcessor(dx)
     static.update_image()
-    print(static.get_MP_percent())
     x, y, w, h = static.get_minimap_rect()
+    static.find_other_player_marker()
     # print(rect)
     # dx.capture(rect=rect)
