@@ -288,15 +288,18 @@ def main():
                 print(e)
                 pass
 
-        if is_check_for_GM_dungeon:
+        if is_check_for_GM_dungeon == True:
             if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
-                if static.is_exist_GM_dungeon():
-                    send_sms("GM might be here.... Come check!!", 14699695979)
-                    is_auto_attack = 0
-                    is_keep_center = 0
-                    is_auto_pickup = 0
-                    send_text_to_maplestory("helloo")
-                    time_at_GM_exist_dungeon = datetime.utcnow()
+                try:
+                    if static.is_exist_GM_dungeon():
+                        send_sms("GM might be here.... Come check!!", 14699695979)
+                        is_auto_attack = 0
+                        is_keep_center = 0
+                        is_auto_pickup = 0
+                        send_text_to_maplestory("helloo")
+                        time_at_GM_exist_dungeon = datetime.utcnow()
+                except:
+                    pass
 
         # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
         # => send an sms message saying GM might be available)
