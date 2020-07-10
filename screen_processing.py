@@ -497,6 +497,8 @@ class StaticImageProcessor:
         # cv2.waitKey()
         td = np.transpose(np.where(mask > 0)).tolist()
         if len(td) > 0:
+            cv2.imshow("Mask for Other player", np.array(mask))
+            cv2.waitKey()
             return True
         return False
 
