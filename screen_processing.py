@@ -496,7 +496,7 @@ class StaticImageProcessor:
         # cv2.imshow("Mask for Other player", np.array(mask))
         # cv2.waitKey()
         td = np.transpose(np.where(mask > 0)).tolist()
-        if len(td) > 0:
+        if len(td) > 10 and len(td) < 60:
             cv2.imshow("Mask for Other player", np.array(mask))
             cv2.waitKey()
             return True
@@ -517,8 +517,10 @@ if __name__ == "__main__":
     rect = dx.ms_get_screen_rect(hwnd)
 
     static = StaticImageProcessor(dx)
-    static.update_image()
-    x, y, w, h = static.get_minimap_rect()
-    static.find_other_player_marker()
+
+    for i in range(10):
+        static.update_image()
+        x, y, w, h = static.get_minimap_rect()
+        static.find_other_player_marker()
     # print(rect)
     # dx.capture(rect=rect)

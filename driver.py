@@ -289,7 +289,7 @@ def main():
                 pass
 
         if is_check_for_GM_dungeon == True:
-            if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
+            if (datetime.utcnow() - me_at_GM_exist_dungeon).total_seconds() > 20:
                 try:
                     if static.is_exist_GM_dungeon():
                         # print("GM might be here.... Come check!!")
@@ -884,3 +884,7 @@ if __name__ == '__main__':
     #     exchange_maple_coins_monstercarnival()
     #     time.sleep(randint(1, 4))
 
+# import wmi
+# c = wmi.WMI()
+# for process in c.Win32_Process():
+#   print(process.ProcessId, process.Name)

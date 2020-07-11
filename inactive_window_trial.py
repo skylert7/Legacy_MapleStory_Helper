@@ -6,18 +6,18 @@ from time import sleep
 import pygetwindow as gw
 from pywinauto.application import Application
 import pywinauto
-window_name = "Nine Dragons"
-window_test = "MapleStory"
-app = Application().connect(process=20188)
-pywinauto.mouse.move(coords=(50, 50))
+# window_name = "Nine Dragons"
+window_test = "Untitled - Notepad"
+window_test2 = "MapleStory"
+# app = Application().connect(process=23648)
 
-print(gw.getAllTitles())
-print(gw.getWindowsWithTitle(window_test))
+# print(gw.getAllTitles())
+# print(gw.getWindowsWithTitle(window_test))
 #[hwnd] No matter what people tell you, this is the handle meaning unique ID,
 #["Notepad"] This is the application main/parent name, an easy way to check for examples is in Task Manager
 #["test - Notepad"] This is the application sub/child name, an easy way to check for examples is in Task Manager clicking dropdown arrow
 #hwndMain = win32gui.FindWindow("Notepad", "test - Notepad") this returns the main/parent Unique ID
-hwndMain = win32gui.FindWindow(None, window_test)
+hwndMain = win32gui.FindWindow(None, window_test2)
 
 print(hwndMain)
 #["hwndMain"] this is the main/parent Unique ID used to get the sub/child Unique ID
