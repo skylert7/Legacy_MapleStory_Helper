@@ -1,9 +1,13 @@
 # from __future__ import print_function
 from pywinauto.keyboard import send_keys
+from pywinauto import mouse
 from twilio.rest import Client
 import time
 from dateutil import tz
 from datetime import datetime
+import numpy as np
+import cv2, win32gui, time, math, win32con, win32ui
+from PIL import ImageGrab, Image
 # key_codes: {<Name  Appear>: <Key Code to Send>}
 key_codes = {'Insert': '{VK_INSERT}',
              'Delete': '{VK_DELETE}',
@@ -174,72 +178,74 @@ def send_sms(message_to_send, phone_number):
                                      body=message_to_send)
     return
 
-# def findHP():
-#     resOption = 1
-#     windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
-#     windowName = windows[3]
-#     hwndMain = win32gui.FindWindow(None, windowName)
-#     hwndChild = win32gui.GetWindow(hwndMain, win32con.GW_CHILD)
-#
-#     window_length_x = [1024, 1280]  # Resolution
-#     window_height_y = [768, 960]  # Resolution
-#     win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[resOption], window_height_y[resOption], True)
-#
-#     # Minimap player marker original BGR: 136, 255, 255
-#     lower_red = np.array([0, 0, 254])  # B G R
-#     upper_red = np.array([71, 99, 256])
-#     lower_blue = np.array([204, 0, 0])  # B G R
-#     upper_blue = np.array([256, 256, 51])
-#     lower_grey = np.array([170, 170, 170])  # B G R
-#     upper_grey = np.array([192, 192, 192])
-#
-#
-#     bbox = (int(window_length_x[resOption]/4),
-#             int(window_height_y[resOption]/1.05),
-#             int(window_length_x[resOption]/1.6),
-#             window_height_y[resOption])
-#
-#     im = ImageGrab.grab(bbox=bbox)
-#
-#     im_np = np.array(im)
-#
-#     im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2RGB)
-#     gray = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
-#     cv2.imshow("img", im_np)
-#
-#     mask_grey = cv2.inRange(im_np, lower_grey, upper_grey)
-#     mask_red = cv2.inRange(im_np, lower_red, upper_red)
-#     mask_blue = cv2.inRange(im_np, lower_blue, upper_blue)
-#     # for i in range(len(mask)):
-#     #     if 255 in mask[i]:
-#     #         print(i)
-#
-#     # print(mask_red)
-#     cv2.imshow("Mask Grey", mask_grey)
-#     cv2.imshow("Mask Blue", mask_blue)
-#     cv2.imshow("Mask Red", mask_red)
-#     cv2.waitKey()
-#     td_grey = np.transpose(np.where(mask_grey > 0)).tolist()
-#     td_red = np.transpose(np.where(mask_red > 0)).tolist()
-#     td_blue = np.transpose(np.where(mask_blue > 0)).tolist()
-#
-#     print(max(td_grey)[1] - min(td_grey)[1])
-#     print(max(td_red)[1] - min(td_red)[1])
-#     print(max(td_blue)[1] - min(td_blue)[1])
-#
-#     # [y, x]
-#
-#     # if len(td) > 0:
-#     #     x_list = [x[1] for x in td]
-#     #     y_list = [x[0] for x in td]
-#     #     avg_x = int(sum(x_list) / len(x_list))
-#     #     avg_y = int(sum(y_list) / len(y_list))
-#     #     return avg_x, avg_y
-#     #     # print((avg_x, avg_y))
-#
-#     return 0
+def findHP():
+    resOption = 0
+    windows = ['MapleLegends (May 23 2020)', 'Nine Dragons', 'MapleHome', 'MapleStory']
+    windowName = windows[3]
+    hwndMain = win32gui.FindWindow(None, windowName)
+    hwndChild = win32gui.GetWindow(hwndMain, win32con.GW_CHILD)
+
+    window_length_x = [1024, 1280]  # Resolution
+    window_height_y = [768, 960]  # Resolution
+    win32gui.MoveWindow(hwndMain, 0, 0, window_length_x[resOption], window_height_y[resOption], True)
+
+    # Minimap player marker original BGR: 136, 255, 255
+    lower_red = np.array([0, 0, 130])  # B G R
+    upper_red = np.array([5, 5, 256])
+    lower_blue = np.array([100, 60, 0])  # B G R
+    upper_blue = np.array([256, 190, 6])
+    lower_grey = np.array([170, 170, 170])  # B G R
+    upper_grey = np.array([192, 192, 192])
+
+
+    bbox = (int(window_length_x[resOption]/4),
+            int(window_height_y[resOption]/1.03),
+            int(window_length_x[resOption]/1.82),
+            window_height_y[resOption])
+
+    im = ImageGrab.grab(bbox=bbox)
+
+    im_np = np.array(im)
+
+    im_np = cv2.cvtColor(im_np, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(im_np, cv2.COLOR_BGR2GRAY)
+    cv2.imshow("img", im_np)
+
+    # cv2.imwrite('HP_MP.jpg', im_np)
+    mask_grey = cv2.inRange(im_np, lower_grey, upper_grey)
+    mask_red = cv2.inRange(im_np, lower_red, upper_red)
+    mask_blue = cv2.inRange(im_np, lower_blue, upper_blue)
+    # for i in range(len(mask)):
+    #     if 255 in mask[i]:
+    #         print(i)
+
+    # print(mask_red)
+    cv2.imshow("Mask Grey", mask_grey)
+    cv2.imshow("Mask Blue", mask_blue)
+    cv2.imshow("Mask Red", mask_red)
+    cv2.waitKey()
+    td_grey = np.transpose(np.where(mask_grey > 0)).tolist()
+    td_red = np.transpose(np.where(mask_red > 0)).tolist()
+    td_blue = np.transpose(np.where(mask_blue > 0)).tolist()
+
+    print(max(td_grey)[1] - min(td_grey)[1])
+    print(max(td_red)[1] - min(td_red)[1])
+    print(max(td_blue)[1] - min(td_blue)[1])
+
+    # [y, x]
+
+    # if len(td) > 0:
+    #     x_list = [x[1] for x in td]
+    #     y_list = [x[0] for x in td]
+    #     avg_x = int(sum(x_list) / len(x_list))
+    #     avg_y = int(sum(y_list) / len(y_list))
+    #     return avg_x, avg_y
+    #     # print((avg_x, avg_y))
+
+    return 0
 
 
 if __name__ == '__main__':
     # send_sms("Test message...", 14699695979)
+    findHP()
     exit(0)

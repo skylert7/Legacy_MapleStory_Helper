@@ -296,8 +296,9 @@ def main():
                         send_sms("GM might be here.... Come check!!", 14699695979)
                         is_auto_attack = 0
                         is_keep_center = 0
+
                         is_auto_pickup = 0
-                        send_text_to_maplestory("helloo")
+                        # send_text_to_maplestory("helloo")
                         time_at_GM_exist_dungeon = datetime.utcnow()
                 except:
                     pass
@@ -868,13 +869,22 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    rescale_window()
+    # rescale_window()
 
     print("Connected!")
     time.sleep(1)
 
     threading.Thread(target=ui).start()
     threading.Thread(target=main).start()
+
+    # coords = (500, 400)
+    #
+    # while True:
+    #
+    #     mouse.double_click(button='left', coords=coords)
+    #     time.sleep(0.5)
+    #     send_keys("{ENTER}")
+    #     time.sleep(0.5)
 
     # while True:
     #     print(get_user_coord())

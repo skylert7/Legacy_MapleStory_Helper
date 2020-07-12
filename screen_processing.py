@@ -282,8 +282,8 @@ class StaticImageProcessor:
         cropped = self.rgb_img[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
         mask = cv2.inRange(cropped, self.lower_red_marker, self.upper_red_marker)
         # cv2.imshow("Cropped", np.array(cropped))
-        cv2.imshow("Mask for Other player", np.array(mask))
-        cv2.waitKey()
+        # cv2.imshow("Mask for Other player", np.array(mask))
+        # cv2.waitKey()
         td = np.transpose(np.where(mask > 0)).tolist()
         if len(td) > 0:
             avg_x = 0
@@ -497,8 +497,8 @@ class StaticImageProcessor:
         # cv2.waitKey()
         td = np.transpose(np.where(mask > 0)).tolist()
         if len(td) > 10 and len(td) < 60:
-            cv2.imshow("Mask for Other player", np.array(mask))
-            cv2.waitKey()
+            # cv2.imshow("Mask for Other player", np.array(mask))
+            # cv2.waitKey()
             return True
         return False
 
