@@ -43,7 +43,6 @@ user_coor_global = (0, 0) # user coordinate
 keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
 keep_center_move_delay = 2000 # move delay for keep_center
-time_at_move = [datetime.utcnow(), datetime.utcnow()]
 keep_center_radius = 40 # var for keep_center
 # GLOBAL SETTINGS
 
@@ -193,7 +192,8 @@ def main():
 
     global buff_delay, \
         minimap_reset_times, \
-        random_buff_delay,\
+        keep_center_move_delay, \
+        random_buff_delay, \
         key_options
 
     global is_auto_attack, \
@@ -221,6 +221,7 @@ def main():
     time_at_GM_exist_dungeon = datetime.utcnow()
     time_at_attack = datetime.utcnow()
     time_at_hp_mp = [datetime.utcnow()] * len(hp_mp_delay)
+    time_at_move = datetime.utcnow()
     while True:
         dx = MapleScreenCapturer()
         hwnd = dx.ms_get_screen_hwnd()
@@ -276,7 +277,9 @@ def main():
 
         # It does what it says
         if is_keep_center == 1:
-            keep_center()
+            if (datetime.utcnow() - time_at_move).total_seconds() > (keep_center_move_delay / 1000):
+                keep_center()
+                time_at_move = datetime.utcnow()
 
         # Check for Chaos Scroll drop
         if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
@@ -891,7 +894,7 @@ if __name__ == '__main__':
     #     # reset_minimap()
     #     time.sleep(4)
     # while True:
-    #     exchange_maple_coins_monstercarnival()
+    #     exchange_giftbox()
     #     time.sleep(randint(1, 4))
 
 # import wmi
