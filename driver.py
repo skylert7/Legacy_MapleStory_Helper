@@ -19,6 +19,8 @@ window_height_y = [768, 960] # Resolution
 
 resOption = 0 # 0 for 1024x768 | 1 for 1280x960
 
+is_start = 0
+is_gacha = 0
 is_auto_attack = 0
 is_auto_mp = 0
 is_auto_hp = 0
@@ -29,7 +31,7 @@ is_check_for_GM_regular = 0
 is_check_for_GM_dungeon = 0
 
 from_mp_global = 50 # percent
-to_mp_global = 60 # percent
+to_mp_global = 60 # p ercent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 hp_mp_delay = [400, 400] # milliseconds [HP, MP]
@@ -877,8 +879,15 @@ if __name__ == '__main__':
     print("Connected!")
     time.sleep(1)
 
-    threading.Thread(target=ui).start()
-    threading.Thread(target=main).start()
+    if is_gacha:
+        while True:
+            exchange_regular_gac()
+            time.sleep(randint(1, 4))
+            mouse.click(button='left', coords=(50, 50))
+    else:
+        threading.Thread(target=ui).start()
+        threading.Thread(target=main).start()
+
 
     # coords = (500, 400)
     #
@@ -893,9 +902,7 @@ if __name__ == '__main__':
     #     print(get_user_coord())
     #     # reset_minimap()
     #     time.sleep(4)
-    # while True:
-    #     exchange_giftbox()
-    #     time.sleep(randint(1, 4))
+
 
 # import wmi
 # c = wmi.WMI()
