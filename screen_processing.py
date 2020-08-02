@@ -7,20 +7,13 @@ from pathlib import Path
 import ctypes
 import ctypes.wintypes
 
-path1 = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-path2 = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
-if os.path.isfile(path1):
-    pytesseract.pytesseract.tesseract_cmd = path1
-else:
-    pytesseract.pytesseract.tesseract_cmd = path2
-
-
 class MapleWindowNotFoundError(Exception):
     pass
 
 
 MAPLESTORY_WINDOW_TITLE = "MapleStory"
-
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 class MapleScreenCapturer:
     """Container for capturing MS screen"""
@@ -163,6 +156,7 @@ class StaticImageProcessor:
 
 
     def update_image(self, src=None, set_focus=False, update_rect=False):
+
         """
         Calls ScreenCapturer's update function and updates images.
         :param src : rgb image data from PIL ImageGrab
@@ -422,11 +416,17 @@ class StaticImageProcessor:
             # Store width and height of template in w and h
             w1, h1 = self.template1.shape[::-1]
             w2, h2 = self.template2.shape[::-1]
-
             # Perform match operations.
-            res1 = cv2.matchTemplate(self.gray_img, self.template1, cv2.TM_CCOEFF_NORMED)
-            res2 = cv2.matchTemplate(self.gray_img, self.template2, cv2.TM_CCOEFF_NORMED)
+            full_screen_img = ImageGrab.grab(bbox =(0, 0, screensize[0], screensize[1]))
+            full_screen_img = np.array(full_screen_img)
+            full_screen_img = cv2.cvtColor(full_screen_img, cv2.COLOR_BGR2GRAY)
 
+            res1 = cv2.matchTemplate(full_screen_img, self.template1, cv2.TM_CCOEFF_NORMED)
+            res2 = cv2.matchTemplate(full_screen_img, self.template2, cv2.TM_CCOEFF_NORMED)
+            # res1 = cv2.matchTemplate(self.gray_img, self.template1, cv2.TM_CCOEFF_NORMED)
+            # res2 = cv2.matchTemplate(self.gray_img, self.template2, cv2.TM_CCOEFF_NORMED)
+            # cv2.imshow("Full screen", full_screen_img)
+            # cv2.waitKey()
             # Specify a threshold
             threshold = 0.8
 
@@ -520,7 +520,7 @@ if __name__ == "__main__":
 
     for i in range(10):
         static.update_image()
-        x, y, w, h = static.get_minimap_rect()
-        static.find_other_player_marker()
+        print(static.is_exist_chaos_scroll())
+
     # print(rect)
     # dx.capture(rect=rect)

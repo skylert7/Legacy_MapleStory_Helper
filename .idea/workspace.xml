@@ -21,7 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="90750363-505f-4976-b3ed-91d327e1f190" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/driver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screen_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/screen_processing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +55,7 @@
       <recent name="C:\Users\Skyler\Git_Folder\BotMaple" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.driver">
+  <component name="RunManager" selected="Python.screen_processing">
     <configuration name="basic_functions" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="9D_Auto_Farm" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -170,9 +170,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.screen_processing" />
         <item itemvalue="Python.driver" />
         <item itemvalue="Python.basic_functions" />
-        <item itemvalue="Python.screen_processing" />
         <item itemvalue="Python.inactive_window_trial" />
         <item itemvalue="Python.pickup" />
       </list>
@@ -221,22 +221,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1135" y="427" key="#com.jetbrains.python.refactoring.move.PyMakeFunctionTopLevelDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594030260171" />
-    <state width="937" height="197" key="GridCell.Tab.0.bottom" timestamp="1595994881544">
+    <state width="937" height="197" key="GridCell.Tab.0.bottom" timestamp="1596195286343">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595994881544" />
-    <state width="937" height="197" key="GridCell.Tab.0.center" timestamp="1595994881544">
+    <state width="937" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596195286343" />
+    <state width="937" height="197" key="GridCell.Tab.0.center" timestamp="1596195286342">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595994881544" />
-    <state width="937" height="197" key="GridCell.Tab.0.left" timestamp="1595994881544">
+    <state width="937" height="197" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596195286342" />
+    <state width="937" height="197" key="GridCell.Tab.0.left" timestamp="1596195286342">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595994881544" />
-    <state width="937" height="197" key="GridCell.Tab.0.right" timestamp="1595994881544">
+    <state width="937" height="197" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596195286342" />
+    <state width="937" height="197" key="GridCell.Tab.0.right" timestamp="1596195286342">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595994881544" />
+    <state width="937" height="197" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596195286342" />
     <state x="886" y="168" key="SettingsEditor" timestamp="1593682457575">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -245,5 +245,16 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1103" y="229" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1593071306313" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/screen_processing.py</url>
+          <line>413</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
