@@ -61,10 +61,6 @@ for i in range(len(buff_delay)):
 
 # bbox (left_x, top_y, right_x, bottom_y)
 
-
-def toggle(aState):
-    return not aState
-
 def rescale_window():
     global windowName
     hwndMain = win32gui.FindWindow(None, windowName)
@@ -225,103 +221,107 @@ def main():
     time_at_hp_mp = [datetime.utcnow()] * len(hp_mp_delay)
     time_at_move = datetime.utcnow()
     while True:
-        dx = MapleScreenCapturer()
-        hwnd = dx.ms_get_screen_hwnd()
-        rect = dx.ms_get_screen_rect(hwnd)
+        if is_start == 1:
+            dx = MapleScreenCapturer()
+            hwnd = dx.ms_get_screen_hwnd()
+            rect = dx.ms_get_screen_rect(hwnd)
 
-        static = StaticImageProcessor(dx)
-        static.update_image()
-        # Buffs
-        for index in range(len(buff_delay)):
-            if buff_state[index]:
-                if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
-                    buff(key_codes[key_options[index]])
-                    buff(key_codes[key_options[index]])
-                    # print("Buff %d at: " % (index + 1), get_time())
-                    time_at_buff[index] = datetime.utcnow()
-                    random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
+            static = StaticImageProcessor(dx)
+            static.update_image()
+            # Buffs
+            for index in range(len(buff_delay)):
+                if buff_state[index]:
+                    if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
+                        buff(key_codes[key_options[index]])
+                        buff(key_codes[key_options[index]])
+                        # print("Buff %d at: " % (index + 1), get_time())
+                        time_at_buff[index] = datetime.utcnow()
+                        random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
 
-        # AutoHP
-        if is_auto_hp == 1:
-            if (datetime.utcnow() - time_at_hp_mp[0]).total_seconds() > hp_mp_delay[0] / 1000:
-                if static.get_HP_percent() < hp_percent_random:
-                    drink_hp()
-                    # print(static.get_HP_percent())
-                    time_at_hp_mp[0] = datetime.utcnow()
-                    try:
-                        hp_percent_random = randint(from_hp_global, to_hp_global)
-                    except:
-                        hp_percent_random = 80
-                    # print("HP: {} {}".format(from_hp_global, to_hp_global))
+            # AutoHP
+            if is_auto_hp == 1:
+                if (datetime.utcnow() - time_at_hp_mp[0]).total_seconds() > hp_mp_delay[0] / 1000:
+                    if static.get_HP_percent() < hp_percent_random:
+                        drink_hp()
+                        # print(static.get_HP_percent())
+                        time_at_hp_mp[0] = datetime.utcnow()
+                        try:
+                            hp_percent_random = randint(from_hp_global, to_hp_global)
+                        except:
+                            hp_percent_random = 80
+                        # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
-        # AutoMP
-        if is_auto_mp == 1:
-            if (datetime.utcnow() - time_at_hp_mp[1]).total_seconds() > hp_mp_delay[1] / 1000:
-                if static.get_MP_percent() < mp_percent_random:
-                    drink_mana()
-                    time_at_hp_mp[1] = datetime.utcnow()
-                    # print(static.get_MP_percent())
-                    try:
-                        mp_percent_random = randint(from_mp_global, to_mp_global)
-                    except:
-                        mp_percent_random = 80
-                    # print("MP: {}".format(mp_percent_random))
+            # AutoMP
+            if is_auto_mp == 1:
+                if (datetime.utcnow() - time_at_hp_mp[1]).total_seconds() > hp_mp_delay[1] / 1000:
+                    if static.get_MP_percent() < mp_percent_random:
+                        drink_mana()
+                        time_at_hp_mp[1] = datetime.utcnow()
+                        # print(static.get_MP_percent())
+                        try:
+                            mp_percent_random = randint(from_mp_global, to_mp_global)
+                        except:
+                            mp_percent_random = 80
+                        # print("MP: {}".format(mp_percent_random))
 
-        # AutoAttack
-        if is_auto_attack == 1:
-            if (datetime.utcnow() - time_at_attack).total_seconds() > (attack_delay_global / 1000):
-                auto_attack()
-                time_at_attack = datetime.utcnow()
+            # AutoAttack
+            if is_auto_attack == 1:
+                if (datetime.utcnow() - time_at_attack).total_seconds() > (attack_delay_global / 1000):
+                    auto_attack()
+                    time_at_attack = datetime.utcnow()
 
-        # AutoPickUp
-        if is_auto_pickup == 1:
-            pickup()
+            # AutoPickUp
+            if is_auto_pickup == 1:
+                pickup()
 
-        # It does what it says
-        if is_keep_center == 1:
-            if (datetime.utcnow() - time_at_move).total_seconds() > (keep_center_move_delay / 1000):
-                keep_center()
-                time_at_move = datetime.utcnow()
+            # It does what it says
+            if is_keep_center == 1:
+                if (datetime.utcnow() - time_at_move).total_seconds() > (keep_center_move_delay / 1000):
+                    keep_center()
+                    time_at_move = datetime.utcnow()
 
-        # Check for Chaos Scroll drop
-        if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
-            try:
-                if static.is_exist_chaos_scroll():
-                    time_at_check = datetime.utcnow()
-                    send_sms("CS Scroll some where....!!", 14699695979)
-            except Exception as e:
-                print(e)
-                pass
-
-        if is_check_for_GM_dungeon == True:
-            if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
+            # Check for Chaos Scroll drop
+            if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
                 try:
-                    if static.is_exist_GM_dungeon():
-                        # print("GM might be here.... Come check!!")
-                        send_sms("GM might be here.... Come check!!", 14699695979)
-                        is_auto_attack = 0
-                        is_keep_center = 0
-
-                        is_auto_pickup = 0
-                        # send_text_to_maplestory("helloo")
-                        time_at_GM_exist_dungeon = datetime.utcnow()
-                except:
+                    if static.is_exist_chaos_scroll():
+                        time_at_check = datetime.utcnow()
+                        send_sms("CS Scroll some where....!!", 14699695979)
+                except Exception as e:
+                    print(e)
                     pass
 
-        # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
-        # => send an sms message saying GM might be available)
-        if minimap_reset_times >= 7:
-            send_sms("GM might be here.... Come check!!", 14699695979)
-            # is_auto_attack = 0
-            # is_keep_center = 0
-            # is_auto_pickup = 0
-            # send_text_to_maplestory("hello?")
-            minimap_reset_times = 0
+            if is_check_for_GM_dungeon == True:
+                if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
+                    try:
+                        if static.is_exist_GM_dungeon():
+                            # print("GM might be here.... Come check!!")
+                            send_sms("GM might be here.... Come check!!", 14699695979)
+                            is_auto_attack = 0
+                            is_keep_center = 0
+
+                            is_auto_pickup = 0
+                            # send_text_to_maplestory("helloo")
+                            time_at_GM_exist_dungeon = datetime.utcnow()
+                    except:
+                        pass
+
+            # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
+            # => send an sms message saying GM might be available)
+            if minimap_reset_times >= 7:
+                send_sms("GM might be here.... Come check!!", 14699695979)
+                # is_auto_attack = 0
+                # is_keep_center = 0
+                # is_auto_pickup = 0
+                # send_text_to_maplestory("hello?")
+                minimap_reset_times = 0
+        else:
+            continue
 
 def ui():
     global maple_story
     # Global for True/False var
-    global is_auto_attack, \
+    global is_start, \
+        is_auto_attack, \
         is_auto_mp, \
         is_auto_hp, \
         is_auto_pickup,\
@@ -345,16 +345,14 @@ def ui():
 
     root = Tk()
     # UI Vars
-
-    is_auto_hp = IntVar(value=int(is_auto_hp))
-    is_auto_mp = IntVar(value=int(is_auto_mp))
-    is_auto_attack = IntVar(value=int(is_auto_attack))
-    is_auto_pickup = IntVar(value=int(is_auto_pickup))
-    is_keep_center = IntVar(value=int(is_keep_center))
-    is_check_for_cs = IntVar(value=int(is_check_for_cs))
-    is_check_for_GM_regular = IntVar(value=int(is_check_for_GM_regular))
-    is_check_for_GM_dungeon = IntVar(value=int(is_check_for_GM_dungeon))
-
+    is_auto_hp = BooleanVar(value=bool(is_auto_hp))
+    is_auto_mp = BooleanVar(value=bool(is_auto_mp))
+    is_auto_attack = BooleanVar(value=bool(is_auto_attack))
+    is_auto_pickup = BooleanVar(value=bool(is_auto_pickup))
+    is_keep_center = BooleanVar(value=bool(is_keep_center))
+    is_check_for_cs = BooleanVar(value=bool(is_check_for_cs))
+    is_check_for_GM_regular = BooleanVar(value=bool(is_check_for_GM_regular))
+    is_check_for_GM_dungeon = BooleanVar(value=bool(is_check_for_GM_dungeon))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -403,48 +401,47 @@ def ui():
 
     def change_auto_mp_state():
         global is_auto_mp
-        is_auto_mp = not is_auto_mp
+        is_auto_mp = toggle(is_auto_mp)
         # print("Auto MP state", is_auto_mp)
         maple_story.activate()
 
     def change_auto_hp_state():
         global is_auto_hp
-        is_auto_hp = not is_auto_hp
+        is_auto_hp = toggle(is_auto_hp)
         # print("Auto HP state", is_auto_hp)
         maple_story.activate()
 
     def change_auto_attack_state():
         global is_auto_attack
-        is_auto_attack = not is_auto_attack
-        print("Auto attack state", is_auto_attack)
+        is_auto_attack = toggle(is_auto_attack)
         maple_story.activate()
 
     def change_auto_pickup_state():
         global is_auto_pickup
-        is_auto_pickup = not is_auto_pickup
+        is_auto_pickup = toggle(is_auto_pickup)
         # print("Auto pick up state", is_auto_pickup)
         maple_story.activate()
 
     def change_keep_center():
         global is_keep_center
-        is_keep_center = not is_keep_center
+        is_keep_center = toggle(is_keep_center)
         maple_story.activate()
 
     def change_check_for_cs():
         global is_check_for_cs
-        is_check_for_cs = not is_check_for_cs
+        is_check_for_cs = toggle(is_check_for_cs)
         # print(is_check_for_cs)
         maple_story.activate()
         return
 
     def change_check_for_GM_regular():
         global is_check_for_GM_regular
-        is_check_for_GM_regular = not is_check_for_GM_regular
+        is_check_for_GM_regular = toggle(is_check_for_GM_regular)
         return
 
     def change_check_for_GM_dungeon():
         global is_check_for_GM_dungeon
-        is_check_for_GM_dungeon = not is_check_for_GM_dungeon
+        is_check_for_GM_dungeon = toggle(is_check_for_GM_dungeon)
         # print(is_check_for_GM_dungeon)
         return
 
@@ -519,6 +516,11 @@ def ui():
     def update_status():
         return
 
+    def toggle_start_stop():
+        global is_start
+        is_start = toggle(is_start)
+        print("Start state: ", is_start)
+
     def panic():
         os._exit(0)
 
@@ -533,12 +535,16 @@ def ui():
 
     # Auto HP Row
     row = 0
-    Checkbutton(root,
-                text='Auto HP',
-                command=change_auto_hp_state,
-                variable=is_auto_hp,
-                ).grid(row=row,
-                       column=0)
+    auto_hp_checkbutton = Checkbutton(root,
+                                      text='Auto HP',
+                                      command=change_auto_hp_state,
+                                      variable=is_auto_hp,
+                                      )
+
+    auto_hp_checkbutton.grid(row=row,
+                             column=0)
+
+    auto_hp_checkbutton.var = is_auto_hp
 
     fromHpLabel = Label(root,
                         text="From:"
@@ -577,11 +583,16 @@ def ui():
 
     #Auto MP Row
     row += 1
-    Checkbutton(root,
-                text='Auto MP',
-                command=change_auto_mp_state,
-                variable=is_auto_mp,
-                ).grid(column=0, row=row)
+    auto_mp_checkbutton = Checkbutton(root,
+                                      text='Auto MP',
+                                      command=change_auto_mp_state,
+                                      variable=is_auto_mp,
+                                      )
+
+    auto_mp_checkbutton.grid(column=0,
+                             row=row)
+
+    auto_mp_checkbutton.var = is_auto_mp
 
     fromMpLabel = Label(root,
                         text="From:"
@@ -622,13 +633,17 @@ def ui():
 
     #Auto Attack Row
     row += 1
-    Checkbutton(root,
-                text='Auto Attack',
-                command=change_auto_attack_state,
-                variable=is_auto_attack,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
+    auto_attack_checkbutton = Checkbutton(root,
+                                          text='Auto Attack',
+                                          command=change_auto_attack_state,
+                                          variable=is_auto_attack,
+                                          )
+
+    auto_attack_checkbutton.grid(row=row,
+                                 column=0,
+                                 sticky=W)
+
+    auto_attack_checkbutton.var = is_auto_attack
 
     Label(root,
           text="Attack Delay (ms):"
@@ -649,24 +664,33 @@ def ui():
 
     #Auto Pickup Row
     row += 1
-    Checkbutton(root,
-                text='Auto Pickup',
-                command=change_auto_pickup_state,
-                variable=is_auto_pickup,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
+    auto_pickup_checkbutton = Checkbutton(root,
+                                          text='Auto Pickup',
+                                          command=change_auto_pickup_state,
+                                          variable=is_auto_pickup,
+                                          )
+
+    auto_pickup_checkbutton.grid(row=row,
+                                 column=0,
+                                 sticky=W)
+
+    auto_pickup_checkbutton.var = is_auto_pickup
     #Auto Pickup Row ---
 
     #Keep Center Row
     row += 1
-    Checkbutton(root,
-                text='Keep Center',
-                command=change_keep_center,
-                variable=is_keep_center,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
+    keep_center_checkbutton = Checkbutton(root,
+                                          text='Keep Center',
+                                          command=change_keep_center,
+                                          variable=is_keep_center,
+                                          )
+
+    keep_center_checkbutton.grid(row=row,
+                                 column=0,
+                                 sticky=W)
+
+    keep_center_checkbutton.var = is_keep_center
+
     Label(root,
           text="Radius:"
           ).grid(column=1,
@@ -781,35 +805,47 @@ def ui():
 
     #Check for Chaos Scroll Row
     row += 1
-    Checkbutton(root,
-                text='Check for Chaos Scroll',
-                command=change_check_for_cs,
-                variable=is_check_for_cs,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
+    check_cs_checkbutton = Checkbutton(root,
+                                       text='Check for Chaos Scroll',
+                                       command=change_check_for_cs,
+                                       variable=is_check_for_cs,
+                                       )
+
+    check_cs_checkbutton.grid(row=row,
+                              column=0,
+                              sticky=W)
+
+    check_cs_checkbutton.var = is_check_for_cs
     #Check for Chaos Scroll Row ---
 
     #Check for GM Regular Row
     row += 1
-    Checkbutton(root,
-                text='Check for GM Regular',
-                command=change_check_for_GM_regular,
-                variable=is_check_for_GM_regular,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
+    checkGM_regular_checkbutton = Checkbutton(root,
+                                              text='Check for GM Regular',
+                                              command=change_check_for_GM_regular,
+                                              variable=is_check_for_GM_regular,
+                                              )
+
+    checkGM_regular_checkbutton.grid(row=row,
+                                     column=0,
+                                     sticky=W)
+
+    checkGM_regular_checkbutton.var = is_check_for_GM_regular
     #Check for GM Regular Row ---
 
     #Check for GM Dungeon Row
     row += 1
-    Checkbutton(root,
-                text='Check for GM Dungeon',
-                command=change_check_for_GM_dungeon,
-                variable=is_check_for_GM_dungeon,
-                ).grid(row=row,
-                       column=0,
-                       sticky=W)
+    checkGM_dungeon_checkbutton = Checkbutton(root,
+                                              text='Check for GM Dungeon',
+                                              command=change_check_for_GM_dungeon,
+                                              variable=is_check_for_GM_dungeon,
+                                              )
+
+    checkGM_dungeon_checkbutton.grid(row=row,
+                                     column=0,
+                                     sticky=W)
+
+    checkGM_dungeon_checkbutton.var = is_check_for_GM_dungeon
     #Check for GM Dungeon Row ---
 
     #Notes (Text)
@@ -820,17 +856,17 @@ def ui():
                            "\nF4 to toggle Auto Pickup."
                            "\nF8 to toggle Keep Center."
                            # "\nF9 to toggle Move Around."
-                           "\nF12 to terminate all."
+                           "\nF12 to START/STOP Helper."
                       )
                                  # "\nAll time variables is in "
                                  # "\nmilliseconds (1s = 1000ms).")
     note_text.grid(row=row, sticky=W)
 
-    #Panic button
+    #START/STOP button
     row += 1
     Button(root,
-           text='Panic Button (F12)',
-           command=panic,
+           text='START/STOP (F12)',
+           command=toggle_start_stop,
            height=4,
            width=16,
            ).grid(column=5,
@@ -842,7 +878,8 @@ def ui():
 
 def on_press_reaction(event):
     #https://stackoverflow.com/questions/47184374/increase-just-by-one-when-a-key-is-pressed/47184663
-    global is_auto_attack, \
+    global is_start, \
+        is_auto_attack, \
         is_auto_pickup, \
         is_move_left, \
         is_move_right, \
@@ -851,17 +888,13 @@ def on_press_reaction(event):
     if event.name == 'f1': # info
         display_state_info()
     if event.name == 'f3': # attack
-        is_auto_attack = not is_auto_attack
-        print("Auto attack state %s" % is_auto_attack)
+        is_auto_attack = toggle(is_auto_attack)
     if event.name == 'f4': # pick up
-        is_auto_pickup = not is_auto_pickup
-        print("Auto pick up state %s" % is_auto_pickup)
+        is_auto_pickup = toggle(is_auto_pickup)
     if event.name == 'f8':
-        is_keep_center = not is_keep_center
-        print("Keep center state %s" % is_keep_center)
+        is_keep_center = toggle(is_keep_center)
     if event.name == 'f12':
-        os._exit(0)
-
+        is_start = toggle(is_start)
 
 if __name__ == '__main__':
     keyboard.on_press(on_press_reaction)
@@ -887,21 +920,6 @@ if __name__ == '__main__':
     else:
         threading.Thread(target=ui).start()
         threading.Thread(target=main).start()
-
-
-    # coords = (500, 400)
-    #
-    # while True:
-    #
-    #     mouse.double_click(button='left', coords=coords)
-    #     time.sleep(0.5)
-    #     send_keys("{ENTER}")
-    #     time.sleep(0.5)
-
-    # while True:
-    #     print(get_user_coord())
-    #     # reset_minimap()
-    #     time.sleep(4)
 
 
 # import wmi

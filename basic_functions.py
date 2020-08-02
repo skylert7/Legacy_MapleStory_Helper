@@ -24,6 +24,14 @@ key_codes = {'Insert': '{VK_INSERT}',
              'V': 'v'
              }
 
+# Random helper functions
+def toggle(boolean_value):
+    if boolean_value == 1:
+        boolean_value = 0
+    else:
+        boolean_value = 1
+    return boolean_value
+
 # General customized functions
 def drink_mana(assign_slot):
     send_keys(assign_slot)
