@@ -1,5 +1,5 @@
-# Version 1.5
-# Released Date: 7/6/2020
+# Version 1.6
+# Released Date: 8/1/2020
 
 from screen_processing import *
 from tkinter import *
@@ -907,7 +907,7 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    # rescale_window()
+    rescale_window()
 
     print("Connected!")
     time.sleep(1)
