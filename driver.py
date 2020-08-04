@@ -221,101 +221,101 @@ def main():
     time_at_hp_mp = [datetime.utcnow()] * len(hp_mp_delay)
     time_at_move = datetime.utcnow()
     while True:
-        if is_start == 1:
-            dx = MapleScreenCapturer()
-            hwnd = dx.ms_get_screen_hwnd()
-            rect = dx.ms_get_screen_rect(hwnd)
+        if is_start != 1:
+            time.sleep(2)
+            continue
+        dx = MapleScreenCapturer()
+        hwnd = dx.ms_get_screen_hwnd()
+        rect = dx.ms_get_screen_rect(hwnd)
 
-            static = StaticImageProcessor(dx)
-            static.update_image()
-            # Buffs
-            for index in range(len(buff_delay)):
-                if buff_state[index]:
-                    if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
-                        buff(key_codes[key_options[index]])
-                        buff(key_codes[key_options[index]])
-                        # print("Buff %d at: " % (index + 1), get_time())
-                        time_at_buff[index] = datetime.utcnow()
-                        random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
+        static = StaticImageProcessor(dx)
+        static.update_image()
+        # Buffs
+        for index in range(len(buff_delay)):
+            if buff_state[index]:
+                if (datetime.utcnow() - time_at_buff[index]).total_seconds() > random_buff_delay[index]:
+                    buff(key_codes[key_options[index]])
+                    buff(key_codes[key_options[index]])
+                    # print("Buff %d at: " % (index + 1), get_time())
+                    time_at_buff[index] = datetime.utcnow()
+                    random_buff_delay[index] = randint(int(buff_delay[index]) // 4, int(buff_delay[index])//2)
 
-            # AutoHP
-            if is_auto_hp == 1:
-                if (datetime.utcnow() - time_at_hp_mp[0]).total_seconds() > hp_mp_delay[0] / 1000:
-                    if static.get_HP_percent() < hp_percent_random:
-                        drink_hp()
-                        # print(static.get_HP_percent())
-                        time_at_hp_mp[0] = datetime.utcnow()
-                        try:
-                            hp_percent_random = randint(from_hp_global, to_hp_global)
-                        except:
-                            hp_percent_random = 80
-                        # print("HP: {} {}".format(from_hp_global, to_hp_global))
+        # AutoHP
+        if is_auto_hp == 1:
+            if (datetime.utcnow() - time_at_hp_mp[0]).total_seconds() > hp_mp_delay[0] / 1000:
+                if static.get_HP_percent() < hp_percent_random:
+                    drink_hp()
+                    # print(static.get_HP_percent())
+                    time_at_hp_mp[0] = datetime.utcnow()
+                    try:
+                        hp_percent_random = randint(from_hp_global, to_hp_global)
+                    except:
+                        hp_percent_random = 80
+                    # print("HP: {} {}".format(from_hp_global, to_hp_global))
 
-            # AutoMP
-            if is_auto_mp == 1:
-                if (datetime.utcnow() - time_at_hp_mp[1]).total_seconds() > hp_mp_delay[1] / 1000:
-                    if static.get_MP_percent() < mp_percent_random:
-                        drink_mana()
-                        time_at_hp_mp[1] = datetime.utcnow()
-                        # print(static.get_MP_percent())
-                        try:
-                            mp_percent_random = randint(from_mp_global, to_mp_global)
-                        except:
-                            mp_percent_random = 80
-                        # print("MP: {}".format(mp_percent_random))
+        # AutoMP
+        if is_auto_mp == 1:
+            if (datetime.utcnow() - time_at_hp_mp[1]).total_seconds() > hp_mp_delay[1] / 1000:
+                if static.get_MP_percent() < mp_percent_random:
+                    drink_mana()
+                    time_at_hp_mp[1] = datetime.utcnow()
+                    # print(static.get_MP_percent())
+                    try:
+                        mp_percent_random = randint(from_mp_global, to_mp_global)
+                    except:
+                        mp_percent_random = 80
+                    # print("MP: {}".format(mp_percent_random))
 
-            # AutoAttack
-            if is_auto_attack == 1:
-                if (datetime.utcnow() - time_at_attack).total_seconds() > (attack_delay_global / 1000):
-                    auto_attack()
-                    time_at_attack = datetime.utcnow()
+        # AutoAttack
+        if is_auto_attack == 1:
+            if (datetime.utcnow() - time_at_attack).total_seconds() > (attack_delay_global / 1000):
+                auto_attack()
+                time_at_attack = datetime.utcnow()
 
-            # AutoPickUp
-            if is_auto_pickup == 1:
-                pickup()
+        # AutoPickUp
+        if is_auto_pickup == 1:
+            pickup()
 
-            # It does what it says
-            if is_keep_center == 1:
-                if (datetime.utcnow() - time_at_move).total_seconds() > (keep_center_move_delay / 1000):
-                    keep_center()
-                    time_at_move = datetime.utcnow()
+        # It does what it says
+        if is_keep_center == 1:
+            if (datetime.utcnow() - time_at_move).total_seconds() > (keep_center_move_delay / 1000):
+                keep_center()
+                time_at_move = datetime.utcnow()
 
-            # Check for Chaos Scroll drop
-            if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
+        # Check for Chaos Scroll drop
+        if is_check_for_cs == 1 and (datetime.utcnow() - time_at_check).total_seconds() > 60:
+            try:
+                if static.is_exist_chaos_scroll():
+                    time_at_check = datetime.utcnow()
+                    send_sms("CS Scroll some where....!!", 14699695979)
+            except Exception as e:
+                print(e)
+                pass
+
+        if is_check_for_GM_dungeon == True:
+            if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
                 try:
-                    if static.is_exist_chaos_scroll():
-                        time_at_check = datetime.utcnow()
-                        send_sms("CS Scroll some where....!!", 14699695979)
-                except Exception as e:
-                    print(e)
+                    if static.is_exist_GM_dungeon():
+                        # print("GM might be here.... Come check!!")
+                        send_sms("GM might be here.... Come check!!", 14699695979)
+                        is_auto_attack = 0
+                        is_keep_center = 0
+
+                        is_auto_pickup = 0
+                        # send_text_to_maplestory("helloo")
+                        time_at_GM_exist_dungeon = datetime.utcnow()
+                except:
                     pass
 
-            if is_check_for_GM_dungeon == True:
-                if (datetime.utcnow() - time_at_GM_exist_dungeon).total_seconds() > 20:
-                    try:
-                        if static.is_exist_GM_dungeon():
-                            # print("GM might be here.... Come check!!")
-                            send_sms("GM might be here.... Come check!!", 14699695979)
-                            is_auto_attack = 0
-                            is_keep_center = 0
-
-                            is_auto_pickup = 0
-                            # send_text_to_maplestory("helloo")
-                            time_at_GM_exist_dungeon = datetime.utcnow()
-                    except:
-                        pass
-
-            # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
-            # => send an sms message saying GM might be available)
-            if minimap_reset_times >= 7:
-                send_sms("GM might be here.... Come check!!", 14699695979)
-                # is_auto_attack = 0
-                # is_keep_center = 0
-                # is_auto_pickup = 0
-                # send_text_to_maplestory("hello?")
-                minimap_reset_times = 0
-        else:
-            continue
+        # Check for GM by reset_minimap (if minimap cant be found within 5 times of pressing "m"
+        # => send an sms message saying GM might be available)
+        if minimap_reset_times >= 7:
+            send_sms("GM might be here.... Come check!!", 14699695979)
+            # is_auto_attack = 0
+            # is_keep_center = 0
+            # is_auto_pickup = 0
+            # send_text_to_maplestory("hello?")
+            minimap_reset_times = 0
 
 def ui():
     global maple_story
