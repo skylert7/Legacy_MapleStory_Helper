@@ -23,6 +23,7 @@ is_start = 0
 is_gacha = 0
 is_auto_attack = 0
 is_auto_mp = 0
+
 is_auto_hp = 0
 is_auto_pickup = 0
 is_keep_center = 0
@@ -907,14 +908,14 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    rescale_window()
+    # rescale_window()
 
     print("Connected!")
     time.sleep(1)
 
     if is_gacha:
         while True:
-            exchange_regular_gac()
+            exchange_maple_coins_monstercarnival()
             time.sleep(randint(1, 4))
             mouse.click(button='left', coords=(50, 50))
     else:

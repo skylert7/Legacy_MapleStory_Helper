@@ -117,6 +117,7 @@ class StaticImageProcessor:
         # Read the template
         self.template1 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1280x920.JPG'.format(str(Path.home())), 0)
         self.template2 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1024x768.JPG'.format(str(Path.home())), 0)
+        self.template3 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_800x600.JPG'.format(str(Path.home())), 0)
         # Pre-processing
         self.img_handle = img_handle
         self.bgr_img = None
@@ -423,6 +424,7 @@ class StaticImageProcessor:
 
             res1 = cv2.matchTemplate(full_screen_img, self.template1, cv2.TM_CCOEFF_NORMED)
             res2 = cv2.matchTemplate(full_screen_img, self.template2, cv2.TM_CCOEFF_NORMED)
+            res3 = cv2.matchTemplate(full_screen_img, self.template3, cv2.TM_CCOEFF_NORMED)
             # res1 = cv2.matchTemplate(self.gray_img, self.template1, cv2.TM_CCOEFF_NORMED)
             # res2 = cv2.matchTemplate(self.gray_img, self.template2, cv2.TM_CCOEFF_NORMED)
             # cv2.imshow("Full screen", full_screen_img)
@@ -433,10 +435,14 @@ class StaticImageProcessor:
             # Store the coordinates of matched area in a numpy array
             loc1 = np.where(res1 >= threshold)
             loc2 = np.where(res2 >= threshold)
+            loc3 = np.where(res3 >= threshold)
             if len(loc1[0]) > 0:
                 return True
 
             if len(loc2[0]) > 0:
+                return True
+
+            if len(loc3[0]) > 0:
                 return True
 
         except Exception as e:

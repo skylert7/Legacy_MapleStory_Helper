@@ -20,7 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90750363-505f-4976-b3ed-91d327e1f190" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/driver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screen_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/screen_processing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +46,9 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/InfoSec" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -220,22 +225,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1135" y="427" key="#com.jetbrains.python.refactoring.move.PyMakeFunctionTopLevelDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594030260171" />
-    <state width="937" height="197" key="GridCell.Tab.0.bottom" timestamp="1596348909149">
+    <state x="1220" y="275" key="FileChooserDialogImpl" timestamp="1596724011608">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596348909149" />
-    <state width="937" height="197" key="GridCell.Tab.0.center" timestamp="1596348909149">
+    <state x="1220" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1596724011608" />
+    <state width="937" height="197" key="GridCell.Tab.0.bottom" timestamp="1596907414907">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596348909149" />
-    <state width="937" height="197" key="GridCell.Tab.0.left" timestamp="1596348909149">
+    <state width="937" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596907414907" />
+    <state width="937" height="197" key="GridCell.Tab.0.center" timestamp="1596907414907">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596348909149" />
-    <state width="937" height="197" key="GridCell.Tab.0.right" timestamp="1596348909149">
+    <state width="937" height="197" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596907414907" />
+    <state width="937" height="197" key="GridCell.Tab.0.left" timestamp="1596907414906">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="937" height="197" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596348909149" />
+    <state width="937" height="197" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596907414906" />
+    <state width="937" height="197" key="GridCell.Tab.0.right" timestamp="1596907414907">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="937" height="197" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596907414907" />
     <state x="886" y="168" key="SettingsEditor" timestamp="1593682457575">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
