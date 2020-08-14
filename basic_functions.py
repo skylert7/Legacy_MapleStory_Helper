@@ -6,7 +6,7 @@ import time
 from dateutil import tz
 from datetime import datetime
 import numpy as np
-import cv2, win32gui, time, math, win32con, win32ui
+import cv2, win32gui, time, math, win32con, win32ui, win32api
 from PIL import ImageGrab, Image
 # key_codes: {<Name  Appear>: <Key Code to Send>}
 key_codes = {'Insert': '{VK_INSERT}',
@@ -134,6 +134,16 @@ def reset_minimap():
     send_keys('{m down}')
     send_keys('{m up}')
 
+def sell_equipment(resOption):
+    if resOption == 0: #1024x768
+        mouse.double_click(button="left", coords=(477, 434))
+    elif resOption == 1: #1280x768
+        mouse.double_click(button="left", coords=(465, 435))
+    time.sleep(0.5)
+    send_keys("{ENTER}")
+    time.sleep(0.5)
+    return
+
 def exchange_giftbox():
     send_keys("{VK_SPACE}")
     time.sleep(0.5)
@@ -255,5 +265,8 @@ def findHP():
 
 if __name__ == '__main__':
     # send_sms("Test message...", 14699695979)
-    findHP()
+    while True:
+        # x, y = win32api.GetCursorPos()
+        # print((x, y))
+        sell_equipment(1)
     exit(0)

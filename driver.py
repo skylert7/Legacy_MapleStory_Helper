@@ -21,22 +21,23 @@ resOption = 0 # 0 for 1024x768 | 1 for 1280x960
 
 is_start = 0
 is_gacha = 0
+
 is_auto_attack = 0
 is_auto_mp = 0
-
 is_auto_hp = 0
 is_auto_pickup = 0
 is_keep_center = 0
 is_check_for_cs = 0
 is_check_for_GM_regular = 0
 is_check_for_GM_dungeon = 0
+is_sell_eqp = 0
 
 from_mp_global = 50 # percent
 to_mp_global = 60 # p ercent
 from_hp_global = 70 # percent
 to_hp_global = 80 # percent
 hp_mp_delay = [400, 400] # milliseconds [HP, MP]
-attack_delay_global = 100 # milliseconds
+attack_delay_global = 1000 # milliseconds
 buff_delay = [200, 200, 600, 100]
 buff_state = [0] * len(buff_delay)
 
@@ -45,7 +46,7 @@ key_options = ["String"] * len(buff_delay)
 user_coor_global = (0, 0) # user coordinate
 keep_center_left_wall_is_reached = False # var for keep_center
 keep_center_right_wall_is_reached = False # var for keep_center
-keep_center_move_delay = 2000 # move delay for keep_center
+keep_center_move_delay = 500 # move delay for keep_center
 keep_center_radius = 40 # var for keep_center
 # GLOBAL SETTINGS
 
@@ -225,6 +226,10 @@ def main():
         if is_start != 1:
             time.sleep(2)
             continue
+
+        if is_sell_eqp == 1:
+            sell_equipment(resOption)
+            continue
         dx = MapleScreenCapturer()
         hwnd = dx.ms_get_screen_hwnd()
         rect = dx.ms_get_screen_rect(hwnd)
@@ -330,6 +335,7 @@ def ui():
         is_check_for_cs, \
         is_check_for_GM_regular, \
         is_check_for_GM_dungeon, \
+        is_sell_eqp, \
         resOption, \
         buff_state
     # Global for string/int var
@@ -354,6 +360,7 @@ def ui():
     is_check_for_cs = BooleanVar(value=bool(is_check_for_cs))
     is_check_for_GM_regular = BooleanVar(value=bool(is_check_for_GM_regular))
     is_check_for_GM_dungeon = BooleanVar(value=bool(is_check_for_GM_dungeon))
+    is_sell_eqp = BooleanVar(value=bool(is_sell_eqp))
 
     fromHpEntry = StringVar()
     fromHpEntry.set(str(from_hp_global))
@@ -443,6 +450,12 @@ def ui():
     def change_check_for_GM_dungeon():
         global is_check_for_GM_dungeon
         is_check_for_GM_dungeon = toggle(is_check_for_GM_dungeon)
+        # print(is_check_for_GM_dungeon)
+        return
+
+    def change_sell_eqp():
+        global is_sell_eqp
+        is_sell_eqp = toggle(is_sell_eqp)
         # print(is_check_for_GM_dungeon)
         return
 
@@ -849,6 +862,21 @@ def ui():
     checkGM_dungeon_checkbutton.var = is_check_for_GM_dungeon
     #Check for GM Dungeon Row ---
 
+    #Sell Equipment Row
+    row += 1
+    sell_eqp_checkbutton = Checkbutton(root,
+                                       text='Sell Equipment',
+                                       command=change_sell_eqp,
+                                       variable=is_sell_eqp,
+                                        )
+
+    sell_eqp_checkbutton.grid(row=row,
+                              column=0,
+                              sticky=W)
+
+    sell_eqp_checkbutton.var = is_sell_eqp
+    #Sell Equipment Row ---
+
     #Notes (Text)
     row += 1
     note_text = Label(root,
@@ -908,7 +936,7 @@ if __name__ == '__main__':
 
     maple_story.activate() # Bring window on top
 
-    # rescale_window()
+    rescale_window()
 
     print("Connected!")
     time.sleep(1)

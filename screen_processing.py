@@ -118,6 +118,8 @@ class StaticImageProcessor:
         self.template1 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1280x920.JPG'.format(str(Path.home())), 0)
         self.template2 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_1024x768.JPG'.format(str(Path.home())), 0)
         self.template3 = cv2.imread('{}\\Git_Folder\\BotMaple\\CS_800x600.JPG'.format(str(Path.home())), 0)
+        self.confirm_box1 = cv2.imread('{}\\Git_Folder\\BotMaple\\ConfirmBox_1280x920.JPG'.format(str(Path.home())), 0)
+        self.confirm_box2 = cv2.imread('{}\\Git_Folder\\BotMaple\\ConfirmBox_1024x768.JPG'.format(str(Path.home())), 0)
         # Pre-processing
         self.img_handle = img_handle
         self.bgr_img = None
@@ -511,6 +513,39 @@ class StaticImageProcessor:
     def is_exist_GM_regular(self):
         return False
 
+    def is_exist_confirm_box_sell_equipment(self):
+        try:
+            # Store width and height of template in w and h
+            w1, h1 = self.confirm_box1.shape[::-1]
+            w2, h2 = self.confirm_box2.shape[::-1]
+            # Perform match operations.
+            full_screen_img = ImageGrab.grab(bbox =(0, 0, screensize[0], screensize[1]))
+            full_screen_img = np.array(full_screen_img)
+            full_screen_img = cv2.cvtColor(full_screen_img, cv2.COLOR_BGR2GRAY)
+
+            res1 = cv2.matchTemplate(full_screen_img, self.confirm_box1, cv2.TM_CCOEFF_NORMED)
+            res2 = cv2.matchTemplate(full_screen_img, self.confirm_box2, cv2.TM_CCOEFF_NORMED)
+            # res1 = cv2.matchTemplate(self.gray_img, self.template1, cv2.TM_CCOEFF_NORMED)
+            # res2 = cv2.matchTemplate(self.gray_img, self.template2, cv2.TM_CCOEFF_NORMED)
+            # cv2.imshow("Full screen", full_screen_img)
+            # cv2.waitKey()
+            # Specify a threshold
+            threshold = 0.8
+
+            # Store the coordinates of matched area in a numpy array
+            loc1 = np.where(res1 >= threshold)
+            loc2 = np.where(res2 >= threshold)
+            if len(loc1[0]) > 0:
+                return True
+
+            if len(loc2[0]) > 0:
+                return True
+
+        except Exception as e:
+            print("Check for Confirm Box exception: ", e)
+            pass
+        return False
+
     def display_image_attr(self):
         cv2.imshow("BGR", self.bgr_img)
         cv2.imshow("RGB", self.rgb_img)
@@ -526,7 +561,7 @@ if __name__ == "__main__":
 
     for i in range(10):
         static.update_image()
-        print(static.is_exist_chaos_scroll())
+        print(static.is_exist_confirm_box_sell_equipment())
 
     # print(rect)
     # dx.capture(rect=rect)
