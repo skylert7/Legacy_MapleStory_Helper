@@ -21,7 +21,7 @@ PyAutoIt==0.6.0
 pygame==1.9.6
 PyGetWindow==0.0.8
 pyglet==1.5.0
-Pygments==2.6.1
+Pygments==2.7.4
 PyMsgBox==1.0.7
 pyOpenSSL==19.1.0
 pytesseract==0.3.4
