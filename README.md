@@ -4,5 +4,5 @@ Writer's note: Helper uses computer vision (heavily dependent on OpenCV librarie
 
 Demo photo below was at very early stage of the helper. Helper has other "help" functions that lie within the code.
 
-![alt text](https://github.com/skylert7/Legacy_MapleStory_Helper/blob/master/Demo.JPG)
+![alt text](https://github.com/skylert7/Legacy_MapleStory_Helper/blob/master/HelperPhoto.JPG)
 
