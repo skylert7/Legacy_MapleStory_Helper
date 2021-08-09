@@ -25,7 +25,7 @@ Pygments==2.6.1
 PyMsgBox==1.0.7
 pyOpenSSL==19.1.0
 pytesseract==0.3.4
-pywin32==227
+pywin32==301
 pywinauto==0.6.8
 pyzmq==19.0.1
 ReadWriteMemory==0.1.5
